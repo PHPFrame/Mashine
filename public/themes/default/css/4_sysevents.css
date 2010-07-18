@@ -1,0 +1,31 @@
+div#sysevents ul {
+    padding: 0;
+    margin: 0;
+}
+
+div#sysevents li {
+    border: 1px dotted #CCCCCC;
+    padding: 10px;
+    margin: 0;
+    list-style:none outside none;
+}
+
+li.sysevents_1 {
+    background-color: #F6CECE;
+}
+
+li.sysevents_2 {
+    background-color: #F6E3CE;
+}
+
+li.sysevents_3 {
+    background-color: #CEF6F5;
+}
+
+li.sysevents_4 {
+    background-color: #F5F6CE;
+}
+
+li.sysevents_5 {
+    background-color: #D0F5A9;
+}

@@ -1,0 +1,91 @@
+html, body {
+    height: 100%;
+}
+
+#wrapper {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 20px -80px;
+}
+
+#topmenu ul {
+    margin: 0;
+    padding: 0;
+    border-bottom: 10px solid #CC0000;
+}
+
+#topmenu ul li {
+    margin: 0;
+    padding: 0;
+    display: inline;
+}
+
+#topmenu ul li a {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 0;
+}
+
+#topmenu ul li a:hover {
+    background-color: #CCC;
+    color: #666;
+}
+
+#topmenu a.active,
+#topmenu a.parent,
+#topmenu a.active:hover,
+#topmenu a.parent:hover {
+    background-color: #CC0000;
+    color: #FFFFFF;
+}
+
+.breadcrumbs {
+    margin: 10px 0 10px;
+    font-size: 0.8em;
+}
+
+div#sysevents {
+    margin: 20px 0 0 0;
+}
+
+#content {
+    width: 620px;
+    margin: 0 0 20px;
+    float: left;
+}
+
+.sidebar {
+    width: 180px;
+    float: left;
+    background-color: #CCC;
+    padding: 10px;
+    margin: 0 0 0 20px;
+}
+
+.sidebar ul {
+    margin: 0 0 10px 0;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin: 0;
+    padding: 0 10px 0 0;
+    display: block;
+}
+
+.entry {
+    width: 580px;
+    overflow: hidden;
+}
+
+#footer, #push {
+    clear: both;
+    height: 40px;
+    padding: 20px;
+}
+
+#footer {
+    background-color: #CCC;
+    color: #666;
+}

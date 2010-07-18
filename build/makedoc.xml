@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="v5" default="build" basedir="../">
+
+    <property name="build.dir" value="${basedir}/build"/>
+    <property name="logs.dir" value="${build.dir}/logs"/>
+    <property name="doc.dir" value="${build.dir}/doc"/>
+    <property name="tmp.dir" value="${build.dir}/tmp/doc"/>
+
+    <!-- Prepare directories -->
+    <target name="prepare">
+        <mkdir dir="${logs.dir}"/>
+        <delete dir="${doc.dir}" includeemptydirs="true" verbose="true" failonerror="true" />
+        <mkdir dir="${doc.dir}"/>
+
+        <delete dir="${tmp.dir}" includeemptydirs="true" verbose="true" failonerror="true" />
+        <mkdir dir="${tmp.dir}"/>
+    </target>
+
+    <!-- copy files to tmp doc dir for parsing documentation -->
+    <target name="copy" depends="prepare">
+        <!-- copy files -->
+        <copy todir="${tmp.dir}" overwrite="true">
+            <fileset dir="${basedir}">
+                <include name="src/controllers/**" />
+                <include name="src/models/**" />
+                <include name="README.md" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="phpdoc" depends="copy">
+        <exec executable="phpdoc"
+              dir="${basedir}"
+              output="${logs.dir}/phpdoc.log">
+            <arg line="-d ${tmp.dir}
+                       -t ${doc.dir}
+                       -ric README.md
+                       -s on
+                       -dn none
+                       -ct type
+                       -ue on
+                       -o HTML:Smarty:PHP
+                       -ti 'E-NOISE v5 API Documentation'" />
+        </exec>
+    </target>
+
+    <target name="build" depends="prepare, copy, phpdoc" />
+
+</project>

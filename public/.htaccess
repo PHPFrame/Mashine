@@ -1,0 +1,56 @@
+# This is an example htaccess file. To use it remember to rename it to
+# .htaccess
+
+RewriteEngine on
+#RewriteBase /
+RewriteRule !\.(ico|js|gif|jpg|png|css|swf|txt|htm|woff|ttf|eot|svg)$ index.php
+
+# Enable GZIP
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/text
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/json
+    BrowserMatch ^Mozilla/4 gzip-only-text/html
+    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+</IfModule>
+
+# Expires Headers - 2678400s = 31 days
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 seconds"
+    ExpiresByType text/html "access plus 7200 seconds"
+    ExpiresByType image/gif "access plus 2678400 seconds"
+    ExpiresByType image/jpeg "access plus 2678400 seconds"
+    ExpiresByType image/png "access plus 2678400 seconds"
+    ExpiresByType text/css "access plus 518400 seconds"
+    ExpiresByType text/javascript "access plus 2678400 seconds"
+    ExpiresByType application/x-javascript "access plus 2678400 seconds"
+</IfModule>
+
+# Cache Headers
+<IfModule mod_headers.c>
+    Header unset Pragma
+
+    # Cache specified files for 31 days
+    <filesmatch "\.(ico|flv|jpg|jpeg|png|gif|css|swf)$">
+        Header set Cache-Control "max-age=2678400, public"
+    </filesmatch>
+    # Cache HTML files for a couple hours
+    <filesmatch "\.(html|htm)$">
+        Header set Cache-Control "max-age=7200, private, must-revalidate"
+    </filesmatch>
+    # Cache PDFs for a day
+    <filesmatch "\.(pdf)$">
+        Header set Cache-Control "max-age=86400, public"
+    </filesmatch>
+    # Cache Javascripts for 31 days
+    <filesmatch "\.(js)$">
+        Header set Cache-Control "max-age=2678400, private"
+    </filesmatch>
+</IfModule>

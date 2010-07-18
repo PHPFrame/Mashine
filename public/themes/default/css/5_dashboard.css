@@ -1,0 +1,21 @@
+div.dashboard-box-outer {}
+
+div.dashboard-box-inner {
+    background-color: #F0F0F0;
+    border: 1px solid #CCC;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+}
+
+div.dashboard-box-inner h3 {
+    background-color: #CCC;
+    padding: 3px 10px;
+    font-size: 1em;
+    -webkit-border-top-left-radius: 8px;
+    -webkit-border-top-right-radius: 8px;
+    -moz-border-radius-topleft: 8px;
+    -moz-border-radius-topright: 8px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}

@@ -1,0 +1,38 @@
+<collection>
+    <PHPFrame_LibInfo>
+        <name>OpenSRS</name>
+        <channel />
+        <summary />
+        <description />
+        <author>Lupo Montero</author>
+        <date>2009-12-08</date>
+        <version>1.0</version>
+        <license>New BSD License</license>
+        <licence_url>http://www.opensource.org/licenses/bsd-license.php</licence_url>
+        <enabled>1</enabled>
+        <id>1</id>
+        <ctime>1252985443</ctime>
+        <mtime>1252985443</mtime>
+        <owner>1</owner>
+        <group>1</group>
+        <perms>436</perms>
+    </PHPFrame_LibInfo>
+    <PHPFrame_LibInfo>
+        <name>HeartInternet</name>
+        <channel />
+        <summary />
+        <description />
+        <author>Lupo Montero</author>
+        <date>2009-12-08</date>
+        <version>1.0</version>
+        <license>New BSD License</license>
+        <licence_url>http://www.opensource.org/licenses/bsd-license.php</licence_url>
+        <enabled>1</enabled>
+        <id>2</id>
+        <ctime>1252985443</ctime>
+        <mtime>1252985443</mtime>
+        <owner>1</owner>
+        <group>1</group>
+        <perms>436</perms>
+    </PHPFrame_LibInfo>
+</collection>

@@ -1,0 +1,26 @@
+label {
+    display: block;
+}
+
+label.inline {
+    display:inline-block;
+}
+
+.validate-error {
+    display: inline;
+}
+/* jQuery Tipsy */
+
+.tipsy { margin: 0 0 0 7px; padding: 5px; font-size: 12px; line-height: 1.25em; background-repeat: no-repeat;  background-image: url("../img/tipsy.gif"); }
+.tipsy-inner { padding: 5px 8px 4px 8px; background-color: black; color: white; max-width: 200px; text-align: center; }
+.tipsy-inner { -moz-border-radius:3px; -webkit-border-radius:3px; }
+.tipsy-north { background-position: top center; }
+.tipsy-south { background-position: bottom center; }
+.tipsy-east { background-position: right center; }
+.tipsy-west { background-position: left center; }
+
+/* TinyMCE */
+
+textarea.tinymce {
+    font-family: "Arial", Helvetica, sans-serif !important;
+}
