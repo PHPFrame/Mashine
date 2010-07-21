@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="v5" default="build" basedir="../">
+<project name="Mashine" default="build" basedir="../">
 
     <property name="build.dir" value="${basedir}/build"/>
     <property name="logs.dir" value="${build.dir}/logs"/>
@@ -40,7 +40,7 @@
                        -ct type
                        -ue on
                        -o HTML:Smarty:PHP
-                       -ti 'E-NOISE v5 API Documentation'" />
+                       -ti 'Mashine API Documentation'" />
         </exec>
     </target>
 

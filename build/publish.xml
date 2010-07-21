@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="v5" basedir="../" default="build" xmlns:antcontrib="antlib:net.sf.antcontrib">
+<project name="Mashine" basedir="../" default="build" xmlns:antcontrib="antlib:net.sf.antcontrib">
 
     <taskdef resource="net/sf/antcontrib/antlib.xml">
       <classpath>

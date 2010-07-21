@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="v5" default="build" basedir="../">
+<project name="Mashine" default="build" basedir="../">
 
     <property name="logs.dir" value="${basedir}/build/logs"/>
     <property name="coverage.dir" value="${basedir}/build/coverage"/>

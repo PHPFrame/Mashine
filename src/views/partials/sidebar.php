@@ -1,7 +1,9 @@
 <?php if ($content instanceof Content) : ?>
-<?php if ($content->id() == 9 || $content->parentId() == 9) : ?>
 <div class="sidebar">
-[cms:type=parent&show_root_as_child=true&depth=1&exclude=admin/upgrade]
-</div>
+<?php if ($session->isAuth()) : ?>
+[cms:type=parent&show_root=false&depth=1&exclude=admin/upgrade]
+<?php else : ?>
+[cms:type=parent&show_root=false&depth=1]
 <?php endif; ?>
+</div>
 <?php endif; ?>

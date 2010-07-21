@@ -1,6 +1,6 @@
 <?php
 /**
- * src/plugins/CMSPlugin.php
+ * src/plugins/MashinePlugin.php
  *
  * PHP version 5
  *
@@ -13,7 +13,7 @@
  */
 
 /**
- * CMS Plugin class
+ * Mashine Plugin class
  *
  * @category PHPFrame_Applications
  * @package  Mashine
@@ -22,7 +22,7 @@
  * @link     https://github.com/lupomontero/Mashine
  * @since    1.0
  */
-class CMSPlugin extends AbstractPlugin
+class MashinePlugin extends AbstractPlugin
 {
     private $_mapper, $_slugs;
     private static $_hooks;
@@ -42,7 +42,7 @@ class CMSPlugin extends AbstractPlugin
         //$this->options[$this->getOptionsPrefix()."version"] = "0.0.20";
 
         if ($app->session()->isAdmin() && !$app->request()->ajax()) {
-            $update_assistant = new CMSUpdateAssistant($app);
+            $update_assistant = new UpdateAssistant($app);
             try {
                 if (!$update_assistant->isUpToDate()) {
                     $msg  = "A new version of the CMS available. <a href=\"";
@@ -61,10 +61,10 @@ class CMSPlugin extends AbstractPlugin
         );
 
         if ($app->user()->groupId() < 3) {
-            // $this->hooks->addCallBack(
-            //     "dashboard_boxes",
-            //     array($this, "getContentStats")
-            // );
+            $this->hooks->addCallBack(
+                "dashboard_boxes",
+                array($this, "getContentStats")
+            );
             $this->hooks->addCallBack(
                 "dashboard_boxes",
                 array($this, "getUserStats")
@@ -83,7 +83,7 @@ class CMSPlugin extends AbstractPlugin
     public function install()
     {
         if (!$this->app()->db()->hasTable("#__content")) {
-            $installer = new CMSInstaller($this->app());
+            $installer = new Installer($this->app());
             $installer->installDB();
         }
 
@@ -93,13 +93,13 @@ class CMSPlugin extends AbstractPlugin
     /**
      * Get CMS Hooks object.
      *
-     * @return CMSHooks
+     * @return Hooks
      * @since  1.0
      */
     public static function hooks()
     {
         if (is_null(self::$_hooks)) {
-            self::$_hooks = new CMSHooks();
+            self::$_hooks = new Hooks();
         }
 
         return self::$_hooks;
@@ -448,7 +448,7 @@ class CMSPlugin extends AbstractPlugin
     }
 
     /**
-     * This method is called by CMSPlugin::getContentStats() to recursively
+     * This method is called by MashinePlugin::getContentStats() to recursively
      * iterate the content tree and count the number of pages, posts and so on.
      *
      * @return array

@@ -1,6 +1,6 @@
 <?php
 /**
- * src/models/CMSInstaller.php
+ * src/models/Installer.php
  *
  * PHP version 5
  *
@@ -13,7 +13,7 @@
  */
 
 /**
- * CMSInstaller class.
+ * Installer class.
  *
  * @category PHPFrame_Applications
  * @package  Mashine
@@ -22,7 +22,7 @@
  * @link     https://github.com/lupomontero/Mashine
  * @since    1.0
  */
-class CMSInstaller
+class Installer
 {
     private $_app;
 
@@ -37,20 +37,49 @@ class CMSInstaller
         $this->_app = $app;
     }
 
+    /**
+     * Get reference to application object.
+     *
+     * @return PHPFrame_Application
+     * @since  1.0
+     */
     public function app()
     {
         return $this->_app;
     }
 
+    /**
+     * Install database.
+     *
+     * @return void
+     * @since  1.0
+     */
     public function installDB()
     {
+        $this->_installOauthTables();
         $this->_installGroupsTable();
         $this->_installContactsTable();
         $this->_installUsersTable();
         $this->_installCountriesTable();
         $this->_installContentTable();
-        //$this->_populateDummyContent();
-        $this->_populateEnoiseContent();
+        $this->_populateDummyContent();
+    }
+
+    private function _installOauthTables()
+    {
+        $db  = $this->app()->db();
+        $ort = new PHPFrame_ObjectRelationalToolbox();
+        $ort->createTable($db, new OAuthClient(), "#__oauth_clients");
+
+        $mapper = new OAuthClientsMapper($db);
+        $oauth_client = new OAuthClient();
+        $oauth_client->name("API Browser");
+        $oauth_client->version("1.0");
+        $oauth_client->vendor("Mashine Project");
+        $mapper->insert($oauth_client);
+
+        $ort->createTable($db, new OAuthToken(), "#__oauth_tokens");
+        $ort->createTable($db, new OAuthACL(), "#__oauth_acl");
     }
 
     private function _installGroupsTable()
@@ -93,7 +122,7 @@ class CMSInstaller
 
         $user = new User();
         $user->groupId(1);
-        $user->email("root@e-noise.com");
+        $user->email("root@example.com");
 
         // Create incrypted password and store encrypted string with salt
         // appended after a ":".
@@ -119,14 +148,14 @@ class CMSInstaller
         $contact = new Contact();
         $contact->firstName("Root");
         $contact->lastName("User");
-        $contact->address1("Building 9C");
-        $contact->address2("Queens Yard");
-        $contact->city("Hackney Wick");
-        $contact->postCode("E9 5EN");
-        $contact->county("London");
+        $contact->address1("Some Street");
+        $contact->address2("");
+        $contact->city("Some city");
+        $contact->postCode("000000");
+        $contact->county("Some county");
         $contact->country("GB");
-        $contact->phone("02089853999");
-        $contact->email("root@e-noise.com");
+        $contact->phone("0123456789");
+        $contact->email("root@example.com");
         $contact->owner(1);
         $contact->group(1);
         $contact->perms(440);
@@ -209,6 +238,7 @@ class CMSInstaller
         $content->title("Log in");
         $content->slug("user/login");
         $content->status(1);
+        $content->pubDate("1970-01-01 00:00:00");
         $content->description(null);
         $content->keywords(null);
         $content->param("controller", "user");
@@ -426,6 +456,20 @@ class CMSInstaller
         $content->group(1);
         $content->perms(440);
         $mapper->insert($content);
+
+        $content = new MVCContent();
+        $content->parentId($dashboard->id());
+        $content->title("REST API");
+        $content->slug("admin/api");
+        $content->status(1);
+        $content->description(null);
+        $content->keywords(null);
+        $content->param("controller", "system");
+        $content->param("action", "api");
+        $content->owner(1);
+        $content->group(1);
+        $content->perms(440);
+        $mapper->insert($content);
     }
 
     private function _populateDummyContent()
@@ -569,24 +613,5 @@ class CMSInstaller
         $content->group(1);
         $content->perms(644);
         $mapper->insert($content);
-    }
-
-    private function _populateEnoiseContent()
-    {
-        $db = $this->app()->db();
-        $mapper = new ContentMapper($db, $this->app()->getTmpDir().DS."cms");
-
-        $features = new PageContent();
-        $features->parentId(0);
-        $features->title("Home");
-        $features->slug("home");
-        $features->status(1);
-        $features->description("This is a custom page!");
-        $features->keywords("custom, page");
-        $features->param("view", "cms/custom/example");
-        $features->owner(1);
-        $features->group(2);
-        $features->perms(664);
-        $mapper->insert($features);
     }
 }

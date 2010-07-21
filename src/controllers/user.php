@@ -48,7 +48,7 @@ class UserController extends PHPFrame_ActionController
     public function index()
     {
         $content = $this->request()->param("active_content");
-        $dashboard_boxes = CMSPlugin::hooks()->doAction("dashboard_boxes");
+        $dashboard_boxes = MashinePlugin::hooks()->doAction("dashboard_boxes");
 
         $view = $this->view("user/dashboard");
         $view->addData("title", $content->title());
@@ -139,7 +139,7 @@ class UserController extends PHPFrame_ActionController
         $view->addData("ret_url", $ret_url);
         $view->addData("email", $request->param("email", ""));
 
-        $login_plugins = CMSPlugin::hooks()->doAction("login_form");
+        $login_plugins = MashinePlugin::hooks()->doAction("login_form");
         $view->addData("login_plugins", $login_plugins);
 
         $this->response()->title($title);

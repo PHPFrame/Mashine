@@ -1,6 +1,6 @@
 <?php
 /**
- * src/models/CMSOptions.php
+ * src/models/Options.php
  *
  * PHP version 5
  *
@@ -13,7 +13,7 @@
  */
 
 /**
- * CMSOptions class
+ * Options class
  *
  * @category PHPFrame_Applications
  * @package  Mashine
@@ -22,7 +22,7 @@
  * @link     https://github.com/lupomontero/Mashine
  * @since    1.0
  */
-class CMSOptions
+class Options
     implements IteratorAggregate, ArrayAccess, Countable, Serializable
 {
     private $_db;

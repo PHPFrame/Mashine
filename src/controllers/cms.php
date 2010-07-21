@@ -35,23 +35,6 @@ class CMSController extends PHPFrame_ActionController
     public function __construct(PHPFrame_Application $app)
     {
         parent::__construct($app, "index");
-
-        // $mapper = new ContentMapper($this->db(), $this->app()->getTmpDir().DS."cms");
-        //
-        // $packages_form = new MVCContent();
-        // $packages_form->parentId(38);
-        // $packages_form->title("New package");
-        // $packages_form->slug("packages/form");
-        // $packages_form->status(1);
-        // $packages_form->description(null);
-        // $packages_form->keywords(null);
-        // $packages_form->param("controller", "subscriptions");
-        // $packages_form->param("action", "form");
-        // $packages_form->owner(1);
-        // $packages_form->group(1);
-        // $packages_form->perms(440);
-        // $mapper->insert($packages_form);
-        // exit;
     }
 
     /**

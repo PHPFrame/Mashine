@@ -1,6 +1,6 @@
 <?php
 /**
- * src/models/CMSUpdateAssistant.php
+ * src/models/UpdateAssistant.php
  *
  * PHP version 5
  *
@@ -22,7 +22,7 @@
  * @link     https://github.com/lupomontero/Mashine
  * @since    1.0
  */
-class CMSUpdateAssistant
+class UpdateAssistant
 {
     private $_app, $_options;
 
@@ -144,7 +144,7 @@ class CMSUpdateAssistant
     private function _fetchLatestReleaseVersion()
     {
         $url  = $this->_app->config()->get("sources.preferred_mirror");
-        $url .= "/app_templates/cms/latest-release/?get=version";
+        $url .= "/apps/Mashine/latest-release/?get=version";
 
         $cache_dir = $this->_app->getTmpDir().DS."updates";
         PHPFrame_Filesystem::ensureWritableDir($cache_dir);

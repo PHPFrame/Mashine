@@ -9,7 +9,7 @@
     <strong>OS</strong>: <?php echo $os->getSysname(); ?> <?php echo $os->getRelease(); ?> <?php echo $os->getCpu(); ?><br />
     <strong>Web server</strong>: <?php echo $_SERVER["SERVER_SOFTWARE"]?><br />
     <strong>PHPFrame version</strong>: <?php echo PHPFrame::RELEASE_VERSION; ?> <?php echo PHPFrame::RELEASE_STABILITY; ?><br />
-    <strong>CMS version</strong>: <?php echo $options["cmsplugin_version"]; ?><br />
+    <strong>Mashine version</strong>: <?php echo $options["mashineplugin_version"]; ?><br />
     <strong>Host name</strong>: <?php echo $_SERVER["SERVER_NAME"]; ?><br />
     <strong>IP address</strong>: <?php echo $_SERVER["SERVER_ADDR"]; ?><br />
     <strong>Document root</strong>: <?php echo $_SERVER["DOCUMENT_ROOT"]; ?><br />

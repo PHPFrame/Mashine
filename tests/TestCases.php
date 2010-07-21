@@ -12,11 +12,24 @@ abstract class MVCTestCase extends PHPUnit_Framework_TestCase
 
     public function app($force_new=false)
     {
+        global $argv, $argc;
+
         if ($force_new) {
+            $tmp_argv = $argv;
+            $tmp_argc = $argc;
+
+            $argv = array($argv[0]);
+            $argc = 1;
+
             $install_dir = substr(__FILE__, 0, strrpos(dirname(__FILE__), DS));
             $this->_app  = new PHPFrame_Application(array(
                 "install_dir" => $install_dir
             ));
+
+            $this->_app->request();
+
+            $argv = $tmp_argv;
+            $argc = $tmp_argc;
         }
 
         return $this->_app;
@@ -141,22 +154,22 @@ abstract class AppTestCase extends MVCTestCase
 
 abstract class HTTPAppTestCase extends AppTestCase
 {
-    private $_http_request;
-
-    public function setUp()
-    {
-        $base_url = $this->app()->config()->get("base_url");
-        $this->_http_request  = new PHPFrame_HTTPRequest($base_url, "POST");
-
-
-        // $response = $this->_http_request->send();
-        //         var_dump($response);
-    }
-
-    public function request()
-    {
-        return $this->_http_request;
-    }
+    // private $_http_request;
+    //
+    // public function setUp()
+    // {
+    //     $base_url = $this->app()->config()->get("base_url");
+    //     $this->_http_request  = new PHPFrame_HTTPRequest($base_url, "POST");
+    //
+    //
+    //     // $response = $this->_http_request->send();
+    //     //         var_dump($response);
+    // }
+    //
+    // public function request()
+    // {
+    //     return $this->_http_request;
+    // }
 }
 
 abstract class XMLAppTestCase extends HTTPAppTestCase

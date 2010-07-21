@@ -17,12 +17,12 @@ $content   = $request->param("active_content");
 $this->addScript("http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js");
 $this->addScript("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js");
 $this->addScript("http://ajax.microsoft.com/ajax/jquery.validate/1.6/jquery.validate.pack.js");
-$this->addScript($base_url."assets/js/cms.js");
-$this->addStyleSheet($base_url."assets/css/cms.css");
+$this->addScript($base_url."assets/js/mashine.js");
+$this->addStyleSheet($base_url."assets/css/mashine.css");
 
 if ($user->groupId() > 0 && $user->groupId() <= 2) {
-    $this->addScript($base_url."assets/js/cms.admin.js");
-    $this->addStyleSheet($base_url."assets/css/cms.admin.css");
+    $this->addScript($base_url."assets/js/mashine.admin.js");
+    $this->addStyleSheet($base_url."assets/css/mashine.admin.css");
 }
 ?>
 
@@ -35,7 +35,7 @@ if ($user->groupId() > 0 && $user->groupId() <= 2) {
 </h1>
 
 <div id="topmenu">
-<?php echo $renderer->renderPartial("menu")."\n"; ?>
+<?php echo $renderer->renderPartial("menu", array("session"=>$session))."\n"; ?>
 </div>
 
 <?php
@@ -54,7 +54,7 @@ echo $renderer->renderPartial(
 <?php
     echo $renderer->renderPartial(
         "sidebar",
-        array("content"=>$content)
+        array("content"=>$content, "session"=>$session)
     )."\n";
 ?>
 

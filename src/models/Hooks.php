@@ -1,6 +1,6 @@
 <?php
 /**
- * src/models/CMSHooks.php
+ * src/models/Hooks.php
  *
  * PHP version 5
  *
@@ -13,7 +13,7 @@
  */
 
 /**
- * CMSHooks class
+ * Hooks class
  *
  * @category PHPFrame_Applications
  * @package  Mashine
@@ -22,7 +22,7 @@
  * @link     https://github.com/lupomontero/Mashine
  * @since    1.0
  */
-class CMSHooks
+class Hooks
 {
     private $_actions = array(
         "dashboard_boxes",

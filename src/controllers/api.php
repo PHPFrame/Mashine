@@ -26,6 +26,14 @@ class ApiController extends PHPFrame_RESTfulController
 {
     private $_api_path, $_api_reflector;
 
+    /**
+     * Constructor.
+     *
+     * @param PHPFrame_Application $app
+     *
+     * @return void
+     * @since  1.0
+     */
     public function __construct(PHPFrame_Application $app)
     {
         $this->_api_path = $app->getInstallDir().DS."src".DS."controllers".DS."api";
@@ -67,6 +75,16 @@ class ApiController extends PHPFrame_RESTfulController
         parent::__construct($app);
     }
 
+    /**
+     * Call API method.
+     *
+     * @param string $api_object The API object.
+     * @param string $api_method The method to call.
+     * @param array  $args       [Optional]
+     *
+     * @return string
+     * @since  1.0
+     */
     public function call($api_object, $api_method, array $args=null)
     {
         if (!$this->_api_reflector->hasMethod($api_method)) {
@@ -100,6 +118,12 @@ class ApiController extends PHPFrame_RESTfulController
         }
     }
 
+    /**
+     * Display API usage info.
+     *
+     * @return string
+     * @since  1.0
+     */
     public function usage()
     {
         $array["api"] = $this->config()->get("app_name")." RESTful API";
@@ -142,6 +166,14 @@ class ApiController extends PHPFrame_RESTfulController
         return $array;
     }
 
+    /**
+     * Get ReflectionClass object of requested API controller.
+     *
+     * @param string $controller_name
+     *
+     * @return ReflectionClass
+     * @since  1.0
+     */
     private function _getApiControllerReflector($controller_name)
     {
         $class_name = ucfirst($controller_name)."ApiController";

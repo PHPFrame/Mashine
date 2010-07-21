@@ -40,10 +40,10 @@ abstract class AbstractPlugin extends PHPFrame_Plugin
 
         $this->options = $app->request()->param(
             "cms_options",
-            new CMSOptions($app->db())
+            new Options($app->db())
         );
 
-        $this->hooks = CMSPlugin::hooks();
+        $this->hooks = MashinePlugin::hooks();
 
         if (!$this->options[$this->getOptionsPrefix()."version"]) {
             $this->install();

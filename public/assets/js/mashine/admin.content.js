@@ -3,12 +3,12 @@
  *
  * Javascript
  *
- * @category  PHPFrame_AppTemplates
- * @package   PHPFrame_CmsAppTemplate
+ * @category  PHPFrame_Applications
+ * @package   Mashine
  * @author    Lupo Montero <lupo@e-noise.com>
  * @copyright 2010 E-NOISE.COM LIMITED
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link      https://github.com/lupomontero/PHPFrame_CmsAppTemplate
+ * @link      https://github.com/lupomontero/Mashine
  */
 
 // Wrap script in document ready event
@@ -17,7 +17,7 @@ jQuery(document).ready(function($) {
     var slug_input  = $('#slug');
     var title_input = $('#title');
     var tinymceTextArea = $('textarea.tinymce');
-    
+
     // Load TinyMCE
     tinymceTextArea.tinymce({
         // Location of TinyMCE script
@@ -38,24 +38,24 @@ jQuery(document).ready(function($) {
         width : "430px",
         height : "500px"
     });
-    
+
     $('#tinymce-button-visual').click(function(e) {
         e.preventDefault();
-        
+
         tinymceTextArea.tinymce().show();
     });
-    
+
     $('#tinymce-button-html').click(function(e) {
         e.preventDefault();
-        
+
         tinymceTextArea.tinymce().hide();
     });
-    
+
     $('#content_form').validate({
         submitHandler: function(form) {
             // switch to visual mode before saving to avoid backslash issue
             tinymceTextArea.tinymce().show();
-            
+
             slug_input.removeAttr('disabled');
             form.submit();
         }
@@ -126,5 +126,5 @@ jQuery(document).ready(function($) {
     permissions_legend.click(function() {
         permissions_fields.toggle();
     });
-    
+
 });

@@ -3,12 +3,12 @@
  *
  * Javascript
  *
- * @category  PHPFrame_AppTemplates
- * @package   PHPFrame_CmsAppTemplate
+ * @category  PHPFrame_Applications
+ * @package   Mashine
  * @author    Lupo Montero <lupo@e-noise.com>
  * @copyright 2010 E-NOISE.COM LIMITED
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link      https://github.com/lupomontero/PHPFrame_CmsAppTemplate
+ * @link      https://github.com/lupomontero/Mashine
  */
 
 // Init UI on document ready event
@@ -16,7 +16,15 @@ jQuery(document).ready(function($) {
     initToolTips();
     confirmDialog('.confirm');
     validateForm('.validate');
-    $('#user-form #password').password_strength();
+    //$('#user-form #password').password_strength();
+
+    // close sidebar item
+    var closeNote = $('a.close_button');
+    closeNote.live('click', function(e) {
+        e.preventDefault();
+        $(this).closest('.sidebar-item-wrapper').fadeOut('2000');
+        $(this).closest('.sysevent').fadeOut('1500');
+    });
 });
 
 /**

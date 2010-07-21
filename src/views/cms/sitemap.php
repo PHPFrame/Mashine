@@ -4,7 +4,7 @@
 
 <div id="sitemap" class="entry">
 
-[cms:exclude=get-started/step2,user/login,user/editcontact,packages/detail,support/ticket,billing/detail,admin/user/form,admin/content/form,admin/plugins/options]
+[cms]
 
 <p>
     <a href="sitemap?xml=1">XML Sitemap</a>

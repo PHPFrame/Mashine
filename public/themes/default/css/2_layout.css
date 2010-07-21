@@ -6,13 +6,15 @@ html, body {
     min-height: 100%;
     height: auto !important;
     height: 100%;
-    margin: 0 20px -80px;
+    margin: 0 auto -80px;
+    width: 800px;
 }
 
 #topmenu ul {
     margin: 0;
     padding: 0;
-    border-bottom: 10px solid #CC0000;
+    background: #F0F0F0;
+    border-bottom: 1px solid #CCC;
 }
 
 #topmenu ul li {
@@ -50,17 +52,17 @@ div#sysevents {
 }
 
 #content {
-    width: 620px;
-    margin: 0 0 20px;
+    width: 610px;
+    margin: 0 0 10px;
     float: left;
 }
 
 .sidebar {
-    width: 180px;
+    width: 160px;
     float: left;
     background-color: #CCC;
     padding: 10px;
-    margin: 0 0 0 20px;
+    margin: 0 0 0 10px;
 }
 
 .sidebar ul {

@@ -150,4 +150,18 @@ class SystemController extends PHPFrame_ActionController
 
         $this->setRedirect($this->config()->get("base_url")."dashboard");
     }
+
+    public function api()
+    {
+        $content = $this->request()->param("active_content");
+        $view    = $this->view("cms/admin/api/index");
+        $mapper  = new OAuthClientsMapper($this->db());
+        $clients = $mapper->find();
+
+        $view->addData("title", $content->title());
+        $view->addData("clients", $clients);
+
+        $this->response()->title($content->title());
+        $this->response()->body($view);
+    }
 }

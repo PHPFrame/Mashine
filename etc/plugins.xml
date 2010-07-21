@@ -1,6 +1,6 @@
 <collection>
     <PHPFrame_PluginInfo>
-        <name>CMSPlugin</name>
+        <name>MashinePlugin</name>
         <channel>http://dist.phpframe.org</channel>
         <summary>
             This is the core CMS plugin and can not be uninstalled.

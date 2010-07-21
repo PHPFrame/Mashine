@@ -3,12 +3,12 @@
  *
  * Javascript
  *
- * @category  PHPFrame_AppTemplates
- * @package   PHPFrame_CmsAppTemplate
+ * @category  PHPFrame_Applications
+ * @package   Mashine
  * @author    Lupo Montero <lupo@e-noise.com>
  * @copyright 2010 E-NOISE.COM LIMITED
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link      https://github.com/lupomontero/PHPFrame_CmsAppTemplate
+ * @link      https://github.com/lupomontero/Mashine
  */
 
  /**
