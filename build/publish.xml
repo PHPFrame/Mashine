@@ -81,6 +81,7 @@
             <fileset dir="${basedir}">
                 <include name="etc/" />
                 <include name="src/" />
+                <exclude name="etc/phpframe.ini" />
             </fileset>
         </copy>
 
@@ -206,6 +207,6 @@
     </target>
 
     <!-- Build project -->
-    <target name="build" depends="prepare, copy, tar, upload" />
+    <target name="build" depends="prepare, copy, minify_js, minify_css, tar, upload" />
 
 </project>
