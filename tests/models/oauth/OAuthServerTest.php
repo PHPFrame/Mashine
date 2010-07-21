@@ -4,11 +4,12 @@ require_once preg_replace("/(.*tests\/).+/", "$1TestCases.php", __FILE__);
 
 class OAuthServerTest extends MVCTestCase
 {
-    private $_oauth_clients_mapper, $_oauth_client;
+    private $_oauth_clients_mapper, $_oauth_tokens_mapper, $_oauth_client;
 
     public function setUp()
     {
         $this->_oauth_clients_mapper = new OAuthClientsMapper($this->app()->db());
+        $this->_oauth_tokens_mapper = new OAuthTokensMapper($this->app()->db());
 
         // Create test client
         $this->_oauth_client = new OAuthClient();
@@ -20,7 +21,13 @@ class OAuthServerTest extends MVCTestCase
 
         $this->fixture(new OAuthServer(
             $this->_oauth_clients_mapper,
-            "mashine/api/oauth/request_token"
+            $this->_oauth_tokens_mapper,
+            "mashine/api/oauth/request_token",
+            array(
+                "consumer_key" => $this->_oauth_client->key(),
+                "uri" => $this->app()->config()->get("base_url")."/api",
+                "method" => "GET"
+            )
         ));
     }
 
@@ -29,29 +36,29 @@ class OAuthServerTest extends MVCTestCase
         $this->_oauth_clients_mapper->delete($this->_oauth_client);
     }
 
-    public function test_handleConsumer()
+    public function test_checkConsumer()
     {
         $provider = new StdClass();
         $provider->consumer_key = $this->_oauth_client->key();
 
         $this->assertEquals(
             OAUTH_OK,
-            $this->fixture()->handleConsumer($provider)
+            $this->fixture()->checkConsumer($provider)
         );
     }
 
-    public function test_handleConsumerKeyUnknown()
+    public function test_checkConsumerKeyUnknown()
     {
         $provider = new StdClass();
         $provider->consumer_key = "";
 
         $this->assertEquals(
             OAUTH_CONSUMER_KEY_UNKNOWN,
-            $this->fixture()->handleConsumer($provider)
+            $this->fixture()->checkConsumer($provider)
         );
     }
 
-    public function test_handleConsumerKeyRefusedThrottled()
+    public function test_checkConsumerKeyRefusedThrottled()
     {
         $this->_oauth_client->status("throttled");
         $this->_oauth_clients_mapper->insert($this->_oauth_client);
@@ -61,11 +68,11 @@ class OAuthServerTest extends MVCTestCase
 
         $this->assertEquals(
             OAUTH_CONSUMER_KEY_REFUSED,
-            $this->fixture()->handleConsumer($provider)
+            $this->fixture()->checkConsumer($provider)
         );
     }
 
-    public function test_handleConsumerKeyRefusedBlacklisted()
+    public function test_checkConsumerKeyRefusedBlacklisted()
     {
         $this->_oauth_client->status("blacklisted");
         $this->_oauth_clients_mapper->insert($this->_oauth_client);
@@ -75,7 +82,7 @@ class OAuthServerTest extends MVCTestCase
 
         $this->assertEquals(
             OAUTH_CONSUMER_KEY_REFUSED,
-            $this->fixture()->handleConsumer($provider)
+            $this->fixture()->checkConsumer($provider)
         );
     }
 }

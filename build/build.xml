@@ -33,7 +33,6 @@
             <arg line="--log-junit ${logs.dir}/phpunit.xml
                        --coverage-clover ${logs.dir}/phpunit.coverage.xml
                        --coverage-html ${coverage.dir}
-                       --filter '/invoice|product|subscription|ticket/i'
                        tests/" />
         </exec>
     </target>

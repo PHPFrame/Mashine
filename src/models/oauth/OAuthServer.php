@@ -26,13 +26,20 @@ class OAuthServer
 {
     private $_oauth_provider, $_oauth_clients_mapper, $_oauth_tokens_mapper;
     private $_oauth_client, $_token;
+    private $_cli_params;
 
     /**
      * Constructor.
      *
-     * @param OAuthClientsMapper $oauth_clients_mapper
-     * @param OAuthTokensMapper  $oauth_tokens_mapper
-     * @param string             $request_token_path
+     * @param OAuthClientsMapper $oauth_clients_mapper Instance of clients mapper.
+     * @param OAuthTokensMapper  $oauth_tokens_mapper  Instance of tokens mapper.
+     * @param string             $request_token_path   The request token path.
+     * @param array              $cli_params           [Optional] Used when
+     *                                                 invoking in the shell. Arroy
+     *                                                 should contain:
+     *                                                 - consumer_key
+     *                                                 - uri
+     *                                                 - method
      *
      * @return void
      * @since  1.0
@@ -40,12 +47,26 @@ class OAuthServer
     public function __construct(
         OAuthClientsMapper $oauth_clients_mapper,
         OAuthTokensMapper $oauth_tokens_mapper,
-        $request_token_path
+        $request_token_path,
+        array $cli_params=null
     ) {
         $this->_oauth_clients_mapper = $oauth_clients_mapper;
         $this->_oauth_tokens_mapper = $oauth_tokens_mapper;
 
-        $this->_oauth_provider = new OAuthProvider();
+        if (!is_null($cli_params)) {
+            $cli_param_keys = array("consumer_key", "uri", "method");
+            foreach ($cli_param_keys as $cli_param_key) {
+                if (!array_key_exists($cli_param_key, $cli_params)) {
+                    $msg  = "If cli_params array is passed it must contain the";
+                    $msg .= " following keys: '".implode("', '", $cli_param_keys)."'.";
+                    throw new InvalidArgumentException($msg);
+                }
+            }
+
+            $this->_cli_params = $cli_params;
+        }
+
+        $this->_oauth_provider = new OAuthProvider($cli_params);
         $this->_oauth_provider->consumerHandler(array($this,'checkConsumer'));
         $this->_oauth_provider->timestampNonceHandler(array($this,'checkTimestampNonce'));
         $this->_oauth_provider->tokenHandler(array($this,'checkToken'));
@@ -54,7 +75,14 @@ class OAuthServer
 
     public function checkOAuthRequest()
     {
-        $this->_oauth_provider->checkOAuthRequest();
+        if (is_array($this->_cli_params)) {
+            return $this->_oauth_provider->checkOAuthRequest(
+                $this->_cli_params["uri"],
+                $this->_cli_params["method"]
+            );
+        }
+
+        return $this->_oauth_provider->checkOAuthRequest();
     }
 
     /**
@@ -85,7 +113,7 @@ class OAuthServer
 
     /**
      * Check whether the timestamp of the request is sane and falls within the
-     * window of our Nonce checks. And this function will, of course, also
+     * window of our Nonce checks. And this method will, of course, also
      * check whether the provided Nonce has been used already to prevent replay
      * attacks.
      *

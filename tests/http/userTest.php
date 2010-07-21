@@ -3,7 +3,7 @@ $pattern     = "/(.*)(tests)([\/|\\\])(.*)Test(\.php)/";
 $replacement = '$1$2$3/TestCases.php';
 require_once preg_replace($pattern, $replacement, __FILE__);
 
-class UserControllerTest extends MVCTestCase
+class UserControllerHttpTest extends MVCTestCase
 {
     public function setUp()
     {
@@ -22,6 +22,6 @@ class UserControllerTest extends MVCTestCase
         $request->scriptName("/index.php");
         $request->ajax(true);
 
-        var_dump($this->app()->dispatch($request));
+        //var_dump($this->app()->dispatch($request));
     }
 }

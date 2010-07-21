@@ -3,7 +3,7 @@ $pattern     = "/(.*)(tests)\/http(\/)(.*)Test(\.php)/";
 $replacement = '$1$2$3TestCases.php';
 require_once preg_replace($pattern, $replacement, __FILE__);
 
-class OAuthApiControllerTest extends HTTPAppTestCase
+class OAuthApiControllerHttpTest extends HTTPAppTestCase
 {
     private $_oauth_clients_mapper, $_oauth_client, $_oauth;
 
@@ -33,13 +33,13 @@ class OAuthApiControllerTest extends HTTPAppTestCase
 
     public function test_request_token()
     {
-        // $array = $this->_oauth->getRequestToken($this->_getEndPointURL()."request_token");
-        //
-        // $this->assertType("array", $array);
-        // $this->assertArrayHasKey("login_url", $array);
-        // $this->assertArrayHasKey("oauth_token", $array);
-        // $this->assertArrayHasKey("oauth_token_secret", $array);
-        // $this->assertArrayHasKey("oauth_callback_confirmed", $array);
+        $array = $this->_oauth->getRequestToken($this->_getEndPointURL()."request_token");
+
+        $this->assertType("array", $array);
+        $this->assertArrayHasKey("login_url", $array);
+        $this->assertArrayHasKey("oauth_token", $array);
+        $this->assertArrayHasKey("oauth_token_secret", $array);
+
         // // var_dump($array);
         //
         // $http_request = new PHPFrame_HTTPRequest(
@@ -56,27 +56,26 @@ class OAuthApiControllerTest extends HTTPAppTestCase
 
     public function test_access_token()
     {
-        $array = $this->_oauth->getRequestToken($this->_getEndPointURL()."request_token");
+        // $array = $this->_oauth->getRequestToken($this->_getEndPointURL()."request_token");
         //$this->_oauth->setToken($array["oauth_token"], $array["oauth_token_secret"]);
         //$array = $this->_oauth->getAccessToken($this->_getEndPointURL()."access_token");
-
-        print_r($array);
-        exit;
-
-        $this->assertType("array", $array);
-        $this->assertArrayHasKey("login_url", $array);
-        $this->assertArrayHasKey("oauth_token", $array);
-        $this->assertArrayHasKey("oauth_token_secret", $array);
-        $this->assertArrayHasKey("oauth_callback_confirmed", $array);
-
-        $http_request = new PHPFrame_HTTPRequest(
-            $array["login_url"],
-            HTTP_Request2::METHOD_POST
-        );
-
-        $http_request->addPostParameter("oauth_token", $array["oauth_token"]);
-        $http_request->addPostParameter("oauth_token_secret", $array["oauth_token_secret"]);
-        $http_response = $http_request->send();
+        //
+        // print_r($array);
+        // exit;
+        //
+        // $this->assertType("array", $array);
+        // $this->assertArrayHasKey("login_url", $array);
+        // $this->assertArrayHasKey("oauth_token", $array);
+        // $this->assertArrayHasKey("oauth_token_secret", $array);
+        //
+        // $http_request = new PHPFrame_HTTPRequest(
+        //     $array["login_url"],
+        //     HTTP_Request2::METHOD_POST
+        // );
+        //
+        // $http_request->addPostParameter("oauth_token", $array["oauth_token"]);
+        // $http_request->addPostParameter("oauth_token_secret", $array["oauth_token_secret"]);
+        // $http_response = $http_request->send();
         // var_dump($http_response->getBody());
         // exit;
     }

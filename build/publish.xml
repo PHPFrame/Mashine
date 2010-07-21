@@ -13,7 +13,7 @@
     <property name="tmp.dir" value="${build.dir}/tmp" />
     <property name="assets.dir" value="${tmp.dir}/public/assets" />
     <property name="theme.dir" value="${tmp.dir}/public/themes/default" />
-    <property name="release.version" value="5.0" />
+    <property name="release.version" value="0.0.23" />
 
     <!-- Prepare directories -->
     <target name="prepare">
@@ -89,19 +89,19 @@
     <!-- Minify JavaScript Assets -->
     <target name="minify_js">
 
-        <delete file="${assets.dir}/js/cms.js" failonerror="true" />
-        <delete file="${assets.dir}/js/cms.admin.js" failonerror="true" />
+        <delete file="${assets.dir}/js/mashine.js" failonerror="true" />
+        <delete file="${assets.dir}/js/mashine.admin.js" failonerror="true" />
 
         <foreach target="do_minify_js" param="filename">
             <path>
                 <fileset dir="${assets.dir}/js" casesensitive="yes">
                     <include name="**/*tipsy*.js"/>
                     <include name="**/common.js"/>
-                    <include name="**/signin.js"/>
+                    <include name="**/login.js"/>
                 </fileset>
             </path>
 
-            <param name="outfile" value="${assets.dir}/js/cms.js" />
+            <param name="outfile" value="${assets.dir}/js/mashine.js" />
         </foreach>
 
         <foreach target="do_minify_js" param="filename">
@@ -109,11 +109,11 @@
                 <fileset dir="${assets.dir}/js" casesensitive="yes">
                     <include name="**/*tinymce*.js"/>
                     <include name="**/*admin*.js"/>
-                    <exclude name="cms.admin.js"/>
+                    <exclude name="mashine.admin.js"/>
                 </fileset>
             </path>
 
-            <param name="outfile" value="${assets.dir}/js/cms.admin.js" />
+            <param name="outfile" value="${assets.dir}/js/mashine.admin.js" />
         </foreach>
 
     </target>
@@ -200,7 +200,7 @@
             output="${logs.dir}/scp.log"
         >
             <arg line="-P 2222 ${ant.project.name}-${release.version}.tgz
-                       phpframe@e-noise.com:~/dist/app_templates/cms/ " />
+                       phpframe@e-noise.com:~/dist/apps/Mashine/ " />
         </exec>
 
     </target>
