@@ -51,6 +51,10 @@ html, body {
     font-size: 0.8em;
 }
 
+.breadcrumbs a {
+    font-weight: normal !important;
+}
+
 div#sysevents {
     margin: 20px 0 0 0;
 }
@@ -115,4 +119,44 @@ div#sysevents {
 #footer p {
     width: 800px;
     margin: auto;
+}
+
+/* jQuery UI stuff */
+
+.ui-widget-overlay {
+    top: 0;
+    left: 0;
+    position: absolute;
+}
+
+.ui-dialog {
+    top: 0;
+    left: 0;
+    position: absolute;
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #CCCCCC;
+    padding: 10px;
+}
+
+.ui-dialog-titlebar {
+    background: #333;
+    color: #FFF;
+    padding: 3px;
+}
+
+.ui-dialog-title {
+
+}
+
+.ui-dialog-titlebar-close {
+    float: right;
+    color: #FFF;
+}
+
+.ui-dialog-content {
+    padding: 10px 0;
+}
+
+.ui-button {
+    margin: 0 5px 0 0;
 }

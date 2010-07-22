@@ -84,7 +84,10 @@ legend {
     margin: 0 0 10px;
 }
 
-label {}
+label {
+    color: #666;
+    font-size: 0.9em;
+}
 
 input {
     padding: 3px 2px;
