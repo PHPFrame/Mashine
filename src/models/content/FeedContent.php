@@ -101,10 +101,9 @@ class FeedContent extends Content
             }
 
             $http_response = $http_request->send();
-
             $content_type  = $http_response->getHeader("content-type");
-            if (!preg_match("/application\/rss\+xml/", $content_type)) {
-                $msg = "Error fetching feed from Twitter!";
+            if (!preg_match("/application\/(rss|atom)\+xml/", $content_type)) {
+                $msg = "Error fetching feed from ".$feed_url.".";
                 throw new RuntimeException($msg);
             }
 
