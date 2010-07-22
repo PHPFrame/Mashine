@@ -23,6 +23,9 @@ Admin actions:
     <?php if ($session->getUser()->groupId() < 3) : ?>
     <p>
         <label for="group_id"><?php echo UserLang::PRIMARY_GROUP; ?></label>
+        <?php if ($user->id() == 1) : ?>
+            <?php echo $user->groupName(); ?>
+        <?php else : ?>
         <select name="group_id" id="group_id">
             <?php foreach ($helper->getGroups() as $key=>$value) : ?>
             <option value="<?php echo $key; ?>"<?php if ($user->groupId() == $key) { echo " selected"; } ?>>
@@ -30,6 +33,7 @@ Admin actions:
             </option>
             <?php endforeach; ?>
         </select>
+        <?php endif; ?>
     </p>
     <?php endif; ?>
 

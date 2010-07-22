@@ -49,6 +49,15 @@ class UsersMapper extends PHPFrame_CompositeMapper
         );
     }
 
+    public function getIdObject()
+    {
+        $id_obj = parent::getIdObject();
+        $id_obj->select("#__users.*, g.name AS group_name");
+        $id_obj->join("JOIN #__groups g ON #__users.group_id = g.id");
+
+        return $id_obj;
+    }
+
     /**
      * Find an user object using by email.
      *

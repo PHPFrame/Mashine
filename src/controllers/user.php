@@ -471,10 +471,18 @@ class UserController extends PHPFrame_ActionController
             $body .= "SOME_TOKEN";
 
             $mailer = $this->mailer();
+            if (!$mailer instanceof PHPFrame_Mailer) {
+                $this->raiseError("Error sending email.");
+                return;
+            }
+
             $mailer->Subject = "Password reset request";
             $mailer->Body = $body;
             $mailer->AddAddress($user->email());
-            $mailer->send();
+            if (!$mailer->send()) {
+                $this->raiseError("Error sending email.");
+                return;
+            }
 
             $msg = "An email has been sent with the password reset request.";
             $this->notifySuccess($msg);
