@@ -80,58 +80,27 @@ class UserControllerTest extends ControllerTestCase
         $this->assertRegExp("/<h1>Log in<\/h1>/", $response->body());
     }
 
-//
-//     public function test_loginAlreadyAuth()
-//     {
-//         $request = new PHPFrame_Request();
-//         $request->requestURI("/user/login");
-//         $request->scriptName("/index.php");
-//         $request->ajax(true);
-//
-//         ob_start();
-//         $this->app()->dispatch($request);
-//         $output = ob_get_contents();
-//         ob_end_clean();
-//
-//         $this->assertEquals("", $output);
-//
-//         $response = $this->app()->response();
-//         $this->assertEquals(303, $response->statusCode());
-//         $this->assertEquals(
-//             $this->app()->config()->get("base_url")."user",
-//             $response->header("Location")
-//         );
-//     }
-//
-//     public function test_loginProcess()
-//     {
-//         $this->app()->session()->setUser(new User());
-//
-//         $this->assertFalse( $this->app()->session()->isAuth());
-//
-//         $request = new PHPFrame_Request();
-//         $request->requestURI("/user/login");
-//         $request->scriptName("/index.php");
-//         //$request->ajax(true);
-//         $request->param("email", "root@e-noise.com");
-//         $request->param("password", "Passw0rd");
-//
-//         ob_start();
-//         $this->app()->dispatch($request);
-//         $output = ob_get_contents();
-//         ob_end_clean();
-//
-//         $this->assertEquals("", $output);
-//         $this->assertTrue( $this->app()->session()->isAuth());
-//
-//         $response = $this->app()->response();
-//         $this->assertEquals(303, $response->statusCode());
-//         $this->assertEquals(
-//             $this->app()->config()->get("base_url")."user",
-//             $response->header("Location")
-//         );
-//     }
-//
+
+    public function test_loginAlreadyAuth()
+    {
+        $this->_loginAsCliTestUser();
+
+        $this->fixture()->login();
+        $response = $this->app()->response();
+
+        $this->assertEquals(303, $response->statusCode());
+        $this->assertEquals(
+            $this->app()->config()->get("base_url")."dashboard",
+            $response->header("Location")
+        );
+    }
+
+
+    // public function test_loginProcess()
+    // {
+    //
+    // }
+
 //     public function test_loginProcessInvalidEmail()
 //     {
 //         $this->app()->session()->setUser(new User());

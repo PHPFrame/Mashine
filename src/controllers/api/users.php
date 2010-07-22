@@ -26,6 +26,14 @@ class UsersApiController extends PHPFrame_RESTfulController
 {
     private $_mapper, $_contacts_mapper;
 
+    /**
+     * Constructor.
+     *
+     * @param PHPFrame_Application $app Instance of application.
+     *
+     * @return void
+     * @since  1.0
+     */
     public function __construct(PHPFrame_Application $app)
     {
         parent::__construct($app);

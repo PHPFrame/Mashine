@@ -49,11 +49,17 @@ class UsersMapper extends PHPFrame_CompositeMapper
         );
     }
 
+    /**
+     * Create a new IdObject to work with the target class
+     *
+     * @return PHPFrame_IdObject
+     * @since  1.0
+     */
     public function getIdObject()
     {
         $id_obj = parent::getIdObject();
         $id_obj->select("#__users.*, g.name AS group_name");
-        $id_obj->join("JOIN #__groups g ON #__users.group_id = g.id");
+        $id_obj->join("LEFT JOIN #__groups g ON #__users.group_id = g.id");
 
         return $id_obj;
     }
@@ -81,6 +87,14 @@ class UsersMapper extends PHPFrame_CompositeMapper
         return null;
     }
 
+    /**
+     * Count users.
+     *
+     * @param string $status Filter count by status.
+     *
+     * @return int
+     * @since  1.0
+     */
     public function count($status=null)
     {
         $enums = array(null, "pending", "active", "suspended", "cancelled");

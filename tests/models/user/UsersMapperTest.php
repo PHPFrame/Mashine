@@ -15,7 +15,7 @@ class UsersMapperTest extends MapperTestCase
         $user = new User();
         $user->email("lupo@e-noise.com");
 
-        $crypt     = new PHPFrame_Crypt("aiGh2bu6oowahK8aichai7Lah6eecah7");
+        $crypt     = new PHPFrame_Crypt();
         $salt      = $crypt->genRandomPassword(32);
         $encrypted = $crypt->encryptPassword("Passw0rd", $salt);
         $user->password($encrypted.":".$salt);
