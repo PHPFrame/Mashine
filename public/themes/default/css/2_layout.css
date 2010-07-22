@@ -111,3 +111,8 @@ div#sysevents {
     color: #666;
     border-top: 1px solid #CCC;
 }
+
+#footer p {
+    width: 800px;
+    margin: auto;
+}

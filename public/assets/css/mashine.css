@@ -8,6 +8,7 @@ label.inline {
 
 .validate-error {
     display: inline;
+    background: #F8E0E0;
 }
 /* jQuery Tipsy */
 

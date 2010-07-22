@@ -62,7 +62,9 @@ echo $renderer->renderPartial(
 
 
 <div id="footer">
-Powered by <?php echo nl2br(PHPFrame::version())."\n"; ?>
+<p>
+    Powered by <?php echo nl2br(PHPFrame::version())."\n"; ?>
+</p>
 </div>
 
 <script type="text/javascript" charset="utf-8">
