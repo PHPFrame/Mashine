@@ -63,7 +63,10 @@ class SessionApiController extends PHPFrame_RESTfulController
 
         $email = filter_var($email, FILTER_VALIDATE_EMAIL);
         if ($email === false) {
-            throw new Exception(UserLang::LOGIN_ERROR_INVALID_EMAIL, 400);
+            throw new InvalidArgumentException(
+                UserLang::LOGIN_ERROR_INVALID_EMAIL,
+                400
+            );
         }
 
         $user = $this->_getUsersMapper()->findByEmail($email);
@@ -73,7 +76,7 @@ class SessionApiController extends PHPFrame_RESTfulController
                 UserLang::LOGIN_ERROR_UNKNOWN_EMAIL,
                 $base_url."user/signup"
             );
-            throw new Exception($msg, 400);
+            throw new Exception($msg, 401);
 
         } else {
             // check password
@@ -108,11 +111,6 @@ class SessionApiController extends PHPFrame_RESTfulController
      */
     public function logout()
     {
-        if (!$this->session()->isAuth()) {
-            $msg = "Permission denied.";
-            throw new Exception($msg, 401);
-        }
-
         $this->session()->destroy();
 
         $this->response()->body(array(
