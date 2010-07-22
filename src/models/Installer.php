@@ -227,6 +227,7 @@ class Installer
         $content->status(1);
         $content->description("This is the home page!");
         $content->keywords("home, page");
+        $content->body("Here we should show some posts using a short tag...");
         $content->owner(1);
         $content->group(2);
         $content->perms(664);
@@ -295,12 +296,12 @@ class Installer
         $user_detail = new MVCContent();
         $user_detail->parentId($dashboard->id());
         $user_detail->title("User profile");
-        $user_detail->slug("user/detail");
+        $user_detail->slug("profile");
         $user_detail->status(1);
         $user_detail->description("User profile...");
         $user_detail->keywords(null);
         $user_detail->param("controller", "user");
-        $user_detail->param("action", "detail");
+        $user_detail->param("action", "form");
         $user_detail->owner(1);
         $user_detail->group(3);
         $user_detail->perms(440);
@@ -362,15 +363,29 @@ class Installer
         $content->perms(440);
         $mapper->insert($content);
 
+        $users_manage = new MVCContent();
+        $users_manage->parentId($dashboard->id());
+        $users_manage->title("Manage users");
+        $users_manage->slug("admin/user");
+        $users_manage->status(1);
+        $users_manage->description(null);
+        $users_manage->keywords(null);
+        $users_manage->param("controller", "user");
+        $users_manage->param("action", "manage");
+        $users_manage->owner(1);
+        $users_manage->group(2);
+        $users_manage->perms(440);
+        $mapper->insert($users_manage);
+
         $content = new MVCContent();
-        $content->parentId($dashboard->id());
-        $content->title("Manage users");
-        $content->slug("admin/user");
+        $content->parentId($users_manage->id());
+        $content->title("User form");
+        $content->slug("admin/user/form");
         $content->status(1);
         $content->description(null);
         $content->keywords(null);
         $content->param("controller", "user");
-        $content->param("action", "manage");
+        $content->param("action", "form");
         $content->owner(1);
         $content->group(2);
         $content->perms(440);
@@ -621,10 +636,10 @@ class Installer
 
         $content = new FeedContent();
         $content->parentId(1);
-        $content->title("PHPFrame on GitHub");
-        $content->slug("phpframe-on-github");
+        $content->title("Mashine on GitHub");
+        $content->slug("mashine-on-github");
         $content->status(1);
-        $content->param("feed_url", "http://github.com/PHPFrame/PHPFrame/commits/master.atom");
+        $content->param("feed_url", "http://github.com/lupomontero/Mashine/commits/master.atom");
         $content->param("cache_time", 600);
         $content->owner(1);
         $content->group(1);
