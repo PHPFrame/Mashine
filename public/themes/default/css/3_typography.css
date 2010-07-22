@@ -4,18 +4,19 @@ html {
 }
 
 body {
-    font-family: Georgia;
-    font-size: 12px;
+    font-family: Helvetica;
+    font-size: 11px;
+    color: #333;
 }
 
 h1 {
-    font-size: 3em;
+    font-size: 2.4em;
     line-height: 1.8em;
 }
 
 h2 {
-    font-size: 2em;
-    line-height: 1.6em;
+    font-size: 1.8em;
+    line-height: 2em;
 }
 
 h3 {
@@ -35,15 +36,19 @@ p, ul, pre {
     margin-bottom: 10px;
 }
 
-p {
-
+p, td {
+    line-height: 1.4em;
 }
 
 a {
-    color: #CC0000;
+    color: #333;
 }
 a:hover {
     color: #666;
+}
+
+h2 a {
+    text-decoration: none;
 }
 
 ul {
@@ -81,45 +86,45 @@ legend {
 label {}
 
 input {
-    padding: 5px 8px;
+    padding: 5px 4px;
     background-color: #FFFFFF;
     border: 1px solid #CCC;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    border-radius: 8px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
 }
 
 textarea {
     width: 95%;
-    padding: 5px 8px;
+    padding: 5px 4px;
     background-color: #FFFFFF;
     border: 1px solid #CCC;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    border-radius: 8px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
 }
 
 select {
-    padding: 5px 8px;
+    padding: 5px 4px;
     background-color: #FFFFFF;
     border: 1px solid #CCC;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    border-radius: 8px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
 }
 
 button,
 input[type=submit],
 input[type=button] {
-    padding: 5px 8px;
+    padding: 5px 4px;
     text-transform: uppercase;
     font-size: 0.9em;
     background-color: #FFFFFF;
     color: #CC0000;
     border: 1px solid #CCC;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    border-radius: 8px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
     cursor:pointer;
     cursor:hand;
 }
@@ -152,10 +157,16 @@ th {
 
 td {}
 
-h1#sitename a {
-    font-size: 1.2em;
-    line-height: 2em;
+div#sitename a {
+    font-size: 3em;
     text-decoration: none;
+    background-color: #333;
+    color: #CCC;
+    display: inline-block;
+    margin: 10px;
+    padding: 10px;
+    font-family: Georgia;
+    text-shadow: rgb(255,255,255) 0px 0px 1px;
 }
 
 #footer {

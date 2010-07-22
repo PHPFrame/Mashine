@@ -38,8 +38,8 @@ html, body {
 #topmenu a.parent,
 #topmenu a.active:hover,
 #topmenu a.parent:hover {
-    background-color: #CC0000;
-    color: #FFFFFF;
+    background-color: #333;
+    color: #FFF;
 }
 
 .breadcrumbs {
@@ -52,13 +52,13 @@ div#sysevents {
 }
 
 #content {
-    width: 610px;
+    width: 580px;
     margin: 0 0 10px;
     float: left;
 }
 
 .sidebar {
-    width: 160px;
+    width: 190px;
     float: left;
     background-color: #CCC;
     padding: 10px;
@@ -77,17 +77,33 @@ div#sysevents {
 }
 
 .entry {
-    width: 580px;
+    width: 520px;
     overflow: hidden;
+    margin: 0 0 20px;
 }
 
-#footer, #push {
+.posts {
+    margin: 0;
+    padding: 0;
+}
+
+.posts li {
+    list-style: none;
+    margin: 0 0 20px;
+    padding: 0;
+}
+
+#push {
     clear: both;
     height: 40px;
     padding: 20px;
 }
 
 #footer {
-    background-color: #CCC;
+    clear: both;
+    height: 39px;
+    padding: 20px;
+    background-color: #F0F0F0;
     color: #666;
+    border-top: 1px solid #CCC;
 }

@@ -225,9 +225,8 @@ class Installer
         $content->title("Home");
         $content->slug("home");
         $content->status(1);
-        $content->description("This is a custom page!");
-        $content->keywords("custom, page");
-        $content->param("view", "cms/custom/example");
+        $content->description("This is the home page!");
+        $content->keywords("home, page");
         $content->owner(1);
         $content->group(2);
         $content->perms(664);
@@ -238,7 +237,7 @@ class Installer
         $content->title("Log in");
         $content->slug("user/login");
         $content->status(1);
-        $content->pubDate("1970-01-01 00:00:00");
+        $content->pubDate("1970-01-01 00:01:00");
         $content->description(null);
         $content->keywords(null);
         $content->param("controller", "user");
@@ -250,9 +249,25 @@ class Installer
 
         $content = new MVCContent();
         $content->parentId(1);
+        $content->title("Log out");
+        $content->slug("user/logout");
+        $content->status(1);
+        $content->pubDate("1970-01-01 00:00:00");
+        $content->description(null);
+        $content->keywords(null);
+        $content->param("controller", "user");
+        $content->param("action", "logout");
+        $content->owner(1);
+        $content->group(1);
+        $content->perms(644);
+        $mapper->insert($content);
+
+        $content = new MVCContent();
+        $content->parentId(1);
         $content->title("Sign up");
         $content->slug("user/signup");
         $content->status(1);
+        $content->pubDate("1970-01-01 00:00:30");
         $content->description(null);
         $content->keywords(null);
         $content->param("controller", "user");
@@ -262,24 +277,12 @@ class Installer
         $content->perms(644);
         $mapper->insert($content);
 
-        $content = new PageContent();
-        $content->parentId(1);
-        $content->title("Sitemap");
-        $content->slug("sitemap");
-        $content->status(1);
-        $content->description("This is the site map");
-        $content->keywords("sitemap");
-        $content->param("view", "cms/sitemap");
-        $content->owner(1);
-        $content->group(2);
-        $content->perms(444);
-        $mapper->insert($content);
-
         $dashboard = new MVCContent();
         $dashboard->parentId(1);
         $dashboard->title("Dashboard");
         $dashboard->slug("dashboard");
         $dashboard->status(1);
+        $dashboard->pubDate("1970-01-01 00:01:00");
         $dashboard->description("Dashboard ...");
         $dashboard->keywords(null);
         $dashboard->param("controller", "user");
@@ -469,6 +472,20 @@ class Installer
         $content->owner(1);
         $content->group(1);
         $content->perms(440);
+        $mapper->insert($content);
+
+        $content = new PageContent();
+        $content->parentId(1);
+        $content->title("Sitemap");
+        $content->slug("sitemap");
+        $content->status(1);
+        $content->pubDate("1970-01-01 00:00:00");
+        $content->description("This is the site map");
+        $content->keywords("sitemap");
+        $content->param("view", "cms/sitemap");
+        $content->owner(1);
+        $content->group(2);
+        $content->perms(444);
         $mapper->insert($content);
     }
 

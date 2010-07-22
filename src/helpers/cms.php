@@ -21,7 +21,7 @@ class CMSHelper extends PHPFrame_ViewHelper
 
     private function _contentToAdminHTML(Content $content, $indent="")
     {
-        $pattern = "/^(admin|user\/login|user\/edit|sitemap)/";
+        $pattern = "/^(dashboard|profile|sitemap|user\/login|user\/logout|user\/signup)/";
         if (preg_match($pattern, $content->slug())) {
             return "";
         }

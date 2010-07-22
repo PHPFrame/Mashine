@@ -30,9 +30,9 @@ if ($user->groupId() > 0 && $user->groupId() <= 2) {
 
 <div id="wrapper">
 
-<h1 id="sitename">
+<div id="sitename">
     <a href="index.php"><?php echo $app_name; ?></a>
-</h1>
+</div>
 
 <div id="topmenu">
 <?php echo $renderer->renderPartial("menu", array("session"=>$session))."\n"; ?>

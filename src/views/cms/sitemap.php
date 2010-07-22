@@ -4,7 +4,7 @@
 
 <div id="sitemap" class="entry">
 
-[cms]
+[cms:exclude=sitemap]
 
 <p>
     <a href="sitemap?xml=1">XML Sitemap</a>

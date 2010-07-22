@@ -60,7 +60,7 @@ class ContentMapper extends PHPFrame_Mapper
     {
         if (is_null($id_obj)) {
             $id_obj = $this->getIdObject();
-            $id_obj->orderby("c.pub_date", "DESC");
+            $id_obj->orderby("c.pub_date DESC, c.id", "DESC");
         }
 
         $collection = parent::find($id_obj);
