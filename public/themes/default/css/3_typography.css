@@ -4,7 +4,7 @@ html {
 }
 
 body {
-    font-family: Helvetica;
+    font-family: Georgia;
     font-size: 11px;
     color: #333;
 }
@@ -86,45 +86,45 @@ legend {
 label {}
 
 input {
-    padding: 5px 4px;
+    padding: 3px 2px;
     background-color: #FFFFFF;
     border: 1px solid #CCC;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
 }
 
 textarea {
     width: 95%;
-    padding: 5px 4px;
+    padding: 3px 2px;
     background-color: #FFFFFF;
     border: 1px solid #CCC;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
 }
 
 select {
-    padding: 5px 4px;
+    padding: 3px 2px;
     background-color: #FFFFFF;
     border: 1px solid #CCC;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
 }
 
 button,
 input[type=submit],
 input[type=button] {
-    padding: 5px 4px;
+    padding: 3px 2px;
     text-transform: uppercase;
     font-size: 0.9em;
-    background-color: #FFFFFF;
-    color: #CC0000;
+    background-color: #F0F0F0;
+    color: #333;
     border: 1px solid #CCC;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
     cursor:pointer;
     cursor:hand;
 }
@@ -158,15 +158,15 @@ th {
 td {}
 
 div#sitename a {
-    font-size: 3em;
+    font-size: 4em;
     text-decoration: none;
-    background-color: #333;
-    color: #CCC;
     display: inline-block;
-    margin: 10px;
-    padding: 10px;
-    font-family: Georgia;
-    text-shadow: rgb(255,255,255) 0px 0px 1px;
+    margin: 10px 0;
+    padding: 10px 0;
+}
+
+#content a {
+    font-weight: bold;
 }
 
 #footer {

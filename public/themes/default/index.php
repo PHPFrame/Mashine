@@ -45,9 +45,8 @@ echo $renderer->renderPartial(
 )."\n";
 ?>
 
-[cms:type=breadcrumbs]
-
 <div id="content">
+[cms:type=breadcrumbs]
 <?php echo $this->body()."\n"; ?>
 </div><!-- #content -->
 

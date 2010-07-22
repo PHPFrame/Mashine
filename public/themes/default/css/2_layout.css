@@ -10,6 +10,10 @@ html, body {
     width: 800px;
 }
 
+#topmenu {
+    margin: 0 0 20px;
+}
+
 #topmenu ul {
     margin: 0;
     padding: 0;
@@ -43,7 +47,7 @@ html, body {
 }
 
 .breadcrumbs {
-    margin: 10px 0 10px;
+    margin: 0 0 10px;
     font-size: 0.8em;
 }
 

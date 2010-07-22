@@ -66,9 +66,7 @@ input#title {
 }
 
 .edit-content {
-    color: #F0F0F0;
     float: right;
-    padding:9px 10px 0 0;
     display: block;
     position: relative;
     z-index: 99999999999999;
@@ -76,4 +74,14 @@ input#title {
 
 .edit-content a {
     color: #F0F0F0;
+    background: #333;
+    display: inline-block;
+    padding: 4px 8px;
+    border: 1px solid #333;
+}
+
+.edit-content a:hover {
+    color: #333;
+    background: #F0F0F0;
+    border: 1px solid #CCC;
 }
