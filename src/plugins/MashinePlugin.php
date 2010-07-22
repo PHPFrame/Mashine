@@ -22,6 +22,21 @@
  * @link     https://github.com/lupomontero/Mashine
  * @since    1.0
  */
+
+spl_autoload_register("__mashineAutoload");
+
+function __mashineAutoload($class_name)
+{
+    if (preg_match("/([a-zA-Z0-9]*)ApiController$/", $class_name, $matches)) {
+        $api_path = preg_replace("/plugins.*/", "controllers".DS."api", __FILE__);
+
+        $file = $api_path.DS.strtolower($matches[1]).".php";
+        if (is_file($file)) {
+            include $file;
+        }
+    }
+}
+
 class MashinePlugin extends AbstractPlugin
 {
     private $_mapper, $_slugs;

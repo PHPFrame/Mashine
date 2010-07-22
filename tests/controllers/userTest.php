@@ -3,20 +3,12 @@ $pattern     = "/(.*)(tests)([\/|\\\])(.*)Test(\.php)/";
 $replacement = '$1$2$3/TestCases.php';
 require_once preg_replace($pattern, $replacement, __FILE__);
 
-class UserControllerTest extends MVCTestCase
+class UserControllerTest extends ControllerTestCase
 {
     public function setUp()
     {
         $app = $this->app(true);
-
-        // Automatically log in as system user
-        $user = new PHPFrame_User();
-        $user->id(1);
-        $user->groupId(1);
-        $user->email('cli@localhost.local');
-
-        // Store user in session
-        $app->session()->setUser($user);
+        $app->session()->setUser(new User());
 
         $response   = new PHPFrame_Response();
         $views_path = $app->getInstallDir().DS."src".DS."views";
@@ -26,6 +18,8 @@ class UserControllerTest extends MVCTestCase
         $response->renderer($renderer);
         $response->document($document);
         $app->response($response);
+
+        $this->fixture(new UserController($app));
     }
 
     public function tearDown()
@@ -33,61 +27,59 @@ class UserControllerTest extends MVCTestCase
         //...
     }
 
+    private function _loginAsCliTestUser()
+    {
+        $user = new User();
+        $user->id(1);
+        $user->groupId(1);
+        $user->email('cli@localhost.local');
+
+        // Store user in session
+        $this->app()->session()->setUser($user);
+    }
+
     public function test_index()
     {
+        $this->_loginAsCliTestUser();
+
         $request = new PHPFrame_Request();
         $request->requestURI("/dashboard");
         $request->scriptName("/index.php");
-        //$request->ajax(true);
 
         ob_start();
         $this->app()->dispatch($request);
         $output = ob_get_contents();
         ob_end_clean();
-        // var_dump($output);
-        // $this->assertRegExp("/<h1>Dashboard<\/h1>/i", $output);
+
+        $response = $this->app()->response();
+        $this->assertEquals(200, $response->statusCode());
+        $this->assertRegExp("/<h1>Dashboard<\/h1>/", $output);
     }
 
-//     public function test_indexNoAuth()
-//     {
-//         $this->app()->session()->setUser(new User());
-//
-//         $request = new PHPFrame_Request();
-//         $request->requestURI("/dashboard");
-//         $request->scriptName("/index.php");
-//         $request->ajax(true);
-//
-//         ob_start();
-//         $this->app()->dispatch($request);
-//         $output = ob_get_contents();
-//         ob_end_clean();
-//
-//         $this->assertEquals("", $output);
-//
-//         $response = $this->app()->response();
-//         $this->assertEquals(303, $response->statusCode());
-//         $this->assertEquals(
-//             $this->app()->config()->get("base_url")."user",
-//             $response->header("Location")
-//         );
-//     }
-//
-//     public function test_loginForm()
-//     {
-//         $this->app()->session()->setUser(new User());
-//
-//         $request = new PHPFrame_Request();
-//         $request->requestURI("/user/login");
-//         $request->scriptName("/index.php");
-//         $request->ajax(true);
-//
-//         ob_start();
-//         $this->app()->dispatch($request);
-//         $output = ob_get_contents();
-//         ob_end_clean();
-//
-//         $this->assertRegExp("/<h1>Log in<\/h1>/i", $output);
-//     }
+    public function test_indexNotLoggedInRedirect()
+    {
+        $request = new PHPFrame_Request();
+        $request->requestURI("/dashboard");
+        $request->scriptName("/index.php");
+
+        ob_start();
+        $this->app()->dispatch($request);
+        $output = ob_get_contents();
+        ob_end_clean();
+
+        $response = $this->app()->response();
+        $this->assertEquals(303, $response->statusCode());
+    }
+
+    public function test_login()
+    {
+        $this->fixture()->login();
+        $response = $this->app()->response();
+
+        $this->assertEquals(200, $response->statusCode());
+        $this->assertRegExp("/<h1>Log in<\/h1>/", $response->body());
+    }
+
 //
 //     public function test_loginAlreadyAuth()
 //     {

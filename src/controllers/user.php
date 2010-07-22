@@ -64,18 +64,24 @@ class UserController extends PHPFrame_ActionController
      * Show login form or process login request depending on whether an email
      * and password are provided.
      *
-     * @param string $email    [Optional]
-     * @param string $password [Optional]
-     * @param string $ret_url  [Optional]
+     * @param string $email    [Optional] The user's email address.
+     * @param string $password [Optional] If the email is passed then the
+     *                         password is required.
+     * @param bool   $remember [Optional]
+     * @param string $ret_url  [Optional] The URL to return the user to after
+     *                         successful login.
      *
      * @return void
      * @since  1.0
      */
-    public function login($email=null, $password=null, $ret_url=null)
-    {
+    public function login(
+        $email=null,
+        $password=null,
+        $remember=false,
+        $ret_url=null
+    ) {
         $base_url = $this->config()->get("base_url");
         $request  = $this->request();
-        $remember = $request->param("remember");
 
         if (is_null($ret_url)) {
             $ret_url = $request->param("ret_url", $base_url."dashboard");
@@ -88,41 +94,19 @@ class UserController extends PHPFrame_ActionController
 
         // if login form has been submitted we try to auth
         if (isset($email) && isset($password)) {
-            $email = filter_var($email, FILTER_VALIDATE_EMAIL);
-            if ($email === false) {
-                $this->raiseError(UserLang::LOGIN_ERROR_INVALID_EMAIL);
-                return;
+            $this->checkToken();
+
+            try {
+                $api_controller = new SessionApiController($this->app());
+                $api_controller->login($email, $password, $remember, $ret_url);
+                $this->setRedirect($ret_url);
+
+            } catch (Exception $e) {
+                $this->raiseError($e->getMessage());
+                $this->setRedirect($base_url."user/login");
             }
 
-            $user = $this->_getUsersMapper()->findByEmail($email);
-
-            if (!$user instanceof User) {
-                $msg = sprintf(
-                    UserLang::LOGIN_ERROR_UNKNOWN_EMAIL,
-                    $base_url."user/signup"
-                );
-                $this->raiseError($msg);
-                return;
-
-            } else {
-                // check password
-                $parts     = explode(':', $user->password());
-                $crypt     = $parts[0];
-                $salt      = @$parts[1];
-                $testcrypt = $this->crypt()->encryptPassword($password, $salt);
-
-                if ($crypt != $testcrypt) {
-                    $this->raiseWarning(UserLang::LOGIN_ERROR_WRONG_PASSWORD);
-                    return;
-
-                } else {
-                    // Store user data in session
-                    $this->session()->setUser($user);
-
-                    $this->setRedirect($ret_url);
-                    return;
-                }
-            }
+            return;
         }
 
         // else we show login form
@@ -138,62 +122,13 @@ class UserController extends PHPFrame_ActionController
         $view->addData("title", $title);
         $view->addData("ret_url", $ret_url);
         $view->addData("email", $request->param("email", ""));
+        $view->addData("token", base64_encode($this->session()->getToken()));
 
         $login_plugins = MashinePlugin::hooks()->doAction("login_form");
         $view->addData("login_plugins", $login_plugins);
 
         $this->response()->title($title);
         $this->response()->body($view);
-    }
-
-    /**
-     * Request a password reset email to be sent to given address.
-     *
-     * @param string $forgot_email
-     *
-     * @return void
-     * @since  1.0
-     */
-    public function reset($forgot_email)
-    {
-        $this->setRedirect($_SERVER["HTTP_REFERER"]);
-
-        $email = filter_var($forgot_email, FILTER_VALIDATE_EMAIL);
-
-        if ($email === false) {
-            $msg = "Wrong email format.";
-            $this->raiseError($msg);
-            return;
-        }
-
-        try {
-            $user = $this->_getUsersMapper()->findByEmail($email);
-
-            if (!$user instanceof User) {
-                $msg  = "We couldn't find any registered users with that ";
-                $msg .= "email address";
-                $this->raiseError($msg);
-                return;
-            }
-
-            $body  = "Please click on the link below to verify that you ";
-            $body .= "requested a new password and we will reset your ";
-            $body .= "password and send it in another email.\n\n";
-            $body .= $this->config()->get("base_url")."user/reset?token=";
-            $body .= "SOME_TOKEN";
-
-            $mailer = $this->mailer();
-            $mailer->Subject = "Password reset request";
-            $mailer->Body = $body;
-            $mailer->AddAddress($user->email());
-            $mailer->send();
-
-            $msg = "An email has been sent with the password reset request.";
-            $this->notifySuccess($msg);
-
-        } catch (Exception $e) {
-            $this->raiseError($e->getMessage());
-        }
     }
 
     /**
@@ -493,6 +428,56 @@ class UserController extends PHPFrame_ActionController
 
             $base_url = $this->config()->get("base_url");
             $this->setRedirect($base_url."dashboard");
+
+        } catch (Exception $e) {
+            $this->raiseError($e->getMessage());
+        }
+    }
+
+    /**
+     * Request a password reset email to be sent to given address.
+     *
+     * @param string $forgot_email
+     *
+     * @return void
+     * @since  1.0
+     */
+    public function reset($forgot_email)
+    {
+        $this->setRedirect($_SERVER["HTTP_REFERER"]);
+
+        $email = filter_var($forgot_email, FILTER_VALIDATE_EMAIL);
+
+        if ($email === false) {
+            $msg = "Wrong email format.";
+            $this->raiseError($msg);
+            return;
+        }
+
+        try {
+            $user = $this->_getUsersMapper()->findByEmail($email);
+
+            if (!$user instanceof User) {
+                $msg  = "We couldn't find any registered users with that ";
+                $msg .= "email address";
+                $this->raiseError($msg);
+                return;
+            }
+
+            $body  = "Please click on the link below to verify that you ";
+            $body .= "requested a new password and we will reset your ";
+            $body .= "password and send it in another email.\n\n";
+            $body .= $this->config()->get("base_url")."user/reset?token=";
+            $body .= "SOME_TOKEN";
+
+            $mailer = $this->mailer();
+            $mailer->Subject = "Password reset request";
+            $mailer->Body = $body;
+            $mailer->AddAddress($user->email());
+            $mailer->send();
+
+            $msg = "An email has been sent with the password reset request.";
+            $this->notifySuccess($msg);
 
         } catch (Exception $e) {
             $this->raiseError($e->getMessage());

@@ -58,6 +58,7 @@
 <input type="hidden" name="controller" value="user" />
 <input type="hidden" name="action" value="login" />
 <input type="hidden" name="ret_url" value="<?php echo $ret_url; ?>" />
+<input type="hidden" name="token" value="<?php echo $token; ?>" />
 </form>
 
 <p>

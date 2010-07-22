@@ -33,7 +33,7 @@ class SessionApiControllerTest extends MVCTestCase
 
     public function test_loginWithRetUrl()
     {
-        $this->fixture()->login("root@example.com", "Passw0rd", "http://someuri");
+        $this->fixture()->login("root@example.com", "Passw0rd", false, "http://someuri");
         $response = $this->app()->response();
 
         $this->assertEquals(200, $response->statusCode());

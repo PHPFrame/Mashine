@@ -54,56 +54,6 @@ class UsersApiController extends PHPFrame_RESTfulController
     }
 
     /**
-     * Request a password reset email to be sent to given address.
-     *
-     * @param string $forgot_email
-     *
-     * @return void
-     * @since  1.0
-     */
-    public function reset($forgot_email)
-    {
-        $this->setRedirect($_SERVER["HTTP_REFERER"]);
-
-        $email = filter_var($forgot_email, FILTER_VALIDATE_EMAIL);
-
-        if ($email === false) {
-            $msg = "Wrong email format.";
-            $this->raiseError($msg);
-            return;
-        }
-
-        try {
-            $user = $this->_getUsersMapper()->findByEmail($email);
-
-            if (!$user instanceof User) {
-                $msg  = "We couldn't find any registered users with that ";
-                $msg .= "email address";
-                $this->raiseError($msg);
-                return;
-            }
-
-            $body  = "Please click on the link below to verify that you ";
-            $body .= "requested a new password and we will reset your ";
-            $body .= "password and send it in another email.\n\n";
-            $body .= $this->config()->get("base_url")."user/reset?token=";
-            $body .= "SOME_TOKEN";
-
-            $mailer = $this->mailer();
-            $mailer->Subject = "Password reset request";
-            $mailer->Body = $body;
-            $mailer->AddAddress($user->email());
-            $mailer->send();
-
-            $msg = "An email has been sent with the password reset request.";
-            $this->notifySuccess($msg);
-
-        } catch (Exception $e) {
-            $this->raiseError($e->getMessage());
-        }
-    }
-
-    /**
      * Save User passed in POST
      *
      * @param int    $id      [Optional]
@@ -251,106 +201,6 @@ class UsersApiController extends PHPFrame_RESTfulController
     }
 
     /**
-     * Confirm an email address.
-     *
-     * @param string $email      The email address to confirm.
-     * @param string $activation The activation code sent previously via email.
-     *
-     * @return void
-     * @since  1.0
-     */
-    public function confirm($email, $activation)
-    {
-        $email = filter_var($email, FILTER_VALIDATE_EMAIL);
-
-        if ($email === false) {
-            $msg = "Wrong email format.";
-            $this->raiseError($msg);
-            return;
-        }
-
-        try {
-            $user = $this->_getUsersMapper()->findByEmail($email);
-
-            if (!$user instanceof User) {
-                $msg  = "We couldn't find any registered users with that ";
-                $msg .= "email address";
-                $this->raiseError($msg);
-                return;
-            }
-
-            if ($user->activation() != $activation) {
-                $this->raiseError("Wrong activation code.");
-                return;
-            }
-
-            $user->activation(null);
-            $user->status("active");
-            $this->_getUsersMapper()->insert($user);
-            $this->session()->setUser($user);
-
-            $body  = "Your email address is now verified.";
-
-            $mailer = $this->mailer();
-            $mailer->Subject = "Email verified";
-            $mailer->Body = $body;
-            $mailer->AddAddress($user->email());
-            $mailer->send();
-
-            $msg = "Your email address is now verified.";
-            $this->notifySuccess($msg);
-
-            $base_url = $this->config()->get("base_url");
-            $this->setRedirect($base_url."dashboard");
-
-        } catch (Exception $e) {
-            $this->raiseError($e->getMessage());
-        }
-    }
-
-    /**
-     * Set user status.
-     *
-     * @param int    $id      The user id.
-     * @param string $status  The new user status.
-     * @param string $ret_url [Optional]
-     *
-     * @return void
-     * @since  1.0
-     */
-    public function status($id, $status, $ret_url=null)
-    {
-        if (is_null($ret_url)) {
-            $ret_url = $this->config()->get("base_url")."admin/user";
-        }
-
-        if (!$user = $this->_fetchUser($id, true)) {
-            return;
-        }
-
-        if (!$this->ensureIsStaff()) {
-            $msg = "Permission denied.";
-            $this->raiseError($msg);
-            $this->response()->statusCode(401);
-            return;
-        }
-
-        try {
-            $user->status($status);
-            $this->_getUsersMapper()->insert($user);
-
-            $this->notifySuccess("User status updated successfully.");
-
-        } catch (Exception $e) {
-            $this->raiseError("An error occurred while updating user status.");
-            $this->response()->statusCode(501);
-            return;
-        }
-
-        $this->setRedirect($ret_url);
-    }
-
-    /**
      * Delete user.
      *
      * @param int $id The contact id.
@@ -384,99 +234,6 @@ class UsersApiController extends PHPFrame_RESTfulController
 
         $base_url = $this->config()->get("base_url");
         $this->setRedirect($base_url."admin/user");
-    }
-
-    /**
-     * Save contact.
-     *
-     * @param int    $id      [Optional] The contact id.
-     * @param string $ret_url [Optional] Return URL.
-     *
-     * @return void
-     * @since  1.0
-     */
-    public function savecontact($id=null, $ret_url=null)
-    {
-        $base_url = $this->config()->get("base_url");
-
-        if (is_null($ret_url)) {
-            $ret_url = $this->config()->get("base_url")."profile";
-        }
-
-        if (!empty($id)) {
-            $contact = $this->_fetchContact($id, true);
-
-        } else {
-            $contact = new Contact();
-        }
-
-        try {
-            $params = $this->request()->params();
-            unset($params["id"]);
-
-            // Prevent non admins from saving as other users
-            if (array_key_exists("owner", $params)
-                && $params["owner"] != $this->user()->id()
-            ) {
-                $this->ensureIsStaff();
-            }
-
-            $contact->bind($params);
-
-            $this->_getContactsMapper()->insert($contact);
-
-            // If updating contact for current session's user we update the user in
-            // the session
-            if ($contact->owner() == $this->user()->id()) {
-                $user = $this->_fetchUser($this->user()->id());
-                $this->session()->setUser($user);
-            }
-
-            $this->notifySuccess("Contact saved!");
-
-        } catch (Exception $e) {
-            $this->raiseError("Error saving contact.");
-        }
-
-        $this->setRedirect($ret_url);
-    }
-
-    /**
-     * Delete a contact.
-     *
-     * @param int $id The contact id.
-     *
-     * @return void
-     * @since  1.0
-     */
-    public function deletecontact($id)
-    {
-        $base_url = $this->config()->get("base_url");
-        $ret_url  = $base_url."profile";
-
-        if (!$contact = $this->_fetchContact($id, true)) {
-            return;
-        }
-
-        try {
-            $this->_getContactsMapper()->delete($contact->id());
-
-            // If updating contact for current session's user we update the user in
-            // the session
-            if ($contact->owner() == $this->user()->id()) {
-                $user = $this->_fetchUser($this->user()->id());
-                $this->session()->setUser($user);
-            } else {
-                $ret_url = $base_url."admin/user/form?id=".$contact->owner();
-            }
-
-            $this->notifySuccess("Contact deleted!");
-
-        } catch (Exception $e) {
-            $this->raiseError("Error deleting contact.");
-        }
-
-        $this->setRedirect($ret_url);
     }
 
     /**
@@ -560,20 +317,6 @@ class UsersApiController extends PHPFrame_RESTfulController
     }
 
     /**
-     * Fetch a user by ID and check read access.
-     *
-     * @param int $id The user id.
-     * @param bool $w [Optional] Ensure write access? Default is FALSE.
-     *
-     * @return Contact
-     * @since  1.0
-     */
-    private function _fetchContact($id, $w=false)
-    {
-        return $this->fetchObj($this->_getContactsMapper(), $id, $w);
-    }
-
-    /**
      * Get instance of UsersMapper.
      *
      * @return UsersMapper
@@ -586,20 +329,5 @@ class UsersApiController extends PHPFrame_RESTfulController
         }
 
         return $this->_mapper;
-    }
-
-    /**
-     * Get instance of ContactsMapper.
-     *
-     * @return UsersMapper
-     * @since  1.0
-     */
-    private function _getContactsMapper()
-    {
-        if (is_null($this->_contacts_mapper)) {
-            $this->_contacts_mapper  = new ContactsMapper($this->db());
-        }
-
-        return $this->_contacts_mapper;
     }
 }

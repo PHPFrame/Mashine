@@ -31,7 +31,9 @@ class SessionApiController extends PHPFrame_RESTfulController
      *
      * @param string $email    The user's email address.
      * @param string $password The user's password.
-     * @param string $ret_url  [Optional]
+     * @param bool   $remember [Optional]
+     * @param string $ret_url  [Optional] The URL to return the user to after
+     *                         successful login.
      *
      * @return array If login is successful response will include an array in
      *               the chosen format containing the following keys:
@@ -42,11 +44,10 @@ class SessionApiController extends PHPFrame_RESTfulController
      *               - user_id (int) The ID of the authenticated user.
      * @since  1.0
      */
-    public function login($email, $password, $ret_url=null)
+    public function login($email, $password, $remember=false, $ret_url=null)
     {
         $base_url = $this->config()->get("base_url");
         $request  = $this->request();
-        $remember = $request->param("remember");
 
         if (is_null($ret_url)) {
             $ret_url = $request->param("ret_url", $base_url."dashboard");
