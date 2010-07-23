@@ -37,7 +37,8 @@ function initToolTips()
 {
     var options = {
         gravity: 'w',
-        html: true
+        html: true,
+        opacity: 0.8
     };
 
     jQuery('.tooltip').tipsy(options).click(function(e) {
