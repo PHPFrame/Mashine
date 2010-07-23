@@ -88,6 +88,26 @@ class UsersMapper extends PHPFrame_CompositeMapper
     }
 
     /**
+     * Insert/update object in db.
+     *
+     * @param User $obj The object to store.
+     *
+     * @return void
+     * @since  1.0
+     */
+    public function insert(User $obj)
+    {
+        $is_new = (!is_int($obj->id()) || $obj->id() <= 0);
+
+        parent::insert($obj);
+
+        if ($is_new) {
+            $obj->owner($obj->id());
+            parent::insert($obj);
+        }
+    }
+
+    /**
      * Count users.
      *
      * @param string $status Filter count by status.

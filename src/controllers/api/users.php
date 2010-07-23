@@ -1,6 +1,6 @@
 <?php
 /**
- * src/controllers/user.php
+ * src/controllers/api/users.php
  *
  * PHP version 5
  *
@@ -13,7 +13,7 @@
  */
 
 /**
- * User controller.
+ * Users API controller.
  *
  * @category PHPFrame_Applications
  * @package  Mashine
@@ -47,22 +47,29 @@ class UsersApiController extends PHPFrame_RESTfulController
     /**
      * Get user(s).
      *
-     * @return void
+     * @param int $id    [Optional] if specified a single user will be returned.
+     * @param int $limit [Optional] Default value is 10.
+     * @param int $page  [Optional] Default value is 1.
+     *
+     * @return array|object Either a single user object or an array containing
+     *                      user objects.
      * @since  1.0
      */
-    public function get($id=null)
+    public function get($id=null, $limit=10, $page=1)
     {
         if (!is_null($id)) {
             $ret = $this->_fetchUser($id);
         } else {
-            $ret = $this->_getUsersMapper()->find();
+            $id_obj = $this->_getUsersMapper()->getIdObject();
+            $id_obj->limit($limit, ($page-1)*$limit);
+            $ret = $this->_getUsersMapper()->find($id_obj);
         }
 
         $this->response()->body($ret);
     }
 
     /**
-     * Save User passed in POST
+     * Save User passed in POST.
      *
      * @param int    $id      [Optional]
      * @param string $ret_url [Optional]
@@ -70,142 +77,75 @@ class UsersApiController extends PHPFrame_RESTfulController
      * @return void
      * @since  1.0
      */
-    public function post($id=null, $ret_url=null)
+    public function post($id=null, $group_id=null, $password=null)
     {
-        $base_url = $this->config()->get("base_url");
         $request  = $this->request();
         $email    = $request->param("email");
         $id       = filter_var($id, FILTER_VALIDATE_INT);
+        $group_id = filter_var($group_id, FILTER_VALIDATE_INT);
+        $is_staff = ($this->session()->isAuth() && $this->user()->groupId() < 3);
+        $crypt    = $this->crypt();
 
-        try {
-            if (!is_int($id) || $id <= 0) {
-                // if new user it is signup or admin
-                if (!$this->_ensureUniqueEmail($email, $ret_url)) {
-                    return;
-                }
+        if (!is_int($id) || $id <= 0) {
+            $user = new User();
+            $user->email($email);
 
-                $new_user = true;
-                $user = new User();
-                $user->email($email);
+            if (!$group_id) {
+                $user->groupId(3);
+            } elseif ($is_staff || $group_id > 2) {
+                $user->groupId($group_id);
+            } else {
+                $msg = "Permission denied.";
+                throw new InvalidArgumentException($msg, 401);
+            }
 
-                if ($this->session()->isAuth() && $this->user()->groupId() < 3) {
-                    $user->groupId($request->param("group_id"));
-                    $password = $this->crypt()->genRandomPassword(8);
-                } else {
-                    $user->groupId(3); // Initially set group to 'registered'
-                    $password = $request->param("password");
-                }
+            if (!$password && $is_staff) {
+                $password = $crypt->genRandomPassword(8);
+                $request->param("password", $password);
+            } else {
+                $password = $request->param("password");
+            }
 
+            // Encrypt password and store along with salt
+            $salt      = $crypt->genRandomPassword(32);
+            $encrypted = $crypt->encryptPassword($password, $salt);
+
+            $user->password($encrypted.":".$salt);
+            $user->activation($crypt->genRandomPassword(32));
+            $user->group(2);
+            $user->perms(664);
+
+        } else {
+            $user = $this->_fetchUser($id, true);
+
+            if ($group_id && $is_staff) {
+                $user->groupId($group_id);
+            }
+
+            $user->email($request->param("email"));
+
+            // Update password if needed
+            $password = $request->param("password");
+            if ($password) {
                 // Encrypt password and store along with salt
-                $salt      = $this->crypt()->genRandomPassword(32);
-                $encrypted = $this->crypt()->encryptPassword($password, $salt);
+                $salt      = $crypt->genRandomPassword(32);
+                $encrypted = $crypt->encryptPassword($password, $salt);
                 $user->password($encrypted.":".$salt);
-                $user->activation($this->crypt()->genRandomPassword(32));
-
-                // Store first time to generate id
-                $this->_getUsersMapper()->insert($user);
-
-                // Set ownership to itself once we have an id
-                $user->owner($user->id());
-                $user->group(2);
-                $user->perms(664);
-
-                // if contact details are passed we create contact
-                $first_name = $request->param("first_name", null);
-                if ($first_name) {
-                    $contact = new Contact($this->request()->params());
-                    $user->addContact($contact);
-                    // If contact is being added we set group to 'customer'
-                    $user->groupId(4);
-                }
-
-            } else {
-                // update existing user details
-                $new_user = false;
-
-                if (!$user = $this->_fetchUser($id, true)) {
-                    return;
-                }
-
-                if ($this->session()->isAuth() && $this->user()->groupId() < 3) {
-                    $user->groupId($this->request()->param("group_id"));
-                }
-
-                $user->email($this->request()->param("email"));
-
-                // Update password if needed
-                $password = $this->request()->param("password");
-                if ($password) {
-                    // Encrypt password and store along with salt
-                    $salt      = $this->crypt()->genRandomPassword(32);
-                    $encrypted = $this->crypt()->encryptPassword($password, $salt);
-                    $user->password($encrypted.":".$salt);
-                }
             }
-
-            // Add 'registered' as secondary group to every other group except
-            // wheel and the 'registered' group itself.
-            if ($user->groupId() == 2 || $user->groupId() > 3) {
-                $user->params(array("secondary_groups"=>3));
-            }
-
-            // Save the user object in the database
-            $this->_getUsersMapper()->insert($user);
-
-            // Notify user if new signup
-            $mailer = $this->mailer();
-            if ($new_user && $mailer instanceof PHPFrame_Mailer) {
-                $confirm_url  = $base_url."user/confirm?email=";
-                $confirm_url .= urlencode($user->email());
-                $confirm_url .= "&activation=".$user->activation();
-                $email        = $user->email();
-
-                if ($this->session()->isAuth() && $this->user()->groupId() < 3) {
-                    $body = UserLang::NEW_USER_EMAIL_BODY;
-                    $body = sprintf($body, $email, $password, $confirm_url);
-                } else {
-                    $name = $user->contact()->firstName();
-                    $body = UserLang::SIGNUP_EMAIL_BODY;
-                    $body = sprintf($body, $name, $email, $password, $confirm_url);
-                }
-
-                $mailer->Subject = UserLang::NEW_USER_EMAIL_SUBJECT;
-                $mailer->Body    = $body;
-                $mailer->AddAddress($user->email());
-                if (!$mailer->send()) {
-                    $this->raiseWarning($mailer->ErrorInfo);
-                }
-
-                $msg = sprintf(UserLang::NEW_USER_SUCCESS, $user->email());
-                $this->notifyInfo($msg);
-
-                // Automatically log in the new user signup
-                if (!$this->session()->isAuth()) {
-                    $this->session()->setUser($user);
-                }
-
-            } else {
-                $this->notifySuccess(UserLang::UPDATE_USER_SUCCESS);
-            }
-
-            $ret_url = $request->param("ret_url", "index.php");
-            $this->setRedirect($ret_url);
-
-        } catch (Exception $e) {
-            $this->raiseError($e->getMessage());
-
-            if ($new_user) {
-                if (!$ret_url) {
-                    $ret_url  = "index.php?controller=user&action=signup";
-                    $ret_url .= "&email=".$request->param("email");
-                }
-
-            } else {
-                $ret_url = $_SERVER["HTTP_REFERER"];
-            }
-
-            $this->setRedirect($ret_url);
         }
+
+        $this->_ensureUniqueEmail($email);
+
+        // Add 'registered' as secondary group to every other group except
+        // wheel and the 'registered' group itself.
+        if ($user->groupId() == 2 || $user->groupId() > 3) {
+            $user->params(array("secondary_groups"=>3));
+        }
+
+        // Save the user object in the database
+        $this->_getUsersMapper()->insert($user);
+
+        $this->response()->body($user);
     }
 
     /**
@@ -218,30 +158,12 @@ class UsersApiController extends PHPFrame_RESTfulController
      */
     public function delete($id)
     {
-        if (!$user = $this->_fetchUser($id, true)) {
-            return;
-        }
+        $user = $this->_fetchUser($id, true);
+        $this->ensureIsStaff();
 
-        if (!$this->ensureIsStaff()) {
-            $msg = "Permission denied.";
-            $this->raiseError($msg);
-            $this->response()->statusCode(401);
-            return;
-        }
+        $this->_getUsersMapper()->delete($user);
 
-        try {
-            $this->_getUsersMapper()->delete($user);
-
-            $this->notifySuccess("User deleted successfully.");
-
-        } catch (Exception $e) {
-            $this->raiseError("An error occurred while deleting user.");
-            $this->response()->statusCode(501);
-            return;
-        }
-
-        $base_url = $this->config()->get("base_url");
-        $this->setRedirect($base_url."admin/user");
+        $this->response()->body(true);
     }
 
     /**
@@ -275,39 +197,27 @@ class UsersApiController extends PHPFrame_RESTfulController
             $ret[] = array("label"=>$label, "value"=>$row["id"]);
         }
 
-        $this->request()->ajax(true);
-        $this->response()->document(new PHPFrame_PlainDocument());
-        $this->response()->renderer(new PHPFrame_JSONRenderer());
-        $this->response()->header("Content-Type", "application/json");
         $this->response()->body($ret);
     }
 
     /**
      * Ensure that email is not yet registered.
      *
-     * @param string      $email
-     * @param string      $ret_url [Optional]
+     * @param string $email
      *
      * @return void
      * @since  1.0
      */
-    private function _ensureUniqueEmail($email, $ret_url=null)
+    private function _ensureUniqueEmail($email)
     {
         if (count($this->_getUsersMapper()->findByEmail($email)) > 0) {
-            $this->raiseError(sprintf(
+            $msg = sprintf(
                 UserLang::ERROR_EMAIL_ALREADY_REGISTERED,
                 $email
-            ));
+            );
 
-            if (!$ret_url) {
-                $ret_url  = $base_url."user/login?&username=".$user->email();
-            }
-
-            $this->setRedirect($ret_url);
-            return false;
+            throw new Exception($msg);
         }
-
-        return true;
     }
 
     /**

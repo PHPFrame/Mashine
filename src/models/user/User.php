@@ -24,7 +24,7 @@
  */
 class User extends PHPFrame_User
 {
-    protected $contacts;
+    public $contacts;
 
     /**
      * Constructor.

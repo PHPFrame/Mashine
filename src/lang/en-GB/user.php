@@ -39,9 +39,8 @@ class UserLang
     const SIGNUP = "Sign up";
 
     // Save user error/success messages
-    const ERROR_EMAIL_ALREADY_REGISTERED = "This email address (%s) is already
-    registered with us. If you meant to log in please use the form below. If
-    you forgot your password use the 'forgot password' link.";
+    const ERROR_EMAIL_ALREADY_REGISTERED = "Email address (%s) is already
+    registered.";
 
     const SIGNUP_SUCCESS = "We have sent you an activation email to %s.
     Please check your mail to confirm your address and activate your account.";
