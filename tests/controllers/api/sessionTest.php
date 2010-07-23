@@ -26,7 +26,7 @@ class SessionApiControllerTest extends MVCTestCase
         $this->assertArrayHasKey("ret_url", $ret_array);
         $this->assertArrayHasKey("auth", $ret_array);
         $this->assertArrayHasKey("user_id", $ret_array);
-        $this->assertEquals("http://localhost/mashine/dashboard", $ret_array["ret_url"]);
+        $this->assertEquals($this->app()->config()->get("base_url")."dashboard", $ret_array["ret_url"]);
         $this->assertEquals(true, $ret_array["auth"]);
         $this->assertEquals(1, $ret_array["user_id"]);
     }
@@ -95,7 +95,7 @@ class SessionApiControllerTest extends MVCTestCase
         $this->assertArrayHasKey("ret_url", $ret_array);
         $this->assertArrayHasKey("auth", $ret_array);
         $this->assertArrayHasKey("user_id", $ret_array);
-        $this->assertEquals("http://localhost/mashine/", $ret_array["ret_url"]);
+        $this->assertEquals($this->app()->config()->get("base_url"), $ret_array["ret_url"]);
         $this->assertEquals(false, $ret_array["auth"]);
         $this->assertEquals(0, $ret_array["user_id"]);
     }
