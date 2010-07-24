@@ -3,7 +3,7 @@ $pattern     = "/(.*)(tests)\/http(\/)(.*)Test(\.php)/";
 $replacement = '$1$2$3TestCases.php';
 require_once preg_replace($pattern, $replacement, __FILE__);
 
-class OAuthApiControllerHttpTest extends HTTPAppTestCase
+class OAuthApiControllerHttpTest extends MVCTestCase
 {
     private $_oauth_clients_mapper, $_oauth_client, $_oauth;
 
