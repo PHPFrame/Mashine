@@ -22,9 +22,15 @@ class ContentMapperTest extends MapperTestCase
 
     protected function createPersistentObj()
     {
-        $obj = new Content();
+        $obj = new PostContent();
+        $obj->parentId(21);
         $obj->slug("test-page");
         $obj->title("Test page");
+        $obj->status(1);
+        $obj->owner(1);
+        $obj->group(1);
+        $obj->perms(664);
+
         return $obj;
     }
 }
