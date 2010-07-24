@@ -173,26 +173,6 @@ Admin actions:
 <input type="hidden" name="ret_url" value="<?php echo $ret_url; ?>" />
 </form>
 
-<?php if ($user->id() && $user->contact() && $session->isAuth() && $session->getUser()->id() < 3) : ?>
-<ul>
-    <li>
-        <a href="packages/form?owner=<?php echo $user->id(); ?>">
-            Create package
-        </a>
-    </li>
-    <li>
-        <a href="support/form?owner=<?php echo $user->id(); ?>">
-            Create ticket
-        </a>
-    </li>
-    <li>
-        <a href="billing/form?owner=<?php echo $user->id(); ?>&amp;owner_name=<?php echo urlencode($user->contact()->firstName()." ".$user->contact()->lastName()); ?>">
-            Create invoice
-        </a>
-    </li>
-</ul>
-<?php endif; ?>
-
 </div><!-- .entry -->
 
 <div style="clear:both;"></div>

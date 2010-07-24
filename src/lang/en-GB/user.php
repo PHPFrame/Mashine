@@ -17,9 +17,8 @@ class UserLang
     const LOGIN_ERROR_ENTER_PASSWORD = "Sorry we couldn't log you in. Please
     enter your password. (Remember, they're case sensitive)";
     const LOGIN_ERROR_INVALID_EMAIL = "Invalid email.";
-    const LOGIN_ERROR_UNKNOWN_EMAIL = "Sorry, we couldn't log you in. Please
-    re-type your email address. If you don't have an account please
-    <a href=\"%s\">sign up here</a>.";
+    const LOGIN_ERROR_UNKNOWN_EMAIL = "Sorry, we couldn't log you in. Wrong
+    email address. Don't have an account? <a href=\"%s\">sign up here</a>.";
 
     // Sign up form
     const LOGIN_CREDENTIALS = "Log in credentials";

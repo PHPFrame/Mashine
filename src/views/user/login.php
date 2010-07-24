@@ -48,11 +48,14 @@
 <p>
     <span class="button_wrapper">
         <input
+            id="login-button"
             class="button"
             type="submit"
             value="<?php echo UserLang::LOGIN; ?>"
         />
     </span>
+
+    <span id="login-ajax-response"></span>
 </p>
 
 <input type="hidden" name="controller" value="user" />
