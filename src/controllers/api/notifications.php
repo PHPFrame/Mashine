@@ -83,43 +83,30 @@ class NotificationsApiController extends PHPFrame_RESTfulController
      */
     public function post($title, $body=null, $type="info", $sticky=false, $id=null)
     {
-        if (!$this->session()->isAuth()) {
-            $msg = "Permission denied.";
-            throw new Exception($msg, 401);
-        }
-
         $base_url = $this->config()->get("base_url");
         $request  = $this->request();
         $id       = filter_var($id, FILTER_VALIDATE_INT);
 
-        try {
-            if (!is_int($id) || $id <= 0) {
-                $notification = new Notification();
-                $notification->title($request->param("title", $title));
-                $notification->body($request->param("body", $body));
-                $notification->type($request->param("type", $type));
-                $notification->sticky($request->param("sticky", $sticky));
+        if (!is_int($id) || $id <= 0) {
+            $obj = new Notification();
+            $obj->title($request->param("title", $title));
+            $obj->body($request->param("body", $body));
+            $obj->type($request->param("type", $type));
+            $obj->sticky($request->param("sticky", $sticky));
 
-            } else {
+        } else {
 
-                $notification = $this->_fetchNotification($id, true);
-                $notification->bind($request->params());
-            }
-
-            $notification->owner($this->user()->id());
-            $notification->group(2);
-            $notification->perms(664);
-
-            $this->_getMapper()->insert($notification);
-
-            $ret_obj = new StdClass();
-            $ret_obj->notification = iterator_to_array($notification);
-
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage(), 501);
+            $obj = $this->_fetchNotification($id, true);
+            $obj->bind($request->params());
         }
 
-        $this->response()->body($ret_obj);
+        $obj->owner($this->user()->id());
+        $obj->group(2);
+        $obj->perms(664);
+
+        $this->_getMapper()->insert($obj);
+
+        $this->response()->body($obj);
     }
 
     /**
@@ -138,6 +125,7 @@ class NotificationsApiController extends PHPFrame_RESTfulController
 
         try {
             $this->_getMapper()->delete($notification);
+            $this->response()->body(true);
 
         } catch (Exception $e) {
             $msg = "An error occurred while deleting notification.";
@@ -168,11 +156,6 @@ class NotificationsApiController extends PHPFrame_RESTfulController
     private function _getMapper()
     {
         if (is_null($this->_mapper)) {
-            // if (!$this->db()->hasTable("#__notifications")) {
-            //     $ort = new PHPFrame_ObjectRelationalToolbox();
-            //     $ort->createTable($this->db(), new Notification(), "#__notifications");
-            // }
-
             $this->_mapper = new PHPFrame_Mapper(
                 "Notification",
                 $this->db(),

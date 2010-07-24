@@ -61,6 +61,7 @@ class Installer
         $this->_installContactsTable();
         $this->_installUsersTable();
         $this->_installCountriesTable();
+        $this->_installNotificationsTable();
         $this->_installContentTable();
         $this->_populateDummyContent();
     }
@@ -182,6 +183,13 @@ class Installer
                 $db->query($line);
             }
         }
+    }
+
+    private function _installNotificationsTable()
+    {
+        $db  = $this->app()->db();
+        $ort = new PHPFrame_ObjectRelationalToolbox();
+        $ort->createTable($db, new Notification(), "#__notifications");
     }
 
     private function _installContentTable()
