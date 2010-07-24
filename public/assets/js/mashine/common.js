@@ -30,8 +30,6 @@ jQuery(document).ready(function($) {
     var contentInfiniteScrollingLoading = false;
     var contentInfiniteScrollingEnd = false;
 
-    $(window).scrollTop(0);
-
     $(window).scroll(function() {
         if ($(window).scrollTop() == $(document).height() - $(window).height()) {
            contentInfiniteScrollingTrigger.click();
