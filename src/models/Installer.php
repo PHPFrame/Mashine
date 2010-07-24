@@ -535,15 +535,18 @@ class Installer
         $blog->description("A nice blog...");
         $blog->keywords("");
         $blog->body("This is my personal blog, where I...");
+        $blog->param("posts_per_page", 3);
         $blog->owner(1);
         $blog->group(2);
         $blog->perms(664);
         $mapper->insert($blog);
 
+        for ($i=0; $i<40; $i++) {
+
         $content = new PostContent();
         $content->parentId($blog->id());
-        $content->title("Lorem ipsum");
-        $content->slug("lorem-ipsum");
+        $content->title("Lorem ipsum ".$i);
+        $content->slug("lorem-ipsum-".$i);
         $content->status(1);
         $content->description("");
         $content->keywords("");
@@ -579,8 +582,8 @@ class Installer
 
         $content = new PostContent();
         $content->parentId($blog->id());
-        $content->title("Another post");
-        $content->slug("another-post");
+        $content->title("Another post ".$i);
+        $content->slug("another-post-".$i);
         $content->status(1);
         $content->description("");
         $content->keywords("");
@@ -612,6 +615,21 @@ class Installer
         $content->owner(1);
         $content->group(2);
         $content->perms(664);
+        $mapper->insert($content);
+
+        }
+
+        $content = new FeedContent();
+        $content->parentId(1);
+        $content->title("Mashine on GitHub");
+        $content->slug("mashine-on-github");
+        $content->status(1);
+        $content->pubDate("2000-01-01 00:01:00");
+        $content->param("feed_url", "http://github.com/lupomontero/Mashine/commits/master.atom");
+        $content->param("cache_time", 600);
+        $content->owner(1);
+        $content->group(1);
+        $content->perms(644);
         $mapper->insert($content);
 
         $content = new PageContent();
@@ -619,6 +637,7 @@ class Installer
         $content->title("About");
         $content->slug("about");
         $content->status(1);
+        $content->pubDate("2000-01-01 00:00:00");
         $content->description("An example about page...");
         $content->keywords("");
         $content->body('<p><strong>Pellentesque habitant morbi tristique</strong> senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. <em>Aenean ultricies mi vitae est.</em> Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, <code>commodo vitae</code>, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. <a href="#">Donec non enim</a> in turpis pulvinar facilisis. Ut felis.</p>
@@ -649,18 +668,6 @@ class Installer
         $content->owner(1);
         $content->group(2);
         $content->perms(664);
-        $mapper->insert($content);
-
-        $content = new FeedContent();
-        $content->parentId(1);
-        $content->title("Mashine on GitHub");
-        $content->slug("mashine-on-github");
-        $content->status(1);
-        $content->param("feed_url", "http://github.com/lupomontero/Mashine/commits/master.atom");
-        $content->param("cache_time", 600);
-        $content->owner(1);
-        $content->group(1);
-        $content->perms(644);
         $mapper->insert($content);
     }
 }

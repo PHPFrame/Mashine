@@ -64,7 +64,8 @@ class ContentApiController extends PHPFrame_RESTfulController
             $id_obj->select(str_replace("SELECT ", "", $select));
             $id_obj->where("parent_id", "=", ":parent_id");
             $id_obj->params(":parent_id", $parent->id());
-            $id_obj->orderby("c.pub_date", "DESC");
+            $id_obj->orderby("c.pub_date DESC, c.id", "DESC");
+            $id_obj->limit($limit, ($page-1)*$limit);
 
             $collection = $this->_getMapper()->find($id_obj);
             $ret = array();

@@ -104,10 +104,20 @@ class CMSController extends PHPFrame_ActionController
             }
 
         } elseif ($content instanceof PostsCollectionContent) {
-            $mapper  = new ContentMapper(
+            $page = $this->request()->param("page");
+            $posts_per_page = $content->param("posts_per_page");
+            $mapper = new ContentMapper(
                 $this->db(),
                 $this->app()->getTmpDir().DS."cms"
             );
+
+            if (!$page) {
+                $page = 1;
+            }
+
+            if (!$posts_per_page) {
+                $posts_per_page = 10;
+            }
 
             $id_obj  = $mapper->getIdObject();
             $select  = $id_obj->getSelectSQL();
@@ -117,7 +127,8 @@ class CMSController extends PHPFrame_ActionController
             $id_obj->select(str_replace("SELECT ", "", $select));
             $id_obj->where("parent_id", "=", ":parent_id");
             $id_obj->params(":parent_id", $content->id());
-            $id_obj->orderby("c.pub_date", "DESC");
+            $id_obj->orderby("c.pub_date DESC, c.id", "DESC");
+            $id_obj->limit($posts_per_page, ($page-1)*$posts_per_page);
 
             $posts  = $mapper->find($id_obj);
             $format = $this->request()->param("format", null);

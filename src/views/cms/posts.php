@@ -5,9 +5,8 @@
 </div>
 
 <div class="entry blog">
-    
-<ul class="posts">
-    
+
+<ul id="posts" class="posts">
 
 <?php if (count($posts) > 0) : ?>
 <?php foreach ($posts as $post) : ?>
@@ -36,9 +35,22 @@
 
 <div style="clear:both;"></div>
 
-</div><!-- #entry -->
+</div><!-- #article -->
 </li>
 <?php endforeach; ?>
+</ul>
+
+<p>
+    <a
+        id="content-infinite-scrolling-trigger"
+        class="parent_id-<?php echo $content->id(); ?>"
+        href="<?php echo $content->slug()."?page=".($posts->getCurrentPage()+1)."&amp;limit=".$posts->getLimit(); ?>"
+    >
+        Next &rarr;
+
+    </a>
+</p>
+
 <?php else : ?>
 <div class="entry">
     <p>
@@ -46,6 +58,5 @@
     </p>
 </div><!-- #entry -->
 <?php endif ?>
-</ul>
 
 </div><!-- #entry -->
