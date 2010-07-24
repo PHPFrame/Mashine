@@ -74,7 +74,7 @@ class UsersApiController extends PHPFrame_RESTfulController
      * @param int    $id      [Optional]
      * @param string $ret_url [Optional]
      *
-     * @return void
+     * @return object The user object after saving it.
      * @since  1.0
      */
     public function post($id=null, $group_id=null, $password=null)

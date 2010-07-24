@@ -1,6 +1,6 @@
 <?php
 /**
- * src/controllers/notifications.php
+ * src/controllers/api/notifications.php
  *
  * PHP version 5
  *
@@ -13,8 +13,7 @@
  */
 
 /**
- * This controller provides a JSON API used to interact with the E-NOISE
- * notifications service. All actions return a response in JSON format.
+ * Notifications API Controller.
  *
  * @category none
  * @package  none
@@ -28,6 +27,24 @@ class NotificationsApiController extends PHPFrame_RESTfulController
     private $_mapper;
 
     /**
+     * Constructor.
+     *
+     * @param PHPFrame_Application $app Instance of application.
+     *
+     * @return void
+     * @since  1.0
+     */
+    public function __construct(PHPFrame_Application $app)
+    {
+        parent::__construct($app);
+
+        if (!$this->session()->isAuth()) {
+            $msg = "Permission denied.";
+            throw new Exception($msg, 401);
+        }
+    }
+
+    /**
      * Get notification(s).
      *
      * @param int $id    [Optional] if specified a single notification will be
@@ -35,38 +52,22 @@ class NotificationsApiController extends PHPFrame_RESTfulController
      * @param int $limit [Optional] Default value is 10.
      * @param int $page  [Optional] Default value is 1.
      *
-     * @return void
+     * @return array|object Either a single notification object or an array
+     *                      containing many notification objects.
      * @since  1.0
      */
     public function get($id=null, $limit=10, $page=1)
     {
-        if (!$this->session()->isAuth()) {
-            $msg = "Permission denied.";
-            throw new Exception($msg, 401);
-        }
-
         if (is_null($id)) {
             $id_obj = $this->_getMapper()->getIdObject();
             $id_obj->where("owner", "=", $this->user()->id());
-            $notifications = $this->_getMapper()->find($id_obj);
-            $array = array();
-            foreach ($notifications as $notification) {
-                $array[] = array("notification"=>iterator_to_array($notification));
-            }
-
-            $ret_obj = new StdClass();
-            $ret_obj->notifications = $array;
+            $ret = $this->_getMapper()->find($id_obj);
 
         } else {
-            if (!$notification = $this->_fetchNotification($id, true)) {
-                return;
-            }
-
-            // $ret_obj = new StdClass();
-            // $ret_obj->notification = iterator_to_array($notification);
+            $ret = $this->_fetchNotification($id);
         }
 
-        $this->response()->body($ret_obj);
+        $this->response()->body($ret);
     }
 
     /**
@@ -101,10 +102,7 @@ class NotificationsApiController extends PHPFrame_RESTfulController
 
             } else {
 
-                if (!$notification = $this->_fetchNotification($id, true)) {
-                    return;
-                }
-
+                $notification = $this->_fetchNotification($id, true);
                 $notification->bind($request->params());
             }
 
@@ -134,14 +132,9 @@ class NotificationsApiController extends PHPFrame_RESTfulController
      */
     public function delete($id)
     {
-        if (!$notification = $this->_fetchNotification($id, true)) {
-            return;
-        }
+        $notification = $this->_fetchNotification($id, true);
 
-        if (!$this->ensureIsStaff()) {
-            $msg = "Permission denied.";
-            throw new Exception($msg, 401);
-        }
+        $this->ensureIsStaff();
 
         try {
             $this->_getMapper()->delete($notification);
@@ -153,12 +146,12 @@ class NotificationsApiController extends PHPFrame_RESTfulController
     }
 
     /**
-     * Fetch a user by ID and check read access.
+     * Fetch a notification by ID and check read access.
      *
-     * @param int  $id The user id.
+     * @param int  $id The notification id.
      * @param bool $w  [Optional] Ensure write access? Default is FALSE.
      *
-     * @return User
+     * @return Notification
      * @since  1.0
      */
     private function _fetchNotification($id, $w=false)
@@ -167,9 +160,9 @@ class NotificationsApiController extends PHPFrame_RESTfulController
     }
 
     /**
-     * Get instance of UsersMapper.
+     * Get instance of mapper.
      *
-     * @return InvoicesMapper
+     * @return PHPFrame_Mapper
      * @since  1.0
      */
     private function _getMapper()

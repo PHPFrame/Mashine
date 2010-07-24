@@ -13,8 +13,7 @@
  */
 
 /**
- * This controller provides a JSON API used to interact with the E-NOISE domain
- * registration service. All actions return a response in JSON format.
+ * OAuth API Controller.
  *
  * @category none
  * @package  none
