@@ -44,7 +44,7 @@ prefix =
 [smtp]
 
 enable = on
-mailer = mail
+mailer = smtp
 auth =
 host = localhost
 port = 25
