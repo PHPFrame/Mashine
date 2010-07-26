@@ -1,5 +1,5 @@
 /**
- * public/assets/js/cms/admin.content.js
+ * public/assets/js/mashine/admin.content.js
  *
  * Javascript
  *

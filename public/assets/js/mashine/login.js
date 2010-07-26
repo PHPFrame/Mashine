@@ -1,5 +1,5 @@
 /**
- * public/assets/js/cms/login.js
+ * public/assets/js/mashine/login.js
  *
  * Javascript
  *

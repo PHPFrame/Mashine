@@ -1,5 +1,5 @@
 /**
- * public/assets/js/cms/common.js
+ * public/assets/js/mashine/common.js
  *
  * Javascript
  *
