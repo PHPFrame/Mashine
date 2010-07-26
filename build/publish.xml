@@ -187,6 +187,7 @@
             basedir="${tmp.dir}"
             destfile="${dist.dir}/${ant.project.name}-${release.version}.tgz"
             compression="gzip"
+            excludes="etc/phpframe.ini"
         />
 
     </target>
