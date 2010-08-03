@@ -78,10 +78,28 @@ class ContentMapper extends PHPFrame_Mapper
     public function findOne($id)
     {
         $id_obj  = $this->getIdObject();
-        $select  = $id_obj->getSelectSQL();
-        $select .= ", cd.description AS description, cd.keywords AS ";
-        $select .= "keywords, cd.body AS body";
-        $id_obj->select(str_replace("SELECT ", "", $select));
+
+        if ($this->getFactory()->getDB()->isSQLite()) {
+            $select  = array(
+                "c.*",
+                "cd.params AS params",
+                "u.email AS author_email",
+                "(uc.first_name || ' ' ||  uc.last_name) AS author"
+            );
+        } else {
+            $select  = array(
+                "c.*",
+                "cd.params AS params",
+                "u.email AS author_email",
+                "CONCAT(uc.first_name, ' ', uc.last_name) AS author"
+            );
+        }
+
+        $select[] = "cd.description AS description";
+        $select[] = "cd.keywords AS keywords";
+        $select[] = "cd.body AS body";
+
+        $id_obj->select($select);
         $id_obj->where("c.id", "=", ":id");
         $id_obj->params(":id", $id);
 
@@ -169,13 +187,22 @@ class ContentMapper extends PHPFrame_Mapper
     {
         $id_obj = parent::getIdObject();
 
-        if ($this->getFactory()->getDB() instanceof PHPFrame_SQLiteDatabase) {
-            $select  = "c.*, cd.params AS params, u.email AS author_email, ";
-            $select .= "(uc.first_name || ' ' ||  uc.last_name) AS author";
+        if ($this->getFactory()->getDB()->isSQLite()) {
+            $select  = array(
+                "c.*",
+                "cd.params AS params",
+                "u.email AS author_email",
+                "(uc.first_name || ' ' ||  uc.last_name) AS author"
+            );
         } else {
-            $select  = "c.*, cd.params AS params, u.email AS author_email, ";
-            $select .= "CONCAT(uc.first_name, ' ', uc.last_name) AS author";
+            $select  = array(
+                "c.*",
+                "cd.params AS params",
+                "u.email AS author_email",
+                "CONCAT(uc.first_name, ' ', uc.last_name) AS author"
+            );
         }
+
         $id_obj->select($select);
         $id_obj->from("#__content AS c");
         $id_obj->join("LEFT JOIN #__content_data cd ON cd.content_id = c.id");

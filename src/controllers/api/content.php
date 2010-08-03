@@ -56,12 +56,28 @@ class ContentApiController extends PHPFrame_RESTfulController
         if (is_null($id)) {
             $parent = $this->_fetchContent($parent_id);
 
-            $id_obj  = $this->_getMapper()->getIdObject();
-            $select  = $id_obj->getSelectSQL();
-            $select .= ", cd.description AS description, cd.keywords AS ";
-            $select .= "keywords, cd.body AS body";
+            if ($this->db()->isSQLite()) {
+                $select  = array(
+                    "c.*",
+                    "cd.params AS params",
+                    "u.email AS author_email",
+                    "(uc.first_name || ' ' ||  uc.last_name) AS author"
+                );
+            } else {
+                $select  = array(
+                    "c.*",
+                    "cd.params AS params",
+                    "u.email AS author_email",
+                    "CONCAT(uc.first_name, ' ', uc.last_name) AS author"
+                );
+            }
 
-            $id_obj->select(str_replace("SELECT ", "", $select));
+            $select[] = "cd.description AS description";
+            $select[] = "cd.keywords AS keywords";
+            $select[] = "cd.body AS body";
+
+            $id_obj  = $this->_getMapper()->getIdObject();
+            $id_obj->select($select);
             $id_obj->where("parent_id", "=", ":parent_id");
             $id_obj->params(":parent_id", $parent->id());
             $id_obj->orderby("c.pub_date DESC, c.id", "DESC");

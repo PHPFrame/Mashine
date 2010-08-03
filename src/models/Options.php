@@ -119,12 +119,21 @@ class Options
 
     private function _installDB()
     {
-        $sql = "CREATE TABLE `#__options` (
-        `id` INTEGER PRIMARY KEY ASC,
-        `name` varchar NOT NULL,
-        `value` text NOT NULL,
-        `autoload` tinyint NOT NULL DEFAULT '1'
-        )";
+        if ($this->_db->isSQLite()) {
+            $sql = "CREATE TABLE `#__options` (
+            `id` INTEGER PRIMARY KEY ASC,
+            `name` varchar NOT NULL,
+            `value` text NOT NULL,
+            `autoload` tinyint NOT NULL DEFAULT '1'
+            )";
+        } else {
+            $sql = "CREATE TABLE `#__options` (
+            `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            `name` varchar(100) NOT NULL,
+            `value` text NOT NULL,
+            `autoload` tinyint NOT NULL DEFAULT '1'
+            )";
+        }
 
         $this->_db->query($sql);
     }

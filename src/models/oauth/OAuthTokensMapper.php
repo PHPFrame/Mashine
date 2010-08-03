@@ -48,7 +48,7 @@ class OAuthTokensMapper extends PHPFrame_Mapper
     public function findByKey($key)
     {
         $id_obj = $this->getIdObject();
-        $id_obj->where("key", "=", ":key");
+        $id_obj->where("`key`", "=", ":key");
         $id_obj->params(":key", $key);
 
         $collection = parent::find($id_obj);

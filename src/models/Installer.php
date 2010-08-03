@@ -196,33 +196,63 @@ class Installer
     {
         $db = $this->app()->db();
 
-        $sql = "CREATE TABLE `#__content` (
-        `parent_id` int NOT NULL DEFAULT '0',
-        `slug` varchar NOT NULL,
-        `title` varchar NOT NULL,
-        `short_title` varchar,
-        `pub_date` datetime,
-        `status` tinyint,
-        `robots_index` tinyint,
-        `robots_follow` tinyint,
-        `type` varchar NOT NULL,
-        `id` INTEGER PRIMARY KEY ASC,
-        `ctime` int,
-        `mtime` int,
-        `owner` int NOT NULL DEFAULT '0',
-        `group` int NOT NULL DEFAULT '0',
-        `perms` int NOT NULL DEFAULT '664'
-        )";
+        if ($db->isSQLite()) {
+            $sql = "CREATE TABLE `#__content` (
+            `parent_id` int NOT NULL DEFAULT '0',
+            `slug` varchar NOT NULL,
+            `title` varchar NOT NULL,
+            `short_title` varchar,
+            `pub_date` datetime,
+            `status` tinyint,
+            `robots_index` tinyint,
+            `robots_follow` tinyint,
+            `type` varchar NOT NULL,
+            `id` INTEGER PRIMARY KEY ASC,
+            `ctime` int,
+            `mtime` int,
+            `owner` int NOT NULL DEFAULT '0',
+            `group` int NOT NULL DEFAULT '0',
+            `perms` int NOT NULL DEFAULT '664'
+            )";
+        } else {
+            $sql = "CREATE TABLE `#__content` (
+            `parent_id` int NOT NULL DEFAULT '0',
+            `slug` varchar(255) NOT NULL,
+            `title` varchar(255) NOT NULL,
+            `short_title` varchar(50),
+            `pub_date` datetime,
+            `status` tinyint,
+            `robots_index` tinyint,
+            `robots_follow` tinyint,
+            `type` varchar(100) NOT NULL,
+            `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            `ctime` int,
+            `mtime` int,
+            `owner` int NOT NULL DEFAULT '0',
+            `group` int NOT NULL DEFAULT '0',
+            `perms` int NOT NULL DEFAULT '664'
+            )";
+        }
 
         $db->query($sql);
 
-        $sql = "CREATE TABLE `#__content_data` (
-        `content_id` INTEGER PRIMARY KEY ASC,
-        `description` text,
-        `keywords` text,
-        `body` text,
-        `params` text
-        )";
+        if ($db->isSQLite()) {
+            $sql = "CREATE TABLE `#__content_data` (
+            `content_id` INTEGER PRIMARY KEY ASC,
+            `description` text,
+            `keywords` text,
+            `body` text,
+            `params` text
+            )";
+        } else {
+            $sql = "CREATE TABLE `#__content_data` (
+            `content_id` int NOT NULL PRIMARY KEY,
+            `description` text,
+            `keywords` text,
+            `body` text,
+            `params` text
+            )";
+        }
 
         $db->query($sql);
 
