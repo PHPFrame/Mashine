@@ -68,7 +68,7 @@ class UpdateAssistant
         }
 
         $url           = $this->_app->config()->get("sources.preferred_mirror");
-        $url          .= "/app_templates/cms/latest-release/?get=download";
+        $url          .= "/apps/Mashine/latest-release/?get=download";
         $download_tmp  = PHPFrame_Filesystem::getSystemTempDir();
         $download_tmp .= DS."PHPFrame".DS."download";
 
@@ -107,15 +107,15 @@ class UpdateAssistant
         $messages[] = "Package extracted to ".$this->_app->getInstallDir();
 
         $new_version = $this->_fetchLatestReleaseVersion();
-        $old_version = $this->_options["cmsplugin_version"];
+        $old_version = $this->_options["mashineplugin_version"];
 
         // Run post upgrade script if any
         $upgrade_script  = $this->_app->getInstallDir().DS."scripts".DS;
-        $upgrade_script .= "CMSUpgrade-".$old_version."-to-".$new_version.".php";
+        $upgrade_script .= "Upgrade-".$old_version."-to-".$new_version.".php";
         if (is_file($upgrade_script)) {
             include $upgrade_script;
 
-            $class_name  = "CMSUpgrade_".str_replace(".", "_", $old_version);
+            $class_name  = "Upgrade_".str_replace(".", "_", $old_version);
             $class_name .= "_to_".str_replace(".", "_", $new_version);
 
             $upgrade_obj = new $class_name($this->_app);
@@ -125,8 +125,8 @@ class UpdateAssistant
         }
 
         // Update CMS verion in db file
-        $this->_options["cmsplugin_version"] = $new_version;
-        $messages[] = "CMS version updated to ".$new_version;
+        $this->_options["mashineplugin_version"] = $new_version;
+        $messages[] = "Mashine version updated to ".$new_version;
 
         // Clear the app registry after the upgrade to make sure it is
         // refreshed in the next request

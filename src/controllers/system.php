@@ -124,7 +124,7 @@ class SystemController extends PHPFrame_ActionController
     public function upgrade()
     {
         try {
-            $update_assistant = new CMSUpdateAssistant($this->app());
+            $update_assistant = new UpdateAssistant($this->app());
 
             if ($update_assistant->isUpToDate()) {
                 $this->notifyInfo("Nothing to upgrade.");

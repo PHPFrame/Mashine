@@ -1,5 +1,5 @@
 <?php
-class CMSUpgrade_0_0_16_to_0_0_17
+class Upgrade_0_0_16_to_0_0_17
 {
     private $_app;
 
