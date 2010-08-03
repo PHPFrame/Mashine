@@ -70,7 +70,7 @@ class UpdateAssistant
         $url           = $this->_app->config()->get("sources.preferred_mirror");
         $url          .= "/apps/Mashine/latest-release/?get=download";
         $download_tmp  = PHPFrame_Filesystem::getSystemTempDir();
-        $download_tmp .= DS."PHPFrame".DS."download";
+        $download_tmp .= DS."Mashine".DS."download";
 
         // Make sure we can write in download directory
         PHPFrame_Filesystem::ensureWritableDir($download_tmp);
