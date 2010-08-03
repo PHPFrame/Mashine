@@ -43,7 +43,7 @@ prefix =
 
 [smtp]
 
-enable = on
+enable = off
 mailer = smtp
 auth =
 host = localhost
