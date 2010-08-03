@@ -37,7 +37,7 @@ class UpdateAssistant
     public function __construct(PHPFrame_Application $app)
     {
         $this->_app = $app;
-        $this->_options = $app->request()->param("cms_options");
+        $this->_options = $app->request()->param("mashine_options");
     }
 
     /**
@@ -48,7 +48,7 @@ class UpdateAssistant
      */
     public function isUpToDate()
     {
-        $installed_version      = $this->_options["cmsplugin_version"];
+        $installed_version      = $this->_options["mashineplugin_version"];
         $latest_release_version = $this->_fetchLatestReleaseVersion();
 
         return version_compare($installed_version, $latest_release_version, ">=");
@@ -63,7 +63,7 @@ class UpdateAssistant
     public function upgrade()
     {
         if ($this->isUpToDate()) {
-            $msg = "Nothing to upgrade! CMS is already latest stable version.";
+            $msg = "Nothing to upgrade! Mashine is already latest stable version.";
             throw new RuntimeException($msg);
         }
 
@@ -155,7 +155,7 @@ class UpdateAssistant
         $http_response = $http_request->send();
 
         if ($http_response->getStatus() != 200) {
-            $msg = "An error occurred when getting latest CMS release number.";
+            $msg = "An error occurred when getting latest Mashine release number.";
             throw new RuntimeException($msg);
         }
 

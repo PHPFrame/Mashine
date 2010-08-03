@@ -46,7 +46,7 @@ class SystemController extends PHPFrame_ActionController
     public function index()
     {
         $content = $this->request()->param("active_content");
-        $options = $this->request()->param("cms_options");
+        $options = $this->request()->param("mashine_options");
         $view    = $this->view("cms/admin/system/index");
 
         $view->addData("title", $content->title());
@@ -141,7 +141,7 @@ class SystemController extends PHPFrame_ActionController
                 // Remove application registry to refresh app cache
                 PHPFrame_Filesystem::rm($this->app()->getTmpDir().DS."app.reg");
 
-                $this->notifySuccess("CMS upgraded successfully!");
+                $this->notifySuccess("Mashine upgraded successfully!");
             }
 
         } catch (Exception $e) {

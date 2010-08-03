@@ -39,7 +39,7 @@ abstract class AbstractPlugin extends PHPFrame_Plugin
         parent::__construct($app);
 
         $this->options = $app->request()->param(
-            "cms_options",
+            "mashine_options",
             new Options($app->db())
         );
 

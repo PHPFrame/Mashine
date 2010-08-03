@@ -86,7 +86,7 @@ class PluginsController extends PHPFrame_ActionController
 
     public function save_options()
     {
-        $options = $this->request()->param("cms_options");
+        $options = $this->request()->param("mashine_options");
 
         try {
             foreach ($this->request()->params() as $key=>$value) {
