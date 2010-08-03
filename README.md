@@ -46,15 +46,15 @@ robust and lightweight application.
 
 1. Dowload and extract:
 
-    `wget http://dist.phpframe.org/apps/Mashine/latest-release/?get=download
-    tar -xzvf Mashine-0.0.xx.tgz
-    rm Mashine-0.0.xx.tgz`
+    `wget http://dist.phpframe.org/apps/Mashine/latest-release/?get=download`
+    `tar -xzvf Mashine-0.0.xx.tgz`
+    `rm Mashine-0.0.xx.tgz`
 
 2. Create working directories and make the writable to the web server:
 
-    `mkdir var tmp
-    chown :www-data var/ tmp/
-    chmod 771 var/ tmp/`
+    `mkdir var tmp`
+    `chown :www-data var/ tmp/`
+    `chmod 771 var/ tmp/`
 
 3. Create configuration file:
 
