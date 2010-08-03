@@ -54,22 +54,6 @@ class MashinePlugin extends AbstractPlugin
     {
         parent::__construct($app);
 
-        //$this->options[$this->getOptionsPrefix()."version"] = "0.0.20";
-
-        if ($app->session()->isAdmin() && !$app->request()->ajax()) {
-            $update_assistant = new UpdateAssistant($app);
-            try {
-                if (!$update_assistant->isUpToDate()) {
-                    $msg  = "A new version of the CMS available. <a href=\"";
-                    $msg .= $app->config()->get("base_url")."admin/upgrade\">";
-                    $msg .= "Click here</a> to upgrade automatically";
-                    $app->session()->getSysevents()->append($msg);
-                }
-            } catch (RuntimeException $e) {
-                // Be silent if an exception is thrown when checking for updates
-            }
-        }
-
         $this->_mapper = new ContentMapper(
             $app->db(),
             $app->getTmpDir().DS."cms"
@@ -87,6 +71,25 @@ class MashinePlugin extends AbstractPlugin
         }
 
         $this->_init();
+
+        //$this->options[$this->getOptionsPrefix()."version"] = "0.0.20";
+
+        if ($app->session()->isAdmin()
+            && !$app->request()->ajax()
+            && $app->request()->controllerName() != "api"
+        ) {
+            $update_assistant = new UpdateAssistant($app);
+            try {
+                if (!$update_assistant->isUpToDate()) {
+                    $msg  = "A new version of Mahine is available. <a href=\"";
+                    $msg .= $app->config()->get("base_url")."admin/upgrade\">";
+                    $msg .= "Click here</a> to upgrade automatically";
+                    $app->session()->getSysevents()->append($msg);
+                }
+            } catch (RuntimeException $e) {
+                // Be silent if an exception is thrown when checking for updates
+            }
+        }
     }
 
     /**
@@ -102,7 +105,7 @@ class MashinePlugin extends AbstractPlugin
             $installer->installDB();
         }
 
-        $this->options[$this->getOptionsPrefix()."version"] = "0.0.22";
+        $this->options[$this->getOptionsPrefix()."version"] = "0.0.24";
     }
 
     /**
