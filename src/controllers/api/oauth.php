@@ -164,10 +164,21 @@ class OauthApiController extends PHPFrame_RESTfulController
         $oauth_client = $this->_getClientsMapper()->findByKey($token->consumerKey());
 
         if (!$this->session()->isAuth()) {
-            $ret_url  = $base_url."api/oauth/authorise?oauth_token=";
-            $ret_url .= $token->key()."&oauth_token_secret=".$token->secret();
-            $ret_url  = urlencode($ret_url);
-            $this->setRedirect($base_url."user/login?ret_url=".$ret_url);
+            $redirect_url = $base_url."user/login";
+            $ret_url      = $base_url."api/oauth/authorise?oauth_token=";
+            $ret_url     .= $token->key()."&oauth_token_secret=".$token->secret();
+
+            if ($this->request()->ajax()) {
+                $ret_url .= "&ajax=1";
+            }
+
+            $redirect_url .= "?ret_url=".urlencode($ret_url);
+
+            if ($this->request()->ajax()) {
+                $redirect_url .= "&ajax=1";
+            }
+
+            $this->setRedirect($redirect_url);
             return;
         }
 
