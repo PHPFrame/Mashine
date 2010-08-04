@@ -53,9 +53,15 @@ class ContentApiController extends PHPFrame_RESTfulController
      */
     public function get($parent_id, $id=null, $limit=10, $page=1)
     {
-        if (is_null($id)) {
-            $parent = $this->_fetchContent($parent_id);
+        if (empty($limit)) {
+            $limit = 10;
+        }
 
+        if (empty($page)) {
+            $page = 1;
+        }
+
+        if (empty($id)) {
             if ($this->db()->isSQLite()) {
                 $select  = array(
                     "c.*",
@@ -79,7 +85,7 @@ class ContentApiController extends PHPFrame_RESTfulController
             $id_obj  = $this->_getMapper()->getIdObject();
             $id_obj->select($select);
             $id_obj->where("parent_id", "=", ":parent_id");
-            $id_obj->params(":parent_id", $parent->id());
+            $id_obj->params(":parent_id", (int) $parent_id);
             $id_obj->orderby("c.pub_date DESC, c.id", "DESC");
             $id_obj->limit($limit, ($page-1)*$limit);
 
@@ -87,6 +93,7 @@ class ContentApiController extends PHPFrame_RESTfulController
             $ret = array();
             foreach ($collection as $obj) {
                 $array = array(
+                    "id" => $obj->id(),
                     "url" => $this->config()->get("base_url").$obj->slug(),
                     "title" => $obj->title(),
                     "pub_date" => $obj->pubDate(),

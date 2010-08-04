@@ -168,15 +168,7 @@ class OauthApiController extends PHPFrame_RESTfulController
             $ret_url      = $base_url."api/oauth/authorise?oauth_token=";
             $ret_url     .= $token->key()."&oauth_token_secret=".$token->secret();
 
-            if ($this->request()->ajax()) {
-                $ret_url .= "&ajax=1";
-            }
-
             $redirect_url .= "?ret_url=".urlencode($ret_url);
-
-            if ($this->request()->ajax()) {
-                $redirect_url .= "&ajax=1";
-            }
 
             $this->setRedirect($redirect_url);
             return;

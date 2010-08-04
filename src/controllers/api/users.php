@@ -57,6 +57,18 @@ class UsersApiController extends PHPFrame_RESTfulController
      */
     public function get($id=null, $limit=10, $page=1)
     {
+        if (empty($id)) {
+            $id = null;
+        }
+
+        if (empty($limit)) {
+            $limit = 10;
+        }
+
+        if (empty($page)) {
+            $page = 1;
+        }
+
         if (!is_null($id)) {
             $ret = $this->_fetchUser($id);
         } else {
