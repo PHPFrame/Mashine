@@ -45,9 +45,12 @@ class ApiController extends PHPFrame_RESTfulController
             $request->action("usage");
         } else {
             $request_uri = $request->requestURI();
-            $pattern = "/api\/$api_object\/([a-zA-Z0-9_]+)/";
+            $pattern = "/api\/$api_object\/([a-zA-Z0-9_]+)(?:\/([0-9]+))?/";
             if (preg_match($pattern, $request_uri, $matches)) {
                 $api_method = $matches[1];
+                if (count($matches) == 3){
+                    $resource_id = $matches[2];
+                }
             } else {
                 $api_method = "get";
             }
@@ -60,8 +63,13 @@ class ApiController extends PHPFrame_RESTfulController
                 foreach ($reflection_method->getParameters() as $param) {
                     if (array_key_exists($param->getName(), $request->params())) {
                         $args[$param->getName()] = $request->param($param->getName());
-                    } elseif ($param->isDefaultValueAvailable()) {
-                        $args[$param->getName()] = $param->getDefaultValue();
+                    } else {
+                        if ($param->getName() == 'id' && isset($resource_id)){
+                            $args['id'] = $resource_id;
+                        }
+                        elseif ($param->isDefaultValueAvailable()) {
+                            $args[$param->getName()] = $param->getDefaultValue();
+                        }
                     }
                 }
             }
