@@ -42,10 +42,11 @@ class ContentApiController extends PHPFrame_RESTfulController
     /**
      * Get content.
      *
-     * @param int $id    [Optional] if specified a single content item will be
-     *                   returned.
-     * @param int $limit [Optional] Default value is 10.
-     * @param int $page  [Optional] Default value is 1.
+     * @param int $parent_id The parent node for which to get it's children.
+     * @param int $id        [Optional] if specified a single content item will
+     *                       be returned.
+     * @param int $limit     [Optional] Default value is 10.
+     * @param int $page      [Optional] Default value is 1.
      *
      * @return array|object Either a single content item object or an array
      *                      containing many content objects.
