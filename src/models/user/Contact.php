@@ -120,4 +120,15 @@ class Contact extends PHPFrame_PersistentObject
         $this->group(2);
         $this->perms(660);
     }
+
+    /**
+     * Get full name (first name + last name).
+     *
+     * @return string
+     * @since  1.0
+     */
+    public function fullName()
+    {
+        return $this->firstName()." ".$this->lastName();
+    }
 }
