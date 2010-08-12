@@ -67,16 +67,23 @@ class UsersMapper extends PHPFrame_CompositeMapper
     /**
      * Find an user object using by email.
      *
-     * @param string $email The email address to search for.
+     * @param string $email             The email address to search for.
+     * @param bool   $include_cancelled [Optional] Whether to include cancelled
+     *                                  users or not. Default value is FALSE.
      *
      * @return User|null
      * @since  1.0
      */
-    public function findByEmail($email)
+    public function findByEmail($email, $include_cancelled=false)
     {
         $id_obj = $this->getIdObject();
         $id_obj->where("#__users.email", "=", ":email");
         $id_obj->params(":email", $email);
+
+        if (!$include_cancelled){
+            $id_obj->where('status', '<>', ':status');
+            $id_obj->params(':status', 'cancelled');
+        }
 
         $collection = $this->find($id_obj);
         if (count($collection) > 0) {
