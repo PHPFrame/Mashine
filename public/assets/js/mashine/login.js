@@ -29,7 +29,7 @@ function initLoginForm()
 
             loginAjaxResponse.html(' ');
             loginButton.attr('disabled', true);
-            loginButton.val('Loggin in...');
+            loginButton.val('Logging in...');
 
             $.ajax({
                 url: 'api/session/login',
