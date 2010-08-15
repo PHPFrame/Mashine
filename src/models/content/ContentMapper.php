@@ -75,9 +75,9 @@ class ContentMapper extends PHPFrame_Mapper
         return $collection;
     }
 
-    public function findOne($id)
+    public function findOne($id_or_slug)
     {
-        $id_obj  = $this->getIdObject();
+        $id_obj = $this->getIdObject();
 
         if ($this->getFactory()->getDB()->isSQLite()) {
             $select  = array(
@@ -100,8 +100,14 @@ class ContentMapper extends PHPFrame_Mapper
         $select[] = "cd.body AS body";
 
         $id_obj->select($select);
-        $id_obj->where("c.id", "=", ":id");
-        $id_obj->params(":id", $id);
+
+        if (is_int($id_or_slug)) {
+            $id_obj->where("c.id", "=", ":id");
+        } else {
+            $id_obj->where("c.slug", "=", ":id");
+        }
+
+        $id_obj->params(":id", $id_or_slug);
 
         $collection = $this->find($id_obj);
         if (count($collection) > 0) {
