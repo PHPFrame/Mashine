@@ -22,15 +22,23 @@
             <td><?php echo $plugin->summary(); ?></td>
             <td><?php echo $plugin->author(); ?></td>
             <td><?php echo $plugin->version(); ?></td>
-            <td><?php echo $plugin->enabled(); ?></td>
+            <td><?php echo ($plugin->enabled()) ? "Yes" : "No"; ?></td>
             <td>
                 <a href="admin/plugins/options?id=<?php echo $plugin->id(); ?>">
                     Options
                 </a>
+                <?php if ($plugin->id() > 1): ?>
                  -
-                <a href="#">Disable</a>
+                <?php if ($plugin->enabled()) : ?>
+                    <a href="plugins/disable?id=<?php echo $plugin->id(); ?>">Disable</a>
+                <?php else : ?>
+                    <a href="plugins/enable?id=<?php echo $plugin->id(); ?>">Enable</a>
+                <?php endif; ?>
+                <!--
                  -
-                <a href="#">Uninstall</a>
+                <a href="plugins/uninstall?id=<?php echo $plugin->id(); ?>">Uninstall</a>
+                -->
+                <?php endif ?>
             </td>
         </tr>
         <?php endforeach; ?>

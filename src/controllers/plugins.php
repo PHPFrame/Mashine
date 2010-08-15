@@ -35,6 +35,8 @@ class PluginsController extends PHPFrame_ActionController
     public function __construct(PHPFrame_Application $app)
     {
         parent::__construct($app, "index");
+
+        $this->ensureIsStaff();
     }
 
     public function index()
@@ -106,5 +108,34 @@ class PluginsController extends PHPFrame_ActionController
         $ret_url  = $this->request()->param("ret_url", $base_url."admin/plugins");
 
         $this->setRedirect($ret_url);
+    }
+
+    public function enable($id)
+    {
+        $this->_setEnabled($id, true);
+    }
+
+    public function disable($id)
+    {
+        if ($id == 1) {
+            throw new Exception("Mashine plugin can not be disabled!");
+        }
+
+        $this->_setEnabled($id, false);
+    }
+
+    private function _setEnabled($id, $bool)
+    {
+        $id = filter_var($id, FILTER_VALIDATE_INT);
+
+        foreach ($this->app()->plugins() as $plugin) {
+            if ($plugin->id() == $id) {
+                $plugin->enabled($bool);
+            }
+        }
+
+        $this->app()->plugins($this->app()->plugins());
+
+        $this->setRedirect($this->config()->get("base_url")."admin/plugins");
     }
 }
