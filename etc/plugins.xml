@@ -3,12 +3,12 @@
         <name>MashinePlugin</name>
         <channel>http://dist.phpframe.org</channel>
         <summary>
-            This is the core CMS plugin and can not be uninstalled.
+            This is the core CMS plugin and can not be disabled or uninstalled.
         </summary>
         <description />
         <author>Lupo Montero</author>
         <date>2010-05-03</date>
-        <version>0.0.23</version>
+        <version>0.0.26</version>
         <license>BSD New</license>
         <license_url>http://www.opensource.org/licenses/bsd-license.php</license_url>
         <enabled>1</enabled>
