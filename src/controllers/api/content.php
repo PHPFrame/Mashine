@@ -4,8 +4,8 @@
  *
  * PHP version 5
  *
- * @category  none
- * @package   none
+ * @category  PHPFrame_Applications
+ * @package   Mashine
  * @author    Lupo Montero <lupo@e-noise.com>
  * @copyright 2010 E-NOISE.COM LIMITED
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
@@ -15,8 +15,8 @@
 /**
  * Content API Controller.
  *
- * @category none
- * @package  none
+ * @category PHPFrame_Applications
+ * @package  Mashine
  * @author   Lupo Montero <lupo@e-noise.com>
  * @license  http://www.opensource.org/licenses/bsd-license.php New BSD License
  * @link     https://github.com/lupomontero/Mashine
