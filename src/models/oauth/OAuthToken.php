@@ -96,22 +96,10 @@ class OAuthToken extends PHPFrame_PersistentObject
      * @return void
      * @since  1.0
      */
-    private function _generateKeyAndSecret() {
-        if (function_exists("openssl_random_pseudo_bytes")) {
-            do {
-                $entropy = openssl_random_pseudo_bytes(32, $strong);
-            } while ($strong === false);
-
-        } else {
-            $fp = fopen("/dev/urandom", "rb");
-            $entropy = fread($fp, 32);
-            fclose($fp);
-            // in case /dev/urandom is reusing entropy from its pool, let's add
-            // a bit more entropy
-            $entropy .= uniqid(mt_rand(), true);
-        }
-
-        $hash = sha1($entropy); // sha1 gives us a 40-byte hash
+    private function _generateKeyAndSecret()
+    {
+        $crypt = new PHPFrame_Crypt();
+        $hash  = $crypt->genRandomPassword(40);
 
         // The first 30 bytes should be plenty for the consumer_key
         // We use the last 10 for the shared secret
