@@ -81,7 +81,7 @@ class MashinePlugin extends AbstractPlugin
             $update_assistant = new UpdateAssistant($app);
             try {
                 if (!$update_assistant->isUpToDate()) {
-                    $msg  = "A new version of Mahine is available. <a href=\"";
+                    $msg  = "A new version of Mashine is available. <a href=\"";
                     $msg .= $app->config()->get("base_url")."admin/upgrade\">";
                     $msg .= "Click here</a> to upgrade automatically";
                     $app->session()->getSysevents()->append($msg);
