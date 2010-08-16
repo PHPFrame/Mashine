@@ -36,7 +36,7 @@ jQuery(document).ready(function($) {
         theme_advanced_statusbar_location : "bottom",
         theme_advanced_resizing : false,
         width : "430px",
-        height : "500px"
+        height : "350px"
     });
 
     $('#tinymce-button-visual').click(function(e) {
