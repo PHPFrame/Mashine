@@ -35,4 +35,23 @@ class PostContent extends Content
 
         return $str;
     }
+
+    public function editLink(PHPFrame_User $user)
+    {
+        if ($this->canWrite($user)) {
+            $str  = "<div class=\"edit-content\">";
+            $str .= "<a href=\"admin/content/form?id=";
+            $str .= $this->id()."\">";
+            $str .= "Edit</a>";
+
+            $str .= " | <a href=\"cms/delete?id=".$this->id()."\" ";
+            $str .= "class=\"confirm\" title=\"Are you sure you want to delete ";
+            $str .= "post ".$this->title()."?\">";
+            $str .= "Delete</a>";
+
+            $str .= "</div>";
+
+            return $str;
+        }
+    }
 }

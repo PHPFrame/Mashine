@@ -42,4 +42,22 @@ class PostsCollectionContent extends Content
 
         return array_merge(parent::getParamKeys(), $array);
     }
+
+    public function editLink(PHPFrame_User $user)
+    {
+        if ($this->canWrite($user)) {
+            $str  = "<div class=\"edit-content\">";
+            $str .= "<a href=\"admin/content/form?id=";
+            $str .= $this->id()."\">";
+            $str .= "Edit</a>";
+
+            $str .= " | <a href=\"admin/content/form?parent_id=";
+            $str .= $this->id()."\">";
+            $str .= "Add post</a>";
+
+            $str .= "</div>";
+
+            return $str;
+        }
+    }
 }

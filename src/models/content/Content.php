@@ -355,13 +355,6 @@ class Content extends PHPFrame_PolymorphicPersistentObject
             $str .= "<a href=\"admin/content/form?id=";
             $str .= $this->id()."\">";
             $str .= "Edit</a>";
-
-            if ($this->type() == "PostsCollectionContent") {
-                $str .= " | <a href=\"admin/content/form?parent_id=";
-                $str .= $this->id()."\">";
-                $str .= "Add post</a>";
-            }
-
             $str .= "</div>";
 
             return $str;
