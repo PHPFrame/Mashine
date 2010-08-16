@@ -11,7 +11,11 @@
 <?php if (count($posts) > 0) : ?>
 <?php foreach ($posts as $post) : ?>
 <li>
-<div class="article">
+<div class="article <?php if ($post->status() == 0) echo "unpublished"; ?>">
+
+<?php if ($post->status() == 0) : ?>
+<div style="float: right;">Unpublished</div>
+<?php endif; ?>
 
 <h2 class="post-title">
     <a href="<?php echo $post->slug(); ?>">
