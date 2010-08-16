@@ -64,11 +64,6 @@ class OauthApiController extends PHPFrame_RESTfulController
         }
     }
 
-    public function get()
-    {
-        return $this->usage();
-    }
-
     /**
      * Get request token.
      *
@@ -106,6 +101,9 @@ class OauthApiController extends PHPFrame_RESTfulController
 
     /**
      * Get access token.
+     *
+     * @param string $oauth_token    The OAuth request token.
+     * @param string $oauth_verifier The OAuth token verifier.
      *
      * @return string
      * @since  1.0
@@ -149,7 +147,7 @@ class OauthApiController extends PHPFrame_RESTfulController
     /**
      * Show authorisation page.
      *
-     * @param string $oauth_token
+     * @param string $oauth_token The OAuth request token.
      *
      * @return void
      * @since  1.0
@@ -189,8 +187,8 @@ class OauthApiController extends PHPFrame_RESTfulController
     /**
      * Save new OAuth authorisation.
      *
-     * @param string $oauth_token
-     * @param string $status
+     * @param string $oauth_token The OAuth request token.
+     * @param string $status      The token status (active or revoked).
      *
      * @return void
      * @since  1.0
