@@ -72,7 +72,7 @@ class MashinePlugin extends AbstractPlugin
 
         $this->_init();
 
-        //$this->options[$this->getOptionsPrefix()."version"] = "0.0.20";
+        // $this->options[$this->getOptionsPrefix()."version"] = "0.0.26";
 
         if ($app->session()->isAdmin()
             && !$app->request()->ajax()
@@ -260,7 +260,9 @@ class MashinePlugin extends AbstractPlugin
         }
 
         $id_obj = $this->_mapper->getIdObject();
-        $id_obj->where("c.status", "=", 1);
+        if (!$this->app()->session()->isAuth() || $this->app()->user()->id() > 2) {
+            $id_obj->where("c.status", "=", 1);
+        }
         if ($slug != "admin/content") {
             $id_obj->where("c.type <> 'PostContent'", "OR", "c.slug = '".$slug."'");
         }
