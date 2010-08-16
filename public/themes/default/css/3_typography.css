@@ -185,3 +185,7 @@ div#sitename a {
     float: left;
     margin: 0 10px 10px 0;
 }
+
+.unpublished {
+    background: #F0F0F0;
+}
