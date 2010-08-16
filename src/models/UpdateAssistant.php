@@ -13,7 +13,7 @@
  */
 
 /**
- * This class is responsible for managing plugin updates.
+ * This class is responsible for managing Mashine updates.
  *
  * @category PHPFrame_Applications
  * @package  Mashine
@@ -29,7 +29,7 @@ class UpdateAssistant
     /**
      * Constructor.
      *
-     * @param PHPFrame_Application $app     Instance of application.
+     * @param PHPFrame_Application $app Instance of application.
      *
      * @return void
      * @since  1.0
@@ -41,7 +41,7 @@ class UpdateAssistant
     }
 
     /**
-     * Check whether CMS plugin is up to date.
+     * Check whether Mashine plugin is up to date.
      *
      * @return bool
      * @since  1.0
@@ -55,7 +55,7 @@ class UpdateAssistant
     }
 
     /**
-     * Upgrade CMS.
+     * Upgrade Mashine.
      *
      * @return void
      * @since  1.0
@@ -102,7 +102,10 @@ class UpdateAssistant
 
         // Extract archive in install dir
         $archive = new Archive_Tar($download_tmp.DS.$file_name, "gz");
-        $archive->extract($this->_app->getInstallDir());
+        if (!$archive->extract($this->_app->getInstallDir())) {
+            $msg  = "Error extracting package. Please check file permissions.";
+            throw new RuntimeException($msg);
+        }
 
         $messages[] = "Package extracted to ".$this->_app->getInstallDir();
 
