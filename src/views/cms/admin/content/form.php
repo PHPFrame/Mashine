@@ -4,7 +4,7 @@
 
 <div class="entry">
 
-<form id="content_form" action="index.php" method="post">
+<form id="content_form" name="content_form" action="index.php" method="post">
 
 <?php if (in_array(get_class($content->parent()), array("PageContent", "MVCContent"))) : ?>
 <p>
@@ -271,6 +271,24 @@ if ($content instanceof FeedContent
     <span class="button_wrapper">
          <button type="reset" class="button reset" >Reset</button>
     </span>
+    <?php if ($content->status() < 1) : ?>
+    <span class="button_wrapper">
+         <input
+                 type="submit"
+                 class="button"
+                 value="Save draft"
+                 onclick="document.content_form.status.selectedIndex = 0;"
+          />
+    </span>
+    <span class="button_wrapper">
+         <input
+                 type="submit"
+                 class="button"
+                 value="Publish"
+                 onclick="document.content_form.status.selectedIndex = 1;"
+          />
+    </span>
+    <?php else: ?>
     <span class="button_wrapper">
          <input
                  type="submit"
@@ -278,6 +296,8 @@ if ($content instanceof FeedContent
                  value="Save"
           />
     </span>
+    <?php endif; ?>
+
 </p>
 
 <input type="hidden" name="id" value="<?php echo $content->id(); ?>" />
