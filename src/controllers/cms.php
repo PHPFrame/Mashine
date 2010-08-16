@@ -146,6 +146,10 @@ class CMSController extends PHPFrame_ActionController
             $id_obj->orderby("c.pub_date DESC, c.id", "DESC");
             $id_obj->limit($posts_per_page, ($page-1)*$posts_per_page);
 
+            if (!$this->session()->isAuth() || $this->user()->id() > 2) {
+                $id_obj->where("c.status", "=", "1");
+            }
+
             $posts  = $mapper->find($id_obj);
             $format = $this->request()->param("format", null);
 
@@ -354,7 +358,8 @@ class CMSController extends PHPFrame_ActionController
                 $this->app()->getTmpDir().DS."cms"
             );
 
-            $id = $this->request()->param("id", null);
+            $id = $this->request()->param("id");
+            $id = filter_var($id, FILTER_VALIDATE_INT);
             if ($id) {
                 $content = $mapper->findOne($id);
 
