@@ -22,7 +22,9 @@ class CMSHelper extends PHPFrame_ViewHelper
     private function _contentToAdminHTML(Content $content, $indent="")
     {
         $pattern = "/^(dashboard|profile|sitemap|user\/login|user\/logout|user\/signup)/";
-        if (preg_match($pattern, $content->slug())) {
+        if (preg_match($pattern, $content->slug())
+            || $content instanceof PostContent
+        ) {
             return "";
         }
 
@@ -49,6 +51,7 @@ class CMSHelper extends PHPFrame_ViewHelper
         }
         $str .= ")</small></h3>\n";
         $str .= $indent."    <p>\n";
+        $str .= $indent."        <a href=\"".$content->slug()."\">View</a>";
 
         if ($content->canWrite($this->app()->user())) {
             if (!$content instanceof PostContent
@@ -60,13 +63,13 @@ class CMSHelper extends PHPFrame_ViewHelper
                     $add_label = "Add child";
                 }
 
-                $str .= $indent."        <a href=\"admin/content/form";
-                $str .= "?parent_id=".$content->id()."\">".$add_label."</a> | \n";
+                $str .= $indent."        | <a href=\"admin/content/form";
+                $str .= "?parent_id=".$content->id()."\">".$add_label."</a>\n";
             }
 
-            $str .= $indent."        <a href=\"admin/content/form?id=";
-            $str .= $content->id()."\">Edit</a> | \n";
-            $str .= $indent."        <a href=\"index.php?controller=cms";
+            $str .= $indent."        | <a href=\"admin/content/form?id=";
+            $str .= $content->id()."\">Edit</a>\n";
+            $str .= $indent."        | <a href=\"index.php?controller=cms";
             $str .= "&action=delete&id=".$content->id()."\" ";
             $str .= "class=\"confirm\" title=\"Are you sure you want to delete ";
             $str .= $content->title()."?\">Trash</a>\n";
