@@ -573,12 +573,7 @@ class UserController extends PHPFrame_ActionController
             return;
         }
 
-        if (!$this->ensureIsStaff()) {
-            $msg = "Permission denied.";
-            $this->raiseError($msg);
-            $this->response()->statusCode(401);
-            return;
-        }
+        $this->ensureIsStaff();
 
         try {
             $this->_getUsersMapper()->delete($user);
