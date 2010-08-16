@@ -79,6 +79,7 @@
                 <a href="admin/user/form?id=<?php echo $user->id(); ?>">
                     Edit
                 </a>
+                <?php if ($user->id() > 1) : ?>
                  -
                 <a
                     href="index.php?controller=user&amp;action=delete&amp;id=<?php echo $user->id(); ?>"
@@ -87,6 +88,7 @@
                 >
                     Delete
                 </a>
+                <?php endif; ?>
             </td>
         </tr>
         <?php endforeach; ?>
