@@ -72,7 +72,7 @@ class MashinePlugin extends AbstractPlugin
 
         $this->_init();
 
-        // $this->options[$this->getOptionsPrefix()."version"] = "0.0.26";
+        // $this->options[$this->getOptionsPrefix()."version"] = "0.0.28";
 
         if ($app->session()->isAdmin()
             && !$app->request()->ajax()
