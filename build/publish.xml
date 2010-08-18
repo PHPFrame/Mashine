@@ -13,7 +13,7 @@
     <property name="tmp.dir" value="${build.dir}/tmp" />
     <property name="assets.dir" value="${tmp.dir}/public/assets" />
     <property name="theme.dir" value="${tmp.dir}/public/themes/default" />
-    <property name="release.version" value="0.0.28" />
+    <property name="release.version" value="0.0.29" />
 
     <!-- Prepare directories -->
     <target name="prepare">
