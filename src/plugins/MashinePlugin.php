@@ -52,6 +52,11 @@ class MashinePlugin extends AbstractPlugin
      */
     public function __construct(PHPFrame_Application $app)
     {
+        // include($app->getInstallDir().DS."scripts/Upgrade-0.0.28-to-0.0.29.php");
+        // $upgrade_obj = new Upgrade_0_0_28_to_0_0_29($app);
+        // var_dump($upgrade_obj->run());
+        // exit;
+
         parent::__construct($app);
 
         $this->_mapper = new ContentMapper(
@@ -72,7 +77,7 @@ class MashinePlugin extends AbstractPlugin
 
         $this->_init();
 
-        // $this->options[$this->getOptionsPrefix()."version"] = "0.0.28";
+        // $this->options[$this->getOptionsPrefix()."version"] = "0.0.29";
 
         if ($app->session()->isAdmin()
             && !$app->request()->ajax()
@@ -105,7 +110,7 @@ class MashinePlugin extends AbstractPlugin
             $installer->installDB();
         }
 
-        $this->options[$this->getOptionsPrefix()."version"] = "0.0.24";
+        $this->options[$this->getOptionsPrefix()."version"] = "0.0.29";
     }
 
     /**
@@ -478,19 +483,18 @@ class MashinePlugin extends AbstractPlugin
         $content,
         &$array=array("pages"=>0,"posts"=>0,"mvc_actions"=>0)
     ) {
-        if ($content instanceof PageContent
-            || $content instanceof PostsCollectionContent
-        ) {
-            $array["pages"]++;
-        } elseif ($content instanceof PostContent) {
-            $array["posts"]++;
-        } elseif ($content instanceof MVCContent) {
-            $array["mvc_actions"]++;
-        }
+        $sql  = "SELECT type, COUNT(id) FROM `content` ";
+        $sql .= "WHERE type IN ('PageContent', 'PostContent', 'MVCContent')";
+        $sql .= "GROUP BY type";
+        $rs = $this->app()->db()->fetchAssocList($sql);
 
-        if ($content->hasChildren()) {
-            foreach ($content->getChildren() as $child) {
-                $this->_doGetContentStats($child, $array);
+        foreach ($rs as $row) {
+            if ($row["type"] == "PageContent") {
+                $array["pages"] = $row["COUNT(id)"];
+            } elseif ($row["type"] == "PostContent") {
+                $array["posts"] = $row["COUNT(id)"];
+            } elseif ($row["type"] == "MVCContent") {
+                $array["mvc_actions"] = $row["COUNT(id)"];
             }
         }
 
