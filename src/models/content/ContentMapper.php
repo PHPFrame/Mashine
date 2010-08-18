@@ -178,15 +178,35 @@ class ContentMapper extends PHPFrame_Mapper
         $obj->markClean();
     }
 
-    public function delete($id)
+    public function delete($id_or_obj)
     {
-        $db     = $this->getFactory()->getDB();
-        $sql    = "DELETE FROM #__content_data WHERE `content_id` = :id";
-        $params = array(":id"=>$id);
+        if ($id_or_obj instanceof Content) {
+            $obj = $id_or_obj;
+        } else {
+            $obj = $this->findOne($id_or_obj);
+            if (!$obj instanceof Content) {
+                $msg = "Can not delete. Content not found.";
+                throw new RuntimeException($msg);
+            }
+        }
 
-        $db->query($sql, $params);
+        if ($obj instanceof PostsCollectionContent) {
+            $id_obj = $this->getIdObject();
+            $id_obj->where("parent_id", "=", $obj->id());
+            $children = $this->find($id_obj);
+            foreach ($children as $child) {
+                $this->delete($child);
+            }
+        } else {
+            $sql  = "UPDATE #__content SET `parent_id` = ".$obj->parentId();
+            $sql .= " WHERE `parent_id` = ".$obj->id();
+            $this->getFactory()->getDB()->query($sql);
+        }
 
-        return parent::delete($id);
+        $sql = "DELETE FROM #__content_data WHERE `content_id` = ".$obj->id();
+        $this->getFactory()->getDB()->query($sql);
+
+        return parent::delete($obj);
     }
 
     public function getIdObject()
