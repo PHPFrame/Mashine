@@ -67,6 +67,8 @@ class UpdateAssistant
             throw new RuntimeException($msg);
         }
 
+        $this->_checkFilePermissions();
+
         $url           = $this->_app->config()->get("sources.preferred_mirror");
         $url          .= "/apps/Mashine/latest-release/?get=download";
         $download_tmp  = PHPFrame_Filesystem::getSystemTempDir();
@@ -160,5 +162,26 @@ class UpdateAssistant
         }
 
         return $http_response->getBody();
+    }
+
+    private function _checkFilePermissions()
+    {
+        $dir_it = new RecursiveDirectoryIterator($this->_app->getInstallDir());
+        $it = new RecursiveIteratorIterator(
+            $dir_it,
+            RecursiveIteratorIterator::SELF_FIRST
+        );
+
+        foreach ($it as $file) {
+            if (!preg_match("/^\./", $it->getSubPath())
+                && !preg_match("/^\./", $file->getFilename())
+                && !is_writable($file->getRealPath())
+            ) {
+                $msg  = "File permissions error. Please make sure that ";
+                $msg .= "application files are writable before running the ";
+                $msg .= "upgrade.";
+                throw new RuntimeException($msg);
+            }
+        }
     }
 }
