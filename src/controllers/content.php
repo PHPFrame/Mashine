@@ -34,10 +34,6 @@ class ContentController extends PHPFrame_ActionController
      */
     public function __construct(PHPFrame_Application $app)
     {
-        // include($app->getInstallDir().DS."scripts/Upgrade-0.0.28-to-0.0.29.php");
-        // $upgrade_obj = new Upgrade_0_0_28_to_0_0_29($app);
-        // var_dump($upgrade_obj->run());
-        // exit;
         parent::__construct($app, "index");
     }
 
