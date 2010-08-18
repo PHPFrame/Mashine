@@ -655,7 +655,7 @@ class Installer
         $content->slug("mashine-on-github");
         $content->status(1);
         $content->pubDate("2000-01-01 00:01:00");
-        $content->param("feed_url", "http://github.com/lupomontero/Mashine/commits/master.atom");
+        $content->param("feed_url", "http://github.com/E-NOISE/Mashine/commits/master.atom");
         $content->param("cache_time", 600);
         $content->owner(1);
         $content->group(1);
