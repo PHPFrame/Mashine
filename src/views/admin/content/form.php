@@ -302,7 +302,7 @@ if ($content instanceof FeedContent
 
 <input type="hidden" name="id" value="<?php echo $content->id(); ?>" />
 <input type="hidden" name="parent_id" value="<?php echo $content->parentId(); ?>" />
-<input type="hidden" name="controller" value="cms" />
+<input type="hidden" name="controller" value="content" />
 <input type="hidden" name="action" value="save" />
 </form>
 

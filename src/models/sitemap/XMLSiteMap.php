@@ -1,6 +1,6 @@
 <?php
 /**
- * src/models/cms/sitemap/XMLSiteMap.php
+ * src/models/sitemap/XMLSiteMap.php
  *
  * PHP version 5
  *

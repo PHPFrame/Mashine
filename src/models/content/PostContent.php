@@ -1,6 +1,6 @@
 <?php
 /**
- * src/models/cms/content/PostContent.php
+ * src/models/content/PostContent.php
  *
  * PHP version 5
  *
@@ -44,7 +44,7 @@ class PostContent extends Content
             $str .= $this->id()."\">";
             $str .= "Edit</a>";
 
-            $str .= " | <a href=\"cms/delete?id=".$this->id()."\" ";
+            $str .= " | <a href=\"content/delete?id=".$this->id()."\" ";
             $str .= "class=\"confirm\" title=\"Are you sure you want to delete ";
             $str .= "post ".$this->title()."?\">";
             $str .= "Delete</a>";

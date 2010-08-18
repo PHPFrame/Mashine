@@ -47,7 +47,7 @@ class SystemController extends PHPFrame_ActionController
     {
         $content = $this->request()->param("active_content");
         $options = $this->request()->param("mashine_options");
-        $view    = $this->view("cms/admin/system/index");
+        $view    = $this->view("admin/system/index");
 
         $view->addData("title", $content->title());
         $view->addData("config", $this->config());
@@ -66,7 +66,7 @@ class SystemController extends PHPFrame_ActionController
     public function sysconfig()
     {
         $content = $this->request()->param("active_content");
-        $view    = $this->view("cms/admin/config/index");
+        $view    = $this->view("admin/config/index");
 
         $view->addData("title", $content->title());
         $view->addData("config", $this->config());
@@ -154,7 +154,7 @@ class SystemController extends PHPFrame_ActionController
     public function api()
     {
         $content = $this->request()->param("active_content");
-        $view    = $this->view("cms/admin/api/index");
+        $view    = $this->view("admin/api/index");
         $mapper  = new OAuthClientsMapper($this->db());
         $clients = $mapper->find();
 

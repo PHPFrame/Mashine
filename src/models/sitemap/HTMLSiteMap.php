@@ -1,6 +1,6 @@
 <?php
 /**
- * src/models/cms/sitemap/HTMLSiteMap.php
+ * src/models/sitemap/HTMLSiteMap.php
  *
  * PHP version 5
  *

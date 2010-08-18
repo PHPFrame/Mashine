@@ -102,10 +102,7 @@ class UpdateAssistant
 
         // Extract archive in install dir
         $archive = new Archive_Tar($download_tmp.DS.$file_name, "gz");
-        if (!$archive->extract($this->_app->getInstallDir())) {
-            $msg  = "Error extracting package. Please check file permissions.";
-            throw new RuntimeException($msg);
-        }
+        $archive->extract($this->_app->getInstallDir());
 
         $messages[] = "Package extracted to ".$this->_app->getInstallDir();
 

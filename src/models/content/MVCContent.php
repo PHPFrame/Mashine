@@ -1,6 +1,6 @@
 <?php
 /**
- * src/models/cms/content/MVCContent.php
+ * src/models/content/MVCContent.php
  *
  * PHP version 5
  *

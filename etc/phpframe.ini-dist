@@ -10,7 +10,7 @@ theme = default
 default_lang = en-GB
 secret =
 timezone = Europe/London
-default_controller = cms
+default_controller = content
 
 [filesystem]
 

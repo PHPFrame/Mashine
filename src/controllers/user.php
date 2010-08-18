@@ -218,7 +218,7 @@ class UserController extends PHPFrame_ActionController
             }
         }
 
-        $view = $this->view("cms/admin/user/form");
+        $view = $this->view("admin/user/form");
         $view->addData("title", $title);
         $view->addData("user", $user);
         $view->addData("session", $this->session());
@@ -509,7 +509,7 @@ class UserController extends PHPFrame_ActionController
 
         $title = "Manage Users";
 
-        $view = $this->view("cms/admin/user/index");
+        $view = $this->view("admin/user/index");
         $view->addData("title", $title);
         $view->addData("users", $users);
 
@@ -637,7 +637,7 @@ class UserController extends PHPFrame_ActionController
         $contact->owner($user->id());
         $contact->group($user->groupId());
 
-        $view = $this->view("cms/admin/user/contacts");
+        $view = $this->view("admin/user/contacts");
         $view->addData("title", $title);
         $view->addData("contact", $contact);
         $view->addData("user", $user);

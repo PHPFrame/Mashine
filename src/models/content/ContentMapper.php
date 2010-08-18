@@ -1,6 +1,6 @@
 <?php
 /**
- * src/models/cms/content/ContentMapper.php
+ * src/models/content/ContentMapper.php
  *
  * PHP version 5
  *

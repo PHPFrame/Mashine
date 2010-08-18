@@ -1,6 +1,6 @@
 <?php
 /**
- * src/controllers/cms.php
+ * src/controllers/content.php
  *
  * PHP version 5
  *
@@ -13,7 +13,7 @@
  */
 
 /**
- * CMS controller.
+ * Content controller.
  *
  * @category PHPFrame_Applications
  * @package  Mashine
@@ -22,7 +22,7 @@
  * @link     https://github.com/lupomontero/Mashine
  * @since    1.0
  */
-class CMSController extends PHPFrame_ActionController
+class ContentController extends PHPFrame_ActionController
 {
     /**
      * Constructor.
@@ -34,6 +34,10 @@ class CMSController extends PHPFrame_ActionController
      */
     public function __construct(PHPFrame_Application $app)
     {
+        // include($app->getInstallDir().DS."scripts/Upgrade-0.0.28-to-0.0.29.php");
+        // $upgrade_obj = new Upgrade_0_0_28_to_0_0_29($app);
+        // var_dump($upgrade_obj->run());
+        // exit;
         parent::__construct($app, "index");
     }
 
@@ -95,12 +99,12 @@ class CMSController extends PHPFrame_ActionController
 
         } elseif ($content instanceof PageContent) {
             if (is_null($view)) {
-                $view = $this->view("cms/page");
+                $view = $this->view("page");
             }
 
         } elseif ($content instanceof PostContent) {
             if (is_null($view)) {
-                $view = $this->view("cms/post");
+                $view = $this->view("post");
             }
 
         } elseif ($content instanceof PostsCollectionContent) {
@@ -178,14 +182,14 @@ class CMSController extends PHPFrame_ActionController
             }
 
             if (is_null($view)) {
-                $view = $this->view("cms/posts");
+                $view = $this->view("posts");
             }
 
             $view->addData("posts", $posts);
 
         } elseif ($content instanceof FeedContent) {
             if (is_null($view)) {
-                $view = $this->view("cms/feed");
+                $view = $this->view("feed");
             }
 
         } else {
@@ -213,7 +217,7 @@ class CMSController extends PHPFrame_ActionController
     {
         $content = $this->request()->param("active_content");
         $tree    = $this->request()->param("tree");
-        $view    = $this->view("cms/admin/content/index");
+        $view    = $this->view("admin/content/index");
 
         $view->addData("title", $content->title());
         $view->addData("tree", $tree);
@@ -311,7 +315,7 @@ class CMSController extends PHPFrame_ActionController
             $content->body()
         ));
 
-        $view = $this->view("cms/admin/content/form");
+        $view = $this->view("admin/content/form");
 
         $view->addData("title", $title);
         $view->addData("content", $content);
@@ -443,7 +447,7 @@ class CMSController extends PHPFrame_ActionController
                 if (empty($custom_template)) {
                     $content->param("view", "");
                 } else {
-                    $content->param("view", "cms/custom/".$custom_template);
+                    $content->param("view", "custom/".$custom_template);
                 }
             }
 

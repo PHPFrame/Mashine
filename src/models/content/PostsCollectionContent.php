@@ -1,6 +1,6 @@
 <?php
 /**
- * src/models/cms/content/PostsCollectionContent.php
+ * src/models/content/PostsCollectionContent.php
  *
  * PHP version 5
  *

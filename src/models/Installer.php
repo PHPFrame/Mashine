@@ -382,7 +382,7 @@ class Installer
         $content_manage->pubDate("1970-01-01 00:03:30");
         $content_manage->description(null);
         $content_manage->keywords(null);
-        $content_manage->param("controller", "cms");
+        $content_manage->param("controller", "content");
         $content_manage->param("action", "manage");
         $content_manage->owner(1);
         $content_manage->group(1);
@@ -396,7 +396,7 @@ class Installer
         $content->status(1);
         $content->description(null);
         $content->keywords(null);
-        $content->param("controller", "cms");
+        $content->param("controller", "content");
         $content->param("action", "form");
         $content->owner(1);
         $content->group(1);
@@ -544,7 +544,7 @@ class Installer
         $content->pubDate("1970-01-01 00:00:00");
         $content->description("This is the site map");
         $content->keywords("sitemap");
-        $content->param("view", "cms/sitemap");
+        $content->param("view", "sitemap");
         $content->owner(1);
         $content->group(2);
         $content->perms(444);

@@ -69,7 +69,7 @@ class CMSHelper extends PHPFrame_ViewHelper
 
             $str .= $indent."        | <a href=\"admin/content/form?id=";
             $str .= $content->id()."\">Edit</a>\n";
-            $str .= $indent."        | <a href=\"index.php?controller=cms";
+            $str .= $indent."        | <a href=\"index.php?controller=content";
             $str .= "&action=delete&id=".$content->id()."\" ";
             $str .= "class=\"confirm\" title=\"Are you sure you want to delete ";
             $str .= $content->title()."?\">Trash</a>\n";
@@ -97,7 +97,7 @@ class CMSHelper extends PHPFrame_ViewHelper
         $str = "<select name=\"view\">\n";
         $str .= "<option value=\"\">none</option>\n";
         $custom_views_path  = $this->app()->getInstallDir().DS."src".DS;
-        $custom_views_path .= "views".DS."cms".DS."custom";
+        $custom_views_path .= "views".DS."custom";
         $dir_it = new RecursiveDirectoryIterator($custom_views_path);
         $iterator = new RecursiveIteratorIterator(
             $dir_it,
@@ -110,7 +110,7 @@ class CMSHelper extends PHPFrame_ViewHelper
                 $view = str_replace($custom_views_path.DS, "", $file->getRealPath());
                 $view = str_replace(".php", "", $view);
                 $str .= "<option value=\"".$view."\"";
-                if ("cms/custom/".$view == $selected) {
+                if ("custom/".$view == $selected) {
                     $str .= " selected";
                 }
                 $str .= ">".$view."</option>\n";

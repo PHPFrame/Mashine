@@ -1,5 +1,5 @@
 /**
- * public/assets/js/cms.admin.js
+ * public/assets/js/mashine.admin.js
  *
  * This file's only role is to include all other scripts that need to be
  * available to all authors and admin users after they login.

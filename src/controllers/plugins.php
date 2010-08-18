@@ -42,7 +42,7 @@ class PluginsController extends PHPFrame_ActionController
     public function index()
     {
         $content = $this->request()->param("active_content");
-        $view    = $this->view("cms/admin/plugins/index");
+        $view    = $this->view("admin/plugins/index");
 
         $view->addData("title", $content->title());
         $view->addData("plugins", $this->app()->plugins());
@@ -77,7 +77,7 @@ class PluginsController extends PHPFrame_ActionController
         $plugin = new $plugin_class($this->app());
 
         $content = $this->request()->param("active_content");
-        $view    = $this->view("cms/admin/plugins/options");
+        $view    = $this->view("admin/plugins/options");
 
         $view->addData("title", $content->title());
         $view->addData("plugin", $plugin);

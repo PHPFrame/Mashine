@@ -193,7 +193,7 @@ class MashinePlugin extends AbstractPlugin
         $base_url = $this->app()->config()->get("base_url");
 
         // Show XML sitemap if requested
-        if ($request->controllerName() == "cms" && $request->param("xml")) {
+        if ($request->controllerName() == "content" && $request->param("xml")) {
             $xml_sitemap = new XMLSiteMap($request->param("tree"), $base_url);
 
             $response->renderer(new PHPFrame_XMLRenderer());
@@ -277,7 +277,7 @@ class MashinePlugin extends AbstractPlugin
             && $request_uri != $path."index.php"
         ) {
             $controller = $request->controllerName();
-            if ($controller != "cms") {
+            if ($controller != "content") {
                 $array = explode("/", $slug);
                 $request->controllerName($array[0]);
                 $rewritten_query_string = "controller=".$array[0];
@@ -324,7 +324,7 @@ class MashinePlugin extends AbstractPlugin
                 $this->_slugs[] = $item->slug();
 
                 if (in_array($slug, $this->_slugs) && !$request->action()) {
-                    $request->controllerName("cms");
+                    $request->controllerName("content");
                 }
 
                 if ($item->slug() == $slug) {
@@ -459,7 +459,7 @@ class MashinePlugin extends AbstractPlugin
             }
         }
 
-        if ($request->controllerName() == "cms" && $request->action() == "form") {
+        if ($request->controllerName() == "content" && $request->action() == "form") {
             $body = preg_replace("/\[@@cms(.*)@@\]/", "[cms$1]", $body);
         }
 

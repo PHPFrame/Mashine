@@ -1,6 +1,6 @@
 <?php
 /**
- * src/models/cms/content/FeedContent.php
+ * src/models/content/FeedContent.php
  *
  * PHP version 5
  *
