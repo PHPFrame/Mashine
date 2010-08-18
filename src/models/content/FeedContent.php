@@ -93,7 +93,7 @@ class FeedContent extends Content
             $feed_url   = $this->param("feed_url");
             $cache_time = $this->param("cache_time");
 
-            $http_request  = new PHPFrame_HTTPRequest($feed_url);
+            $http_request = new PHPFrame_HTTPRequest($feed_url);
 
             if ($cache_time > 0) {
                 $http_request->cacheTime($cache_time);
@@ -102,7 +102,9 @@ class FeedContent extends Content
 
             $http_response = $http_request->send();
             $content_type  = $http_response->getHeader("content-type");
-            if (!preg_match("/application\/(rss|atom)\+xml/", $content_type)) {
+            if ($http_response->getStatus() != 200
+                || !preg_match("/application\/(rss|atom)\+xml/", $content_type)
+            ) {
                 $msg = "Error fetching feed from ".$feed_url.".";
                 throw new RuntimeException($msg);
             }
