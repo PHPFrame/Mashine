@@ -41,7 +41,7 @@ class Upgrade_0_0_28_to_0_0_29
     {
         $views_dir = $this->_install_dir.DS."src".DS."views";
         if (is_dir($views_dir.DS."cms")) {
-            PHPFrame_Filesystem::cp($views_dir.DS."cms/*", $views_dir, true);
+            PHPFrame_Filesystem::cp($views_dir.DS."cms/", $views_dir, true);
             PHPFrame_Filesystem::rm($views_dir.DS."cms", true);
         }
     }
