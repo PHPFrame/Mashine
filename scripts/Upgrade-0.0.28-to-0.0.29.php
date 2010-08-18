@@ -33,7 +33,7 @@ class Upgrade_0_0_28_to_0_0_29
     private function _moveCmsViews()
     {
         $views_dir = $this->_install_dir.DS."src".DS."views";
-        PHPFrame_Filesystem::cp($views_dir.DS."cms/", $views_dir, true);
+        PHPFrame_Filesystem::cp($views_dir.DS."cms/*", $views_dir, true);
         PHPFrame_Filesystem::rm($views_dir.DS."cms", true);
     }
 
