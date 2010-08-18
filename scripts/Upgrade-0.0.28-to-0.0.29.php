@@ -28,6 +28,13 @@ class Upgrade_0_0_28_to_0_0_29
         if (is_file($cms_controller)) {
             PHPFrame_Filesystem::rm($cms_controller);
         }
+
+        $config = $this->app()->config();
+        $default_controller = $config->get("default_controller");
+        if ($default_controller == "cms") {
+            $config->set("default_controller", "content");
+            $config->store();
+        }
     }
 
     private function _moveCmsViews()
