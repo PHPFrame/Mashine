@@ -27,22 +27,10 @@ class ContentApiController extends PHPFrame_RESTfulController
     private $_mapper;
 
     /**
-     * Constructor.
-     *
-     * @param PHPFrame_Application $app Instance of application.
-     *
-     * @return void
-     * @since  1.0
-     */
-    public function __construct(PHPFrame_Application $app)
-    {
-        parent::__construct($app);
-    }
-
-    /**
      * Get content.
      *
-     * @param int $parent_id The parent node for which to get it's children.
+     * @param int $parent_id [Optional] The parent node for which to get it's
+     *                       children.
      * @param int $id        [Optional] if specified a single content item will
      *                       be returned.
      * @param int $limit     [Optional] Default value is 10.
@@ -52,7 +40,7 @@ class ContentApiController extends PHPFrame_RESTfulController
      *                      containing many content objects.
      * @since  1.0
      */
-    public function get($parent_id, $id=null, $limit=10, $page=1)
+    public function get($parent_id=null, $id=null, $limit=10, $page=1)
     {
         if (empty($limit)) {
             $limit = 10;
@@ -90,30 +78,38 @@ class ContentApiController extends PHPFrame_RESTfulController
             $id_obj->orderby("c.pub_date DESC, c.id", "DESC");
             $id_obj->limit($limit, ($page-1)*$limit);
 
+            if (!$this->session()->isAuth() || $this->user()->id() > 2) {
+                $id_obj->where("c.status", "=", "1");
+            }
+
             $collection = $this->_getMapper()->find($id_obj);
-            $ret = array();
-            foreach ($collection as $obj) {
-                $array = array(
-                    "id" => $obj->id(),
-                    "url" => $this->config()->get("base_url").$obj->slug(),
-                    "title" => $obj->title(),
-                    "pub_date" => $obj->pubDate(),
-                    "type" => str_replace("Content", "", $obj->type()),
-                    "author" => $obj->author()
-                );
+            if ($this->format() == "php") {
+                $ret = $collection;
+            } else {
+                $ret = array();
+                foreach ($collection as $obj) {
+                    $array = array(
+                        "id" => $obj->id(),
+                        "url" => $this->config()->get("base_url").$obj->slug(),
+                        "title" => $obj->title(),
+                        "pub_date" => $obj->pubDate(),
+                        "type" => str_replace("Content", "", $obj->type()),
+                        "author" => $obj->author()
+                    );
 
-                if (method_exists($obj, "excerpt")) {
-                    $array["excerpt"] = $obj->excerpt();
+                    if (method_exists($obj, "excerpt")) {
+                        $array["excerpt"] = $obj->excerpt();
+                    }
+
+                    $ret[] = $array;
                 }
-
-                $ret[] = $array;
             }
 
         } else {
             $ret = $this->_fetchContent($id);
         }
 
-        $this->response()->body($ret);
+        return $this->handleReturnValue($ret);
     }
 
     /**
