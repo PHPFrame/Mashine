@@ -104,57 +104,28 @@ class ContentController extends PHPFrame_ActionController
             }
 
         } elseif ($content instanceof PostsCollectionContent) {
-            $page = $this->request()->param("page");
-            $posts_per_page = $content->param("posts_per_page");
-            $mapper = new ContentMapper(
-                $this->db(),
-                $this->app()->getTmpDir().DS."cms"
-            );
-
-            if (!$page) {
-                $page = 1;
-            }
-
-            if (!$posts_per_page) {
-                $posts_per_page = 10;
-            }
-
-            if ($this->db()->isSQLite()) {
-                $select  = array(
-                    "c.*",
-                    "cd.params AS params",
-                    "u.email AS author_email",
-                    "(uc.first_name || ' ' ||  uc.last_name) AS author"
+            // Get posts using API
+            try {
+                $posts_per_page = $content->param("posts_per_page");
+                $page = $this->request()->param("page");
+                $api_controller = new ContentApiController($this->app(), true);
+                $api_controller->format("php");
+                $api_controller->returnInternalPHP(true);
+                $posts = $api_controller->get(
+                    $content->id(),
+                    null,
+                    $posts_per_page,
+                    $page
                 );
-            } else {
-                $select  = array(
-                    "c.*",
-                    "cd.params AS params",
-                    "u.email AS author_email",
-                    "CONCAT(uc.first_name, ' ', uc.last_name) AS author"
-                );
+
+            } catch (Exception $e) {
+                $this->raiseError($e->getMessage());
+                return;
             }
 
-            $select[] = "cd.description AS description";
-            $select[] = "cd.keywords AS keywords";
-            $select[] = "cd.body AS body";
-
-            $id_obj = $mapper->getIdObject();
-            $id_obj->select($select);
-            $id_obj->where("parent_id", "=", ":parent_id");
-            $id_obj->params(":parent_id", $content->id());
-            $id_obj->orderby("c.pub_date DESC, c.id", "DESC");
-            $id_obj->limit($posts_per_page, ($page-1)*$posts_per_page);
-
-            if (!$this->session()->isAuth() || $this->user()->id() > 2) {
-                $id_obj->where("c.status", "=", "1");
-            }
-
-            $posts  = $mapper->find($id_obj);
             $format = $this->request()->param("format", null);
-
             if ($format == "rss") {
-                $rss      = new PHPFrame_RSSDocument();
+                $rss = new PHPFrame_RSSDocument();
                 $rss->link($base_url.$content->slug());
                 $rss->description($content->body());
 
@@ -236,31 +207,19 @@ class ContentController extends PHPFrame_ActionController
     {
         $tree = $this->request()->param("tree");
 
-        $parent_id = filter_var($parent_id, FILTER_VALIDATE_INT);
-        if ($parent_id === false) {
-            $this->response()->statusCode(400);
-            $this->raiseError("Invalid content parent id.");
-            return;
-        }
-
         if (!is_null($id)) {
-            $id = filter_var($id, FILTER_VALIDATE_INT);
-            if ($id === false) {
-                $this->response()->statusCode(400);
-                $this->raiseError("Invalid content id.");
-                return;
-            }
+            // Get content using API
+            try {
+                $api_controller = new ContentApiController($this->app(), true);
+                $api_controller->format("php");
+                $api_controller->returnInternalPHP(true);
+                $content = $api_controller->get(null, $id);
 
-            $mapper  = new ContentMapper(
-                $this->db(),
-                $this->app()->getTmpDir().DS."cms"
-            );
+                $parent = $tree->getNodeById($content->parentId());
+                $content->parent($parent);
 
-            $content = $mapper->findOne($id);
-            if (!$content instanceof Content) {
-                $this->response()->statusCode(400);
-                $msg = "Could not find the requested content item for editing.";
-                $this->raiseError($msg);
+            } catch (Exception $e) {
+                $this->raiseError($e->getMessage());
                 return;
             }
 
