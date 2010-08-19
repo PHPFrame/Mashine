@@ -61,7 +61,7 @@ jQuery(document).ready(function($) {
         }
     });
 
-    slug_input.attr('disabled', true);
+    //slug_input.attr('disabled', true);
 
     title_input.focusout(function() {
         updateSlug($(this).val());
@@ -75,7 +75,7 @@ jQuery(document).ready(function($) {
     {
         slug = slug.toLowerCase();
         slug = slug.replace(/[^a-z0-9\-]/g, '-');
-        slug_input.val(slug);
+        slug_input.val($('#parent-slug').val() + '/' + slug);
     }
 
     var type_select = $('#type');

@@ -30,7 +30,18 @@
 
 <p>
     <label for="slug" class="inline">URL:</label>
-    <?php echo $base_url; ?>
+    <?php
+    echo $base_url;
+    $parent = $content->parent();
+    if (!$content->slug()
+        && $parent instanceof Content
+        && $parent->parentId() > 0
+    ) {
+        $content->slug($parent->slug()."/");
+        echo "<input type=\"hidden\" name=\"parent_slug\" id=\"parent-slug\"";
+        echo " value=\"".$parent->slug()."\" />";
+    }
+    ?>
     <input
         type="text"
         name="slug"
