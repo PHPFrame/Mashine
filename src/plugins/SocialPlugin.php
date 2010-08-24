@@ -192,6 +192,10 @@ function facebook_connect()
         if ($this->options[$this->getOptionsPrefix()."facebook_enable"]
             && $document instanceof PHPFrame_HTMLDocument
         ) {
+            // Add HTML attributes
+            $html_node = $document->dom()->getElementsByTagName("html")->item(0);
+            $document->addNodeAttr($html_node, "xmlns:fb", "http://www.facebook.com/2008/fbml");
+
             $base_url = $this->app()->config()->get("base_url");
             if (strpos($base_url, "https://") !== false) {
                 $script  = "https://ssl.connect.facebook.com/js/api_lib/v0.4/";

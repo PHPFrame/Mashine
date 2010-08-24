@@ -1,7 +1,7 @@
 <?php
-// Add HTML attributes
-$html_node = $this->dom()->getElementsByTagName("html")->item(0);
-$this->addNodeAttr($html_node, "xmlns:fb", "http://www.facebook.com/2008/fbml");
+// Change doctype to HTML5
+$imp = new DOMImplementation();
+$this->doctype($imp->createDocumentType("html"));
 
 // Get some useful stuff from the application object
 $user      = $app->user();
