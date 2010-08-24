@@ -34,7 +34,7 @@ class PluginsApiController extends PHPFrame_RESTfulController
      * @return void
      * @since  1.0
      */
-    public function __construct(PHPFrame_Application $app)
+    public function __construct(PHPFrame_Application $app, $return=false)
     {
         parent::__construct($app);
 
@@ -100,28 +100,31 @@ class PluginsApiController extends PHPFrame_RESTfulController
         if (!is_int($id) || $id <= 0) {
             $obj = new PHPFrame_PluginInfo();
             $obj->owner($this->user()->id());
-
         } else {
             $obj = $this->_fetchPluginInfo($id, true);
+        }
 
+        if (!empty($name)) {
+            $obj->name($name);
+        }
+
+        if (!is_null($enabled)) {
+            $obj->enabled((int) (bool) $enabled);
         }
 
         $params = $request->params();
         unset($params["id"]);
-        if (isset($params["name"]) && empty($params["name"])) {
-            unset($params["name"]);
-        }
+        unset($params["name"]);
+        unset($params["enabled"]);
 
         $obj->bind($params);
-
         $obj->group(2);
         $obj->perms(664);
 
         $this->app()->plugins()->insert($obj);
-
         $this->app()->plugins($this->app()->plugins());
 
-        $this->response()->body($obj);
+        return $this->handleReturnValue($obj);
     }
 
     /**

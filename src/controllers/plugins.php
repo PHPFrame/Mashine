@@ -126,15 +126,26 @@ class PluginsController extends PHPFrame_ActionController
 
     private function _setEnabled($id, $bool)
     {
-        $id = filter_var($id, FILTER_VALIDATE_INT);
+        try {
+            $api_controller = new PluginsApiController($this->app(), true);
+            $api_controller->format("php");
+            $api_controller->returnInternalPHP(true);
+            $plugin = $api_controller->post($id, null, $bool);
 
-        foreach ($this->app()->plugins() as $plugin) {
-            if ($plugin->id() == $id) {
-                $plugin->enabled($bool);
+            if (!$plugin instanceof PHPFrame_PluginInfo
+                || $plugin->enabled() != ((bool) $bool)
+            ) {
+                $msg = "An error occurred while saving the plugin info.";
+                throw new Exception($msg);
             }
-        }
 
-        $this->app()->plugins($this->app()->plugins());
+            $action = ($bool) ? "enabled" : "disabled";
+            $this->notifySuccess("Plugin ".$action." successfully!");
+
+        } catch (Exception $e) {
+            $this->raiseError($e->getMessage());
+            return;
+        }
 
         $this->setRedirect($this->config()->get("base_url")."admin/plugins");
     }
