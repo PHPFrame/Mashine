@@ -17,5 +17,5 @@ $app->dispatch();
 
 $output_format = $app->response()->header("Content-Type");
 if ($output_format == "text/html") {
-    echo "<!-- Total execution time ".round((microtime(true) - $start), 3)." seconds -->";
+    echo "\n<!-- Total execution time ".round((microtime(true) - $start), 3)." seconds -->";
 }
