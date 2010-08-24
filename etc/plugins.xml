@@ -8,7 +8,7 @@
         <description />
         <author>Lupo Montero</author>
         <date>2010-05-03</date>
-        <version>0.0.29</version>
+        <version>0.0.30</version>
         <license>BSD New</license>
         <license_url>http://www.opensource.org/licenses/bsd-license.php</license_url>
         <enabled>1</enabled>
@@ -79,6 +79,28 @@
         <license_url>http://www.opensource.org/licenses/bsd-license.php</license_url>
         <enabled>1</enabled>
         <id>4</id>
+        <ctime>1252985443</ctime>
+        <mtime>1252985443</mtime>
+        <owner>1</owner>
+        <group>1</group>
+        <perms>664</perms>
+    </PHPFrame_PluginInfo>
+    <PHPFrame_PluginInfo>
+        <name>OAuthPlugin</name>
+        <channel>http://dist.phpframe.org</channel>
+        <summary>
+            OAuth
+        </summary>
+        <description>
+            OAuth
+        </description>
+        <author>Lupo Montero</author>
+        <date>2010-05-15</date>
+        <version>1.0</version>
+        <license>BSD New</license>
+        <license_url>http://www.opensource.org/licenses/bsd-license.php</license_url>
+        <enabled>1</enabled>
+        <id>5</id>
         <ctime>1252985443</ctime>
         <mtime>1252985443</mtime>
         <owner>1</owner>

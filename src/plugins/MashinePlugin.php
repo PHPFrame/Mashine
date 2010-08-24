@@ -110,7 +110,7 @@ class MashinePlugin extends AbstractPlugin
             $installer->installDB();
         }
 
-        $this->options[$this->getOptionsPrefix()."version"] = "0.0.29";
+        $this->options[$this->getOptionsPrefix()."version"] = "0.0.30";
     }
 
     /**
