@@ -1,0 +1,134 @@
+<?php
+/**
+ * src/models/oauth/OAuthMethodsMapper.php
+ *
+ * PHP version 5
+ *
+ * @category  PHPFrame_Applications
+ * @package   Mashine
+ * @author    Lupo Montero <lupo@e-noise.com>
+ * @copyright 2010 E-NOISE.COM LIMITED
+ * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
+ * @link      https://github.com/lupomontero/Mashine
+ */
+
+/**
+ * OAuth methods mapper class.
+ *
+ * @category PHPFrame_Applications
+ * @package  Mashine
+ * @author   Lupo Montero <lupo@e-noise.com>
+ * @license  http://www.opensource.org/licenses/bsd-license.php New BSD License
+ * @link     https://github.com/lupomontero/Mashine
+ * @since    1.0
+ */
+class OAuthMethodsMapper
+{
+    private $_db;
+
+    /**
+     * Constructor.
+     *
+     * @param PHPFrame_Database $db Instance of PHPFrame_Database.
+     *
+     * @return void
+     * @since  1.0
+     */
+    public function __construct(PHPFrame_Database $db)
+    {
+        $this->_db = $db;
+    }
+
+    /**
+     * Find API methods auth info.
+     *
+     * @return array
+     * @since  1.0
+     */
+    public function find()
+    {
+        return $this->_db->fetchAssocList("SELECT * FROM #__oauth_methods");
+    }
+
+    /**
+     * Find API auth info for a given method by id.
+     *
+     * @param int $id The method row id in the db.
+     *
+     * @return array
+     * @since  1.0
+     */
+    public function findOne($id)
+    {
+        $sql  = "SELECT * FROM #__oauth_methods";
+        $sql .= " WHERE id = :id";
+
+        return $this->_db->fetchAssocList($sql, array(":id"=>$id));
+    }
+
+    /**
+     * Find API auth info for a given method by method name.
+     *
+     * @param string $method The API method name.
+     *
+     * @return array
+     * @since  1.0
+     */
+    public function findByMethod($method)
+    {
+        $sql  = "SELECT * FROM #__oauth_methods";
+        $sql .= " WHERE method = :method";
+
+        return $this->_db->fetchAssocList($sql, array("method"=>$method));
+    }
+
+    /**
+     * Insert or update auth info for a given method.
+     *
+     * @param string $method The API method name for which to save auth info.
+     * @param int    $oauth  [Optional] Whether to allow OAuth. 3 possible
+     *                       values: 0 = No, 2 = 2 legged, 3 = 3 legged. Note
+     *                       that value 1 is not allowed. Default is 0.
+     * @param int    $cookie [Optional] Whether or not to allow cookie based
+     *                       auth. Two possible values: 0 = No, 1 = Yes.
+     *                       Default value is 0.
+     *
+     * @return void
+     * @since  1.0
+     */
+    public function insert($method, $oauth=null, $cookie=null)
+    {
+        $row = $this->findByMethod($method);
+
+        if (count($row) > 0) {
+            $sql    = "UPDATE #__oauth_methods SET ";
+            $params = array();
+
+            if (!is_null($oauth)) {
+                $sql .= "oauth = :oauth";
+                $params[":oauth"] = (int) $oauth;
+            }
+
+            if (!is_null($cookie)) {
+                if (!is_null($oauth)) $sql .= ", ";
+
+                $sql .= "cookie = :cookie";
+                $params[":cookie"] = (int) $cookie;
+            }
+
+            $sql .= " WHERE method = :method";
+            $params[":method"] = $method;
+
+        } else {
+            $sql  = "INSERT INTO #__oauth_methods (method, oauth, cookie)";
+            $sql .= " VALUES (:method, :oauth, :cookie)";
+            $params = array(
+                ":method" => $method,
+                ":oauth"  => (int) $oauth,
+                ":cookie"  => (int) $cookie
+            );
+        }
+
+        $this->_db->query($sql, $params);
+    }
+}
