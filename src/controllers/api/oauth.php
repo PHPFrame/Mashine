@@ -1,6 +1,6 @@
 <?php
 /**
- * src/controllers/domain.php
+ * src/controllers/oauth.php
  *
  * PHP version 5
  *
@@ -243,6 +243,38 @@ class OauthApiController extends PHPFrame_RESTfulController
         }
     }
 
+    /**
+     * Save auth info for given API method.
+     *
+     * @param string $method The API method name for which to save auth info.
+     * @param int    $oauth  [Optional] Whether to allow OAuth. 3 possible
+     *                       values: 0 = No, 2 = 2 legged, 3 = 3 legged. Note
+     *                       that value 1 is not allowed. Default is 0.
+     * @param int    $cookie [Optional] Whether or not to allow cookie based
+     *                       auth. Two possible values: 0 = No, 1 = Yes.
+     *                       Default value is 0.
+     *
+     * @return int
+     * @since  1.0
+     */
+    public function save_method_auth($method, $oauth=null, $cookie=null)
+    {
+        if (!$this->session()->isAuth() || $this->user()->groupId() > 2) {
+            throw new Exception("Access denied!");
+        }
+
+        $mapper = new OAuthMethodsMapper($this->db());
+        $mapper->insert($method, $oauth, $cookie);
+
+        $this->response()->body(1);
+    }
+
+    /**
+     * Get OAuth tokens mapper.
+     *
+     * @return OAuthTokensMapper
+     * @since  1.0
+     */
     private function _getTokensMapper()
     {
         if (is_null($this->_tokens_mapper)) {
@@ -252,6 +284,13 @@ class OauthApiController extends PHPFrame_RESTfulController
         return $this->_tokens_mapper;
     }
 
+    /**
+     * Get OAuth clients mapper. These are the client applications with OAuth
+     * access. Each has a consumer key and a consumer secret.
+     *
+     * @return OAuthClientsMapper
+     * @since  1.0
+     */
     private function _getClientsMapper()
     {
         if (is_null($this->_clients_mapper)) {
@@ -261,6 +300,12 @@ class OauthApiController extends PHPFrame_RESTfulController
         return $this->_clients_mapper;
     }
 
+    /**
+     * Get OAuth ACL mapper.
+     *
+     * @return OAuthACLMapper
+     * @since  1.0
+     */
     private function _getACLMapper()
     {
         if (is_null($this->_acl_mapper)) {
