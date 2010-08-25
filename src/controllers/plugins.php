@@ -51,12 +51,11 @@ class PluginsController extends PHPFrame_ActionController
         $this->response()->body($view);
     }
 
-    public function options($id)
+    public function options($id=null)
     {
         $id = filter_var($id, FILTER_VALIDATE_INT);
         if ($id === false) {
-            $this->response()->statusCode(400);
-            $this->raiseError("Invalid plugin id.");
+            $this->setRedirect($this->config()->get("base_url")."admin/plugins");
             return;
         }
 
