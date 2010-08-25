@@ -135,7 +135,7 @@ class OAuthPlugin extends AbstractPlugin
             <td><?php echo $method["method"]; ?></td>
             <td>
                 <a
-                    class="api-method-oauth"
+                    class="api-method-link api-method-link-oauth"
                     href="<?php echo $method["method"]; ?>"
                     title="<?php echo $method["oauth"]; ?>"
                 >
@@ -144,7 +144,7 @@ class OAuthPlugin extends AbstractPlugin
             </td>
             <td>
                 <a
-                    class="api-method-cookie"
+                    class="api-method-link api-method-link-cookie"
                     href="<?php echo $method["method"]; ?>"
                     title="<?php echo $method["cookie"]; ?>"
                 >
@@ -156,34 +156,47 @@ class OAuthPlugin extends AbstractPlugin
         </table>
 
         <script>
-        jQuery('.api-method-oauth').click(function(e) {
+        jQuery('.api-method-link').click(function(e) {
             e.preventDefault();
 
-            if (jQuery('#api-method-oauth-form').length > 0) {
-                jQuery('#api-method-oauth-form').prev('a').css('display', 'inline');
-                jQuery('#api-method-oauth-form').remove();
+            if (jQuery('#api-method-form').length > 0) {
+                jQuery('#api-method-form').prev('a').css('display', 'inline');
+                jQuery('#api-method-form').remove();
             }
 
             jQuery(this).css('display', 'none');
 
-            var apiOauthSelect = '<form id="api-method-oauth-form">';
-            apiOauthSelect += '<select name="oauth" id="oauth" onchange="saveOAuthMethod(\'';
+
+            var selectName;
+            if (jQuery(this).hasClass('api-method-link-oauth')) {
+                selectName = 'oauth';
+            } else {
+                selectName = 'cookie';
+            }
+
+            var apiOauthSelect = '<form id="api-method-form">';
+            apiOauthSelect += '<select name="' + selectName + '" id="';
+            apiOauthSelect += selectName + '" onchange="saveOAuthMethod(\'';
             apiOauthSelect += jQuery(this).attr('href');
             apiOauthSelect += '\', this);">';
             apiOauthSelect += '<option value="0">No</option>';
-            apiOauthSelect += '<option value="2">2 legged</option>';
-            apiOauthSelect += '<option value="3">3 legged</option>';
+            if (selectName === 'oauth') {
+                apiOauthSelect += '<option value="2">2 legged</option>';
+                apiOauthSelect += '<option value="3">3 legged</option>';
+            } else {
+                apiOauthSelect += '<option value="1">Yes</option>';
+            }
             apiOauthSelect += '</select>';
             apiOauthSelect += '</form>';
 
             jQuery(this).after(apiOauthSelect);
 
-            jQuery('#oauth').val(jQuery(this).attr('title'));
+            jQuery('#' + selectName).val(jQuery(this).attr('title'));
         });
 
-        function saveOAuthMethod(method, select)
+        var saveOAuthMethod = function(method, select)
         {
-            var form = jQuery('#api-method-oauth-form');
+            var form = jQuery('#api-method-form');
             var selectedValue = select.options[select.selectedIndex].value;
             var data = {
                 method: method,
@@ -205,7 +218,22 @@ class OAuthPlugin extends AbstractPlugin
                         alert('Something went wrong when saving API method info');
                     }
 
-                    form.prev('a').html(selectedValue).css('display', 'inline');
+                    var anchorText = '';
+                    if (selectedValue == 0) {
+                        anchorText = 'No';
+                    } else if (selectedValue == 1) {
+                        anchorText = 'Yes';
+                    } else if (selectedValue == 2) {
+                        anchorText = '2 legged';
+                    } else if (selectedValue == 3) {
+                        anchorText = '3 legged';
+                    }
+
+                    form.prev('a')
+                        .html(anchorText)
+                        .attr('title', selectedValue)
+                        .css('display', 'inline');
+
                     form.remove();
                 }
             });
