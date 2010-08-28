@@ -33,4 +33,14 @@ class ContentMapperTest extends MapperTestCase
 
         return $obj;
     }
+
+    public function test_deletePostsCollection()
+    {
+
+    }
+
+    public function test_deleteParent()
+    {
+
+    }
 }
