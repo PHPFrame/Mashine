@@ -93,7 +93,6 @@ class ShortCodeParser
 
             if ($this->_status == self::EATING_WHITESPACE) {
                 if (!in_array($this->_str[$this->_count], array(" ", "\n", "\t"))) {
-                    //$this->_count++;
                     $this->_status = $this->_next_status;
                 } else {
                     $this->_count++;
