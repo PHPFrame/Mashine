@@ -2,13 +2,11 @@
     <PHPFrame_PluginInfo>
         <name>MashinePlugin</name>
         <channel>http://dist.phpframe.org</channel>
-        <summary>
-            This is the core CMS plugin and can not be disabled or uninstalled.
-        </summary>
+        <summary>This is the core CMS plugin and can not be disabled or uninstalled.</summary>
         <description />
         <author>Lupo Montero</author>
         <date>2010-05-03</date>
-        <version>0.0.30</version>
+        <version>0.1.0</version>
         <license>BSD New</license>
         <license_url>http://www.opensource.org/licenses/bsd-license.php</license_url>
         <enabled>1</enabled>
@@ -22,12 +20,8 @@
     <PHPFrame_PluginInfo>
         <name>SocialPlugin</name>
         <channel>http://dist.phpframe.org</channel>
-        <summary>
-            This plugin adds integration with Facebook Connect and Twitter OAuth.
-        </summary>
-        <description>
-            This plugin adds integration with Facebook Connect and Twitter OAuth.
-        </description>
+        <summary>This plugin adds integration with Facebook Connect and Twitter OAuth.</summary>
+        <description>This plugin adds integration with Facebook Connect and Twitter OAuth.</description>
         <author>Lupo Montero</author>
         <date>2010-05-03</date>
         <version>1.0</version>
@@ -42,58 +36,10 @@
         <perms>664</perms>
     </PHPFrame_PluginInfo>
     <PHPFrame_PluginInfo>
-        <name>GoogleAnalyticsPlugin</name>
-        <channel>http://dist.phpframe.org</channel>
-        <summary>
-            Easily integrate Google Analytics tracking.
-        </summary>
-        <description>
-            Easily integrate Google Analytics tracking.
-        </description>
-        <author>Lupo Montero</author>
-        <date>2010-05-03</date>
-        <version>1.0</version>
-        <license>BSD New</license>
-        <license_url>http://www.opensource.org/licenses/bsd-license.php</license_url>
-        <enabled>1</enabled>
-        <id>3</id>
-        <ctime>1252985443</ctime>
-        <mtime>1252985443</mtime>
-        <owner>1</owner>
-        <group>1</group>
-        <perms>664</perms>
-    </PHPFrame_PluginInfo>
-    <PHPFrame_PluginInfo>
-        <name>ContactFormPlugin</name>
-        <channel>http://dist.phpframe.org</channel>
-        <summary>
-            Simple contact form.
-        </summary>
-        <description>
-            Simple contact form.
-        </description>
-        <author>Lupo Montero</author>
-        <date>2010-05-15</date>
-        <version>1.0</version>
-        <license>BSD New</license>
-        <license_url>http://www.opensource.org/licenses/bsd-license.php</license_url>
-        <enabled>1</enabled>
-        <id>4</id>
-        <ctime>1252985443</ctime>
-        <mtime>1252985443</mtime>
-        <owner>1</owner>
-        <group>1</group>
-        <perms>664</perms>
-    </PHPFrame_PluginInfo>
-    <PHPFrame_PluginInfo>
         <name>OAuthPlugin</name>
         <channel>http://dist.phpframe.org</channel>
-        <summary>
-            OAuth
-        </summary>
-        <description>
-            OAuth
-        </description>
+        <summary>OAuth</summary>
+        <description>OAuth</description>
         <author>Lupo Montero</author>
         <date>2010-05-15</date>
         <version>1.0</version>
@@ -105,6 +51,42 @@
         <mtime>1252985443</mtime>
         <owner>1</owner>
         <group>1</group>
+        <perms>664</perms>
+    </PHPFrame_PluginInfo>
+    <PHPFrame_PluginInfo>
+        <name>GoogleAnalyticsPlugin</name>
+        <channel>http://dist.phpframe.org</channel>
+        <summary>Easily integrate Google Analytics tracking.</summary>
+        <description>Easily integrate Google Analytics tracking.</description>
+        <author>Lupo Montero</author>
+        <date>2010-05-03</date>
+        <version>1.0</version>
+        <license>BSD New</license>
+        <license_url>http://www.opensource.org/licenses/bsd-license.php</license_url>
+        <enabled />
+        <id>3</id>
+        <ctime>1252985443</ctime>
+        <mtime>1283104834</mtime>
+        <owner>1</owner>
+        <group>2</group>
+        <perms>664</perms>
+    </PHPFrame_PluginInfo>
+    <PHPFrame_PluginInfo>
+        <name>ContactFormPlugin</name>
+        <channel>http://dist.phpframe.org</channel>
+        <summary>Simple contact form.</summary>
+        <description>Simple contact form.</description>
+        <author>Lupo Montero</author>
+        <date>2010-05-15</date>
+        <version>1.0</version>
+        <license>BSD New</license>
+        <license_url>http://www.opensource.org/licenses/bsd-license.php</license_url>
+        <enabled />
+        <id>4</id>
+        <ctime>1252985443</ctime>
+        <mtime>1283112654</mtime>
+        <owner>1</owner>
+        <group>2</group>
         <perms>664</perms>
     </PHPFrame_PluginInfo>
 </collection>
