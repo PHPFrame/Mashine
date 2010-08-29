@@ -37,7 +37,7 @@ class UpdateAssistant
     public function __construct(PHPFrame_Application $app)
     {
         $this->_app = $app;
-        $this->_options = $app->request()->param("mashine_options");
+        $this->_options = $app->request()->param("_options");
     }
 
     /**

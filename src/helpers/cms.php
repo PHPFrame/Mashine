@@ -3,7 +3,7 @@ class CMSHelper extends PHPFrame_ViewHelper
 {
     public function id2title($id)
     {
-        $tree = $this->app()->request()->param("tree");
+        $tree = $this->app()->request()->param("_content_tree");
         $found = $tree->getNodeById($id);
         if ($found instanceof Content) {
             return $found->title();

@@ -82,7 +82,9 @@ class ShortCodeParser
     }
 
     /**
-     * Parse options string.
+     * Parse options string. This method is invoked by
+     * {@link ShortCodeParser::parse()} and works with the data stored in the
+     * instance's state.
      *
      * @return void
      * @since  1.0

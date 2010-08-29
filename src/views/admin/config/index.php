@@ -5,11 +5,7 @@
 <div class="entry">
 
 <pre>
-<?php
-// We inject a span in the [cms] section title to avoid it being processed by
-// the CMS plugin as a short tag.
-echo str_replace("[cms]", "[<span>cms</span>]", $config);
-?>
+<?php echo $config; ?>
 </pre>
 
 </div><!-- .entry -->

@@ -11,7 +11,7 @@ $renderer  = $app->response()->renderer();
 $app_name  = $app->config()->get("app_name");
 $base_url  = $app->config()->get("base_url");
 $request   = $app->request();
-$content   = $request->param("active_content");
+$content   = $request->param("_content_active");
 
 // Add Javascript and CSS
 $this->addScript("http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js");
@@ -46,7 +46,7 @@ echo $renderer->renderPartial(
 ?>
 
 <div id="content">
-[cms:type=breadcrumbs]
+[nav type="breadcrumbs"]
 <?php echo $this->body()."\n"; ?>
 </div><!-- #content -->
 

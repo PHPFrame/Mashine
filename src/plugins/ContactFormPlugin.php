@@ -37,6 +37,11 @@ class ContactFormPlugin extends AbstractPlugin
     public function __construct(PHPFrame_Application $app)
     {
         parent::__construct($app);
+
+        $this->shortCodes()->add("contactform", array(
+            $this,
+            "handleContactFormShortCode"
+        ));
     }
 
     public function routeStartup()
@@ -106,24 +111,16 @@ class ContactFormPlugin extends AbstractPlugin
         }
     }
 
-    public function preDispatch()
-    {
-        $request = $this->app()->request();
-        $content = $request->param("active_content");
-        if (!$content instanceof Content) {
-            return;
-        }
-
-        $content->body(
-            preg_replace(
-                "/\[contactform\]/",
-                $this->_doContactForm(),
-                $content->body()
-            )
-        );
-    }
-
-    private function _doContactForm()
+    /**
+     * Handle [contactform] shortcode.
+     *
+     * @param array Associative array containing the shortcode attributes.
+     *
+     * @return string This method returns the string the shortcode will be
+     *                replaced with.
+     * @since  1.0
+     */
+    public function handleContactFormShortCode($attr)
     {
         ob_start();
         ?>

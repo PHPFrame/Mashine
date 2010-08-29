@@ -41,7 +41,7 @@ class PluginsController extends PHPFrame_ActionController
 
     public function index()
     {
-        $content = $this->request()->param("active_content");
+        $content = $this->request()->param("_content_active");
         $view    = $this->view("admin/plugins/index");
 
         $view->addData("title", $content->title());
@@ -75,7 +75,7 @@ class PluginsController extends PHPFrame_ActionController
         $plugin_class = $plugin->name();
         $plugin = new $plugin_class($this->app());
 
-        $content = $this->request()->param("active_content");
+        $content = $this->request()->param("_content_active");
         $view    = $this->view("admin/plugins/options");
 
         $view->addData("title", $content->title());
@@ -87,7 +87,7 @@ class PluginsController extends PHPFrame_ActionController
 
     public function save_options()
     {
-        $options = $this->request()->param("mashine_options");
+        $options = $this->request()->param("_options");
 
         try {
             foreach ($this->request()->params() as $key=>$value) {

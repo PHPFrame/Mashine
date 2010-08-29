@@ -13,18 +13,18 @@
  */
 
 /**
- * Mashine Plugin class
- *
- * @category PHPFrame_Applications
- * @package  Mashine
- * @author   Lupo Montero <lupo@e-noise.com>
- * @license  http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link     https://github.com/lupomontero/Mashine
- * @since    1.0
+ * Register Mashine's autoload function.
  */
-
 spl_autoload_register("__mashineAutoload");
 
+/**
+ * Mashine's autoload function. This adds support for loading API controllers.
+ *
+ * @param string $class_name The name of the class to look for.
+ *
+ * @return void
+ * @since  1.0
+ */
 function __mashineAutoload($class_name)
 {
     if (preg_match("/([a-zA-Z0-9]*)ApiController$/", $class_name, $matches)) {
@@ -37,10 +37,19 @@ function __mashineAutoload($class_name)
     }
 }
 
+/**
+ * Mashine Plugin class
+ *
+ * @category PHPFrame_Applications
+ * @package  Mashine
+ * @author   Lupo Montero <lupo@e-noise.com>
+ * @license  http://www.opensource.org/licenses/bsd-license.php New BSD License
+ * @link     https://github.com/lupomontero/Mashine
+ * @since    1.0
+ */
 class MashinePlugin extends AbstractPlugin
 {
     private $_mapper, $_slugs;
-    private static $_hooks;
 
     /**
      * Constructor
@@ -65,15 +74,18 @@ class MashinePlugin extends AbstractPlugin
         );
 
         if ($app->user()->groupId() < 3) {
-            $this->hooks->addCallBack(
+            $this->hooks()->addCallBack(
                 "dashboard_boxes",
                 array($this, "getContentStats")
             );
-            $this->hooks->addCallBack(
+            $this->hooks()->addCallBack(
                 "dashboard_boxes",
                 array($this, "getUserStats")
             );
         }
+
+        $this->shortCodes()->add("content", array($this, "handleContentShortCode"));
+        $this->shortCodes()->add("nav", array($this, "handleNavShortCode"));
 
         $this->_init();
 
@@ -97,6 +109,75 @@ class MashinePlugin extends AbstractPlugin
         }
     }
 
+    public function handleContentShortCode($attr)
+    {
+        var_dump($attr);
+        exit;
+    }
+
+    /**
+     * Handle [nav] shortcode.
+     *
+     * @param array Associative array containing the shortcode attributes.
+     *
+     * @return string This method returns the string the shortcode will be
+     *                replaced with.
+     * @since  1.0
+     */
+    public function handleNavShortCode($attr)
+    {
+        $request        = $this->app()->request();
+        $user           = $this->app()->user();
+        $tree           = $request->param("_content_tree");
+        $active_content = $request->param("_content_active");
+
+        if (!$tree instanceof Content) {
+            return;
+        }
+
+        $html_sitemap = new HTMLSiteMap($tree, $user);
+
+        if (array_key_exists("type", $attr)) {
+            switch ($attr["type"]) {
+            case "branch" :
+                $html_sitemap->node($active_content);
+                break;
+            case "parent" :
+                $html_sitemap->parent(true);
+                break;
+            case "breadcrumbs" :
+                if ($active_content instanceof Content) {
+                    return $html_sitemap->breadcrumbs($active_content);
+                } else {
+                    return "";
+                }
+            }
+        }
+
+        if (array_key_exists("show_root", $attr)) {
+            $html_sitemap->showRoot(false);
+        }
+
+        if (array_key_exists("show_root_as_child", $attr)) {
+            $html_sitemap->showRootAsChild($attr["show_root_as_child"]);
+        }
+
+        if (array_key_exists("depth", $attr)) {
+            $html_sitemap->depth($attr["depth"]);
+        }
+
+        if (array_key_exists("show_forbidden", $attr)) {
+            $html_sitemap->showForbidden($attr["show_forbidden"]);
+        }
+
+        if (array_key_exists("exclude", $attr)) {
+            $exclude = explode(",", $attr["exclude"]);
+            $html_sitemap->exclude($exclude);
+        }
+
+        return (string) $html_sitemap;
+    }
+
     /**
      * Install plugin.
      *
@@ -110,22 +191,7 @@ class MashinePlugin extends AbstractPlugin
             $installer->installDB();
         }
 
-        $this->options[$this->getOptionsPrefix()."version"] = "0.0.30";
-    }
-
-    /**
-     * Get CMS Hooks object.
-     *
-     * @return Hooks
-     * @since  1.0
-     */
-    public static function hooks()
-    {
-        if (is_null(self::$_hooks)) {
-            self::$_hooks = new Hooks();
-        }
-
-        return self::$_hooks;
+        $this->options[$this->getOptionsPrefix()."version"] = "0.1.0";
     }
 
     /**
@@ -137,7 +203,7 @@ class MashinePlugin extends AbstractPlugin
      */
     public function getContentStats()
     {
-        $tree = $this->app()->request()->param("tree");
+        $tree = $this->app()->request()->param("_content_tree");
 
         $stats = $this->_doGetContentStats($tree);
 
@@ -199,7 +265,8 @@ class MashinePlugin extends AbstractPlugin
 
         // Show XML sitemap if requested
         if ($request->controllerName() == "content" && $request->param("xml")) {
-            $xml_sitemap = new XMLSiteMap($request->param("tree"), $base_url);
+            $tree = $request->param("_content_tree");
+            $xml_sitemap = new XMLSiteMap($tree, $base_url);
 
             $response->renderer(new PHPFrame_XMLRenderer());
             $response->document($xml_sitemap);
@@ -336,7 +403,7 @@ class MashinePlugin extends AbstractPlugin
                     // Get fully fledged content data for active item
                     $item = $this->_mapper->findOne($item->id());
                     $item->active(true);
-                    $request->param("active_content", $item);
+                    $request->param("_content_active", $item);
                 }
 
                 if (!is_null($parent)) {
@@ -351,7 +418,7 @@ class MashinePlugin extends AbstractPlugin
                         }
                     }
                 } else {
-                    $request->param("tree", $item);
+                    $request->param("_content_tree", $item);
                 }
 
                 $this->_buildTree($array, $item);
@@ -391,81 +458,33 @@ class MashinePlugin extends AbstractPlugin
     }
 
     /**
-     * Replace [cms] short tags.
+     * Replace short tags.
      *
      * @return void
      * @since  1.0
      */
     private function _replaceShortTags()
     {
-        $request        = $this->app()->request();
-        $response       = $this->app()->response();
-        $user           = $this->app()->user();
-        $tree           = $request->param("tree");
-        $active_content = $request->param("active_content");
+        $request           = $this->app()->request();
+        $response          = $this->app()->response();
+        $body              = $response->body();
+        $short_code_parser = new ShortCodeParser();
+        $keywords          = $this->shortCodes()->getKeywords();
+        $regex             = "/\[(".implode("|", $keywords).")(\s+.*)?\]/";
 
-        if (!$tree instanceof Content) {
-            return;
-        }
+        if (preg_match_all($regex, $body, $matches)) {
+            foreach ($matches[0] as $short_code) {
+                $array = $short_code_parser->parse($short_code);
 
-        $body = $response->body();
+                $replace = $this->shortCodes()->call($array[0], $array[1]);
 
-        $matches = array();
-        $pattern = '/\[cms:?([a-zA-Z0-9_&=,;\/\-]*)\]/';
-        if (preg_match_all($pattern, $body, $matches)) {
-            for ($i=0; $i<count($matches[1]); $i++) {
-                $options = array();
-                parse_str(str_replace("&amp;", "&", $matches[1][$i]), $options);
-                $html_sitemap = new HTMLSiteMap($tree, $user);
-
-                if (array_key_exists("type", $options)) {
-                    switch ($options["type"]) {
-                    case "branch" :
-                        $html_sitemap->node($active_content);
-                        break;
-                    case "parent" :
-                        $html_sitemap->parent(true);
-                        break;
-                    case "breadcrumbs" :
-                        $pattern = '/'.preg_quote($matches[0][$i], '/').'/';
-                        if ($active_content instanceof Content) {
-                            $html = $html_sitemap->breadcrumbs($active_content);
-                            $body = preg_replace($pattern, $html, $body);
-                        } else {
-                            $body = preg_replace($pattern, "", $body);
-                        }
-                        continue;
-                    }
-                }
-
-                if (array_key_exists("show_root", $options)) {
-                    $html_sitemap->showRoot(false);
-                }
-
-                if (array_key_exists("show_root_as_child", $options)) {
-                    $html_sitemap->showRootAsChild($options["show_root_as_child"]);
-                }
-
-                if (array_key_exists("depth", $options)) {
-                    $html_sitemap->depth($options["depth"]);
-                }
-
-                if (array_key_exists("show_forbidden", $options)) {
-                    $html_sitemap->showForbidden($options["show_forbidden"]);
-                }
-
-                if (array_key_exists("exclude", $options)) {
-                    $exclude = explode(",", $options["exclude"]);
-                    $html_sitemap->exclude($exclude);
-                }
-
-                $pattern = '/'.preg_quote($matches[0][$i], '/').'/';
-                $body = preg_replace($pattern, $html_sitemap, $body);
+                $pattern = '/'.preg_quote($short_code, '/').'/';
+                $body = preg_replace($pattern, $replace, $body);
             }
         }
 
         if ($request->controllerName() == "content" && $request->action() == "form") {
-            $body = preg_replace("/\[@@cms(.*)@@\]/", "[cms$1]", $body);
+            $body = preg_replace("/\[@@(.*)@@\]/", "[$1]", $body);
         }
 
         // Set processed response back in response

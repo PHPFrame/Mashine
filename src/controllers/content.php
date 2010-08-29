@@ -45,7 +45,7 @@ class ContentController extends PHPFrame_ActionController
      */
     public function index()
     {
-        $content  = $this->request()->param("active_content");
+        $content  = $this->request()->param("_content_active");
         $base_url = $this->config()->get("base_url");
 
         if (!$content instanceof Content) {
@@ -182,8 +182,8 @@ class ContentController extends PHPFrame_ActionController
      */
     public function manage()
     {
-        $content = $this->request()->param("active_content");
-        $tree    = $this->request()->param("tree");
+        $content = $this->request()->param("_content_active");
+        $tree    = $this->request()->param("_content_tree");
         $view    = $this->view("admin/content/index");
 
         $view->addData("title", $content->title());
@@ -205,7 +205,7 @@ class ContentController extends PHPFrame_ActionController
      */
     public function form($parent_id=0, $id=null)
     {
-        $tree = $this->request()->param("tree");
+        $tree = $this->request()->param("_content_tree");
 
         if (!is_null($id)) {
             // Get content using API
@@ -265,8 +265,8 @@ class ContentController extends PHPFrame_ActionController
 
         // Obsecure short tags to avoid rendering inside WYSIWYG editor
         $content->body(preg_replace(
-            "/\[cms(.*)\]/",
-            "[@@cms$1@@]",
+            "/\[\s*([a-z0-9_-]+)(\s+.*)?\]/",
+            "[@@$1$2@@]",
             $content->body()
         ));
 

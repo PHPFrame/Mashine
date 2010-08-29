@@ -13,7 +13,7 @@
  */
 
 /**
- * Hooks class
+ * The Hooks class
  *
  * @category PHPFrame_Applications
  * @package  Mashine
@@ -41,11 +41,28 @@ class Hooks
         $this->_callbacks = array();
     }
 
+    /**
+     * Get array of registered actions.
+     *
+     * @return array
+     * @since  1.0
+     */
     public function getActions()
     {
         return $this->_actions;
     }
 
+    /**
+     * Add a callback function to a given action. Note that the action needs
+     * to have been registered before we add callbacks to it.
+     *
+     * @param string $action   The action for which to register the callback.
+     * @param string $callback The callback function or method.
+     * @param int    $priority [Optional]
+     *
+     * @return void
+     * @since  1.0
+     */
     public function addCallBack($action, $callback, $priority=0)
     {
         if (!in_array($action, $this->_actions)) {
@@ -56,6 +73,15 @@ class Hooks
         $this->_callbacks[] = array($action, $callback, (int) $priority);
     }
 
+    /**
+     * Do named action. This will cause all callbacks associated with the action
+     * to be run.
+     *
+     * @param string $action The action to trigger.
+     *
+     * @return array An array containing the output for each of the callbacks.
+     * @since  1.0
+     */
     public function doAction($action)
     {
         $array = array();

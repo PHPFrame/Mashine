@@ -36,10 +36,57 @@ class SocialPlugin extends AbstractPlugin
     {
         parent::__construct($app);
 
-        $this->hooks->addCallBack(
+        $this->hooks()->addCallBack(
             "login_form",
             array($this, "getLoginForm")
         );
+
+        $this->shortCodes()->add("social", array($this, "handleSocialShortCode"));
+    }
+
+    /**
+     * Handle [social] shortcode.
+     *
+     * @param array Associative array containing the shortcode attributes.
+     *
+     * @return string This method returns the string the shortcode will be
+     *                replaced with.
+     * @since  1.0
+     */
+    public function handleSocialShortCode($attr)
+    {
+        if (array_key_exists("count", $attr)) {
+            $count = $attr["count"];
+        } else {
+            $count = 0;
+        }
+
+        $replacement = "";
+
+        if (array_key_exists("type", $attr)) {
+            switch ($attr["type"]) {
+            case "tweets" :
+                if (!array_key_exists("user", $attr)) {
+                    $msg  = "Social plugin error. Twitter user has to be ";
+                    $msg .= "specified in a 'user' attribute when 'type' is ";
+                    $msg .= "set to tweets.";
+                    return $msg;
+                }
+
+                $url  = "http://twitter.com/statuses/user_timeline/";
+                $url .= $attr["user"].".rss";
+                $feed_content = new FeedContent();
+                $feed_content->param("feed_url", $url);
+                $replacement = $this->_renderTwitterFeed(
+                    $feed_content,
+                    $count,
+                    $attr["user"]
+                );
+                break;
+            }
+        }
+
+        return $replacement;
     }
 
     /**
@@ -181,7 +228,7 @@ function facebook_connect()
             return;
         }
 
-        $content = $request->param("active_content");
+        $content = $request->param("_content_active");
         if ($content instanceof Content
             && $content->slug() == "admin/content/form"
         ) {
@@ -206,8 +253,6 @@ function facebook_connect()
             $script .= "FeatureLoader.js.php";
             $document->addScript($script);
         }
-
-        $this->_replaceShortTags();
     }
 
     /**
@@ -356,62 +401,6 @@ function facebook_connect()
         )));
 
         $db->createTable($tbl);
-    }
-
-    /**
-     * Replace [social] short tags.
-     *
-     * @return void
-     * @since  1.0
-     */
-    private function _replaceShortTags()
-    {
-        $request        = $this->app()->request();
-        $response       = $this->app()->response();
-
-        $body = $response->body();
-
-        $matches = array();
-        if (preg_match_all('/\[(social.*)\]/', $body, $matches)) {
-            for ($i=0; $i<count($matches[1]); $i++) {
-                $options = $matches[1][$i];
-                $options = substr($options, strpos($options, ":")+1);
-                $options = str_replace("&amp;", "&", $options);
-                parse_str($options, $options);
-
-                if (array_key_exists("count", $options)) {
-                    $count = $options["count"];
-                } else {
-                    $count = 0;
-                }
-
-                if (array_key_exists("user", $options)) {
-                    $twitter_user = $options["user"];
-                }
-
-                if (array_key_exists("type", $options)) {
-                    switch ($options["type"]) {
-                    case "tweets" :
-                        $url  = "http://twitter.com/statuses/user_timeline/";
-                        $url .= $twitter_user.".rss";
-                        $feed_content = new FeedContent();
-                        $feed_content->param("feed_url", $url);
-                        $replacement = $this->_renderTwitterFeed(
-                            $feed_content,
-                            $count,
-                            $twitter_user
-                        );
-                        break;
-                    }
-                }
-
-                $pattern = '/'.preg_quote($matches[0][$i], '/').'/';
-                $body = preg_replace($pattern, $replacement, $body);
-            }
-        }
-
-        // Set processed response back in response
-        $response->body($body, false);
     }
 
     private function _renderTwitterFeed(

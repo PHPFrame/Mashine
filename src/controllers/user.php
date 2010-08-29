@@ -47,8 +47,9 @@ class UserController extends PHPFrame_ActionController
      */
     public function index()
     {
-        $content = $this->request()->param("active_content");
-        $dashboard_boxes = MashinePlugin::hooks()->doAction("dashboard_boxes");
+        $content = $this->request()->param("_content_active");
+        $hooks = $this->request()->param("_hooks");
+        $dashboard_boxes = $hooks->doAction("dashboard_boxes");
 
         $view = $this->view("user/dashboard");
         $view->addData("title", $content->title());
@@ -110,7 +111,7 @@ class UserController extends PHPFrame_ActionController
         }
 
         // else we show login form
-        $content = $this->request()->param("active_content");
+        $content = $this->request()->param("_content_active");
         if ($content instanceof Content) {
             $title = $content->title();
         } else {
@@ -182,7 +183,7 @@ class UserController extends PHPFrame_ActionController
     public function form($id=null)
     {
         $base_url = $this->config()->get("base_url");
-        $content  = $this->request()->param("active_content");
+        $content  = $this->request()->param("_content_active");
         $title    = $content->title();
         $ret_url  = $base_url."profile";
 
@@ -603,7 +604,7 @@ class UserController extends PHPFrame_ActionController
     {
         $base_url = $this->config()->get("base_url");
         $ret_url  = $this->request()->param("ret_url", $base_url."profile");
-        $content  = $this->request()->param("active_content");
+        $content  = $this->request()->param("_content_active");
         $title    = $content->title();
 
         if (is_null($id) && $content->slug() == "user/editcontact") {
