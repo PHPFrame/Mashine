@@ -125,7 +125,8 @@ class UserController extends PHPFrame_ActionController
         $view->addData("email", $request->param("email", ""));
         $view->addData("token", base64_encode($this->session()->getToken()));
 
-        $login_plugins = MashinePlugin::hooks()->doAction("login_form");
+        $hooks = $this->request()->param("_hooks");
+        $login_plugins = $hooks->doAction("login_form");
         $view->addData("login_plugins", $login_plugins);
 
         $this->response()->title($title);
