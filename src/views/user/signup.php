@@ -13,7 +13,7 @@
     <label for="email"><?php echo UserLang::EMAIL; ?></label>
     <input
         class="required email"
-        type="text"
+        type="email"
         name="email"
         id="email"
         value="<?php echo $email; ?>"
@@ -119,12 +119,12 @@
 
 <p style="width:50%; float:left;">
     <label for="phone"><?php echo UserLang::PHONE; ?></label>
-    <input class="required" type="text" name="phone" id="phone" size="25" />
+    <input class="required" type="tel" name="phone" id="phone" size="25" />
 </p>
 
 <p style="width:50%; float:left;">
     <label for="fax"><?php echo UserLang::FAX; ?></label>
-    <input type="text" name="fax" id="fax" size="25" />
+    <input type="tel" name="fax" id="fax" size="25" />
 </p>
 
 </fieldset>
