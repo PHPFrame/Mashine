@@ -64,6 +64,12 @@ class User extends PHPFrame_User
 
         parent::__construct($options);
 
+        if (!$this->id()) {
+            $this->groupId(3);
+            $this->group(2);
+            $this->perms(664);
+        }
+
         $this->contacts = new SplObjectStorage();
 
         if (is_array($options)) {

@@ -10,12 +10,31 @@ class UsersApiControllerTest extends MVCTestCase
     {
         $app = $this->app(true);
         // $app->session()->setUser(new User);
-        $this->fixture(new UsersApiController($app));
+
+        $api_controller = new UsersApiController($app, true);
+        $api_controller->format("php");
+        $api_controller->returnInternalPHP(true);
+
+        $this->fixture($api_controller);
     }
 
-    public function test_get()
+    public function test_getPHP()
     {
-        $this->fixture()->get();
+        $ret = $this->fixture()->get();
+        $this->assertType("PHPFrame_PersistentObjectCollection", $ret);
+        foreach ($ret as $obj) {
+            $this->assertType("User", $obj);
+        }
+    }
+
+    public function test_getJSON()
+    {
+        $api_controller = new UsersApiController($this->app());
+        $api_controller->format("json");
+        $api_controller->returnInternalPHP(false);
+
+        $api_controller->get();
+
         $response = $this->app()->response();
 
         $this->assertEquals(200, $response->statusCode());
@@ -39,9 +58,22 @@ class UsersApiControllerTest extends MVCTestCase
         $this->assertArrayHasKey("perms", $user);
     }
 
-    public function test_getOne()
+    public function test_getOnePHP()
     {
-        $this->fixture()->get(1);
+        $user = $this->fixture()->get(1);
+
+        $this->assertType("User", $user);
+        $this->assertEquals(1, $user->id());
+    }
+
+    public function test_getOneJSON()
+    {
+        $api_controller = new UsersApiController($this->app());
+        $api_controller->format("json");
+        $api_controller->returnInternalPHP(false);
+
+        $api_controller->get(1);
+
         $response = $this->app()->response();
 
         $this->assertEquals(200, $response->statusCode());
@@ -65,12 +97,35 @@ class UsersApiControllerTest extends MVCTestCase
         $this->assertEquals(1, $user["id"]);
     }
 
-    public function test_postAdminNewUserAndDelete()
+    public function test_getOneNotFoundErrorPHP()
     {
-        $request = $this->app()->request();
-        $request->param("email", "tests@phpframe.org");
+        try {
+            $user = $this->fixture()->get(9999);
+            $this->fail("Exception should have been throw!");
 
-        $this->fixture()->post(null);
+        } catch (Exception $e) {
+            $this->assertEquals("User not found.", $e->getMessage());
+        }
+    }
+
+    public function test_postAdminNewUserAndDeletePHP()
+    {
+        $user = $this->fixture()->post(null, null, "tests@phpframe.org", "Passw0rd");
+
+        $this->assertType("User", $user);
+        $this->assertEquals(3, $user->groupId());
+
+        $ret = $this->fixture()->delete($user->id());
+        $this->assertTrue($ret);
+    }
+
+    public function test_postAdminNewUserAndDeleteJSON()
+    {
+        $api_controller = new UsersApiController($this->app());
+        $api_controller->format("json");
+        $api_controller->returnInternalPHP(false);
+
+        $api_controller->post(null, null, "tests@phpframe.org", "Passw0rd");
         $response = $this->app()->response();
 
         $this->assertEquals(200, $response->statusCode());
@@ -93,7 +148,7 @@ class UsersApiControllerTest extends MVCTestCase
 
         $this->assertEquals(3, $user["group_id"]);
 
-        $this->fixture()->delete($user["id"]);
+        $api_controller->delete($user["id"]);
         $response = $this->app()->response();
 
         $this->assertEquals(200, $response->statusCode());
@@ -103,12 +158,29 @@ class UsersApiControllerTest extends MVCTestCase
         $this->assertTrue($ret);
     }
 
-    public function test_postAdminNewStaffAndDelete()
+    public function test_postAdminNewStaffAndDeletePHP()
     {
-        $request = $this->app()->request();
-        $request->param("email", "tests@phpframe.org");
+        $user = $this->fixture()->post(null, 2, "tests@phpframe.org");
 
-        $this->fixture()->post(null, 2);
+        $this->assertType("User", $user);
+        $this->assertEquals(2, $user->groupId());
+
+        $params = $user->params();
+        $this->assertType("array", $params);
+        $this->assertArrayHasKey("secondary_groups", $params);
+        $this->assertEquals(3, $params["secondary_groups"]);
+
+        $ret = $this->fixture()->delete($user->id());
+        $this->assertTrue($ret);
+    }
+
+    public function test_postAdminNewStaffAndDeleteJSON()
+    {
+        $api_controller = new UsersApiController($this->app());
+        $api_controller->format("json");
+        $api_controller->returnInternalPHP(false);
+
+        $api_controller->post(null, 2, "tests@phpframe.org");
         $response = $this->app()->response();
 
         $this->assertEquals(200, $response->statusCode());
@@ -135,7 +207,7 @@ class UsersApiControllerTest extends MVCTestCase
         $this->assertArrayHasKey("secondary_groups", $params);
         $this->assertEquals(3, $params["secondary_groups"]);
 
-        $this->fixture()->delete($user["id"]);
+        $api_controller->delete($user["id"]);
         $response = $this->app()->response();
 
         $this->assertEquals(200, $response->statusCode());
@@ -145,12 +217,29 @@ class UsersApiControllerTest extends MVCTestCase
         $this->assertTrue($ret);
     }
 
-    public function test_postAdminNewCustomerAndDelete()
+    public function test_postAdminNewCustomerAndDeletePHP()
     {
-        $request = $this->app()->request();
-        $request->param("email", "tests@phpframe.org");
+        $user = $this->fixture()->post(null, 4, "tests@phpframe.org");
 
-        $this->fixture()->post(null, 4);
+        $this->assertType("User", $user);
+        $this->assertEquals(4, $user->groupId());
+
+        $params = $user->params();
+        $this->assertType("array", $params);
+        $this->assertArrayHasKey("secondary_groups", $params);
+        $this->assertEquals(3, $params["secondary_groups"]);
+
+        $ret = $this->fixture()->delete($user->id());
+        $this->assertTrue($ret);
+    }
+
+    public function test_postAdminNewCustomerAndDeleteJSON()
+    {
+        $api_controller = new UsersApiController($this->app());
+        $api_controller->format("json");
+        $api_controller->returnInternalPHP(false);
+
+        $api_controller->post(null, 4, "tests@phpframe.org");
         $response = $this->app()->response();
 
         $this->assertEquals(200, $response->statusCode());
@@ -177,7 +266,7 @@ class UsersApiControllerTest extends MVCTestCase
         $this->assertArrayHasKey("secondary_groups", $params);
         $this->assertEquals(3, $params["secondary_groups"]);
 
-        $this->fixture()->delete($user["id"]);
+        $api_controller->delete($user["id"]);
         $response = $this->app()->response();
 
         $this->assertEquals(200, $response->statusCode());
@@ -217,9 +306,25 @@ class UsersApiControllerTest extends MVCTestCase
 
     }
 
-    public function test_search()
+    public function test_searchPHP()
     {
-        $this->fixture()->search("root");
+        $ret = $this->fixture()->search("root");
+
+        $this->assertType("array", $ret);
+
+        $row = $ret[0];
+        $this->assertType("array", $row);
+        $this->assertArrayHasKey("label", $row);
+        $this->assertArrayHasKey("value", $row);
+    }
+
+    public function test_searchJSON()
+    {
+        $api_controller = new UsersApiController($this->app());
+        $api_controller->format("json");
+        $api_controller->returnInternalPHP(false);
+
+        $api_controller->search("root");
         $response = $this->app()->response();
 
         $this->assertEquals(200, $response->statusCode());

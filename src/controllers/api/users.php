@@ -77,22 +77,32 @@ class UsersApiController extends PHPFrame_RESTfulController
             $ret = $this->_getUsersMapper()->find($id_obj);
         }
 
-        $this->response()->body($ret);
+        return $this->handleReturnValue($ret);
     }
 
     /**
-     * Save User passed in POST.
+     * Save User passed in POST. If no 'id' is passed in request a new User
+     * object will be created, otherwise the existing user with a matching 'id'
+     * will be updated.
      *
-     * @param int    $id      [Optional]
-     * @param string $ret_url [Optional]
+     * @param int    $id            [Optional]
+     * @param int    $group_id      [Optional]
+     * @param string $email         [Optional]
+     * @param string $password      [Optional]
+     * @param string $status        [Optional]
+     * @param int    $notifications [Optional]
      *
      * @return object The user object after saving it.
      * @since  1.0
      */
-    public function post($id=null, $group_id=null, $password=null)
-    {
-        $request  = $this->request();
-        $email    = $request->param("email");
+    public function post(
+        $id=0,
+        $group_id=0,
+        $email=null,
+        $password=null,
+        $status=null,
+        $notifications=null
+    ) {
         $id       = filter_var($id, FILTER_VALIDATE_INT);
         $group_id = filter_var($group_id, FILTER_VALIDATE_INT);
         $is_staff = ($this->session()->isAuth() && $this->user()->groupId() < 3);
@@ -101,6 +111,7 @@ class UsersApiController extends PHPFrame_RESTfulController
         if (!is_int($id) || $id <= 0) {
             $user = new User();
             $user->email($email);
+            $user->activation($crypt->genRandomPassword(32));
 
             if (!$group_id) {
                 $user->groupId(3);
@@ -111,21 +122,14 @@ class UsersApiController extends PHPFrame_RESTfulController
                 throw new InvalidArgumentException($msg, 401);
             }
 
-            if (!$password && $is_staff) {
+            if (!$password) {
+                if (!$is_staff) {
+                    throw new InvalidArgumentException("Password is required", 401);
+                }
+
                 $password = $crypt->genRandomPassword(8);
-                $request->param("password", $password);
-            } else {
-                $password = $request->param("password");
+                $this->request()->param("password", $password);
             }
-
-            // Encrypt password and store along with salt
-            $salt      = $crypt->genRandomPassword(32);
-            $encrypted = $crypt->encryptPassword($password, $salt);
-
-            $user->password($encrypted.":".$salt);
-            $user->activation($crypt->genRandomPassword(32));
-            $user->group(2);
-            $user->perms(664);
 
         } else {
             $user = $this->_fetchUser($id, true);
@@ -134,19 +138,25 @@ class UsersApiController extends PHPFrame_RESTfulController
                 $user->groupId($group_id);
             }
 
-            $user->email($request->param("email"));
-
-            // Update password if needed
-            $password = $request->param("password");
-            if ($password) {
-                // Encrypt password and store along with salt
-                $salt      = $crypt->genRandomPassword(32);
-                $encrypted = $crypt->encryptPassword($password, $salt);
-                $user->password($encrypted.":".$salt);
+            if ($email) {
+                $user->email($email);
             }
         }
 
-        $this->_ensureUniqueEmail($email);
+        if ($password) {
+            //TODO: Check password format
+
+            // Encrypt password and store along with salt
+            $salt      = $crypt->genRandomPassword(32);
+            $encrypted = $crypt->encryptPassword($password, $salt);
+            $user->password($encrypted.":".$salt);
+        }
+
+        $this->_ensureUniqueEmail($user->email());
+
+        if (!is_null($notifications)) {
+            $user->notifications($notifications);
+        }
 
         // Add 'registered' as secondary group to every other group except
         // wheel and the 'registered' group itself.
@@ -157,7 +167,7 @@ class UsersApiController extends PHPFrame_RESTfulController
         // Save the user object in the database
         $this->_getUsersMapper()->insert($user);
 
-        $this->response()->body($user);
+        return $this->handleReturnValue($user);
     }
 
     /**
@@ -175,7 +185,7 @@ class UsersApiController extends PHPFrame_RESTfulController
 
         $this->_getUsersMapper()->delete($user);
 
-        $this->response()->body(true);
+        return $this->handleReturnValue(true);
     }
 
     /**
@@ -209,7 +219,7 @@ class UsersApiController extends PHPFrame_RESTfulController
             $ret[] = array("label"=>$label, "value"=>$row["id"]);
         }
 
-        $this->response()->body($ret);
+        return $this->handleReturnValue($ret);
     }
 
     /**
