@@ -10,7 +10,7 @@
     <label for="email"><?php echo UserLang::EMAIL; ?></label>
     <input
         class="required email"
-        type="text"
+        type="email"
         name="email"
         id="email"
         value="<?php echo $email; ?>"
