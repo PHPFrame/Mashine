@@ -105,20 +105,23 @@ Admin actions:
     <ul>
     <?php foreach ($contacts as $contact) : ?>
         <li>
-            <p>
-                <?php if ($contact->preferred()) { echo "pref"; } ?>
-                <?php echo $contact->orgName(); ?>
-                <?php echo $contact->firstName(); ?>
-                <?php echo $contact->lastName(); ?>
-                <?php echo $contact->orgName(); ?>
-                <?php echo $contact->address1(); ?>
-                <?php echo $contact->city(); ?>
-                <?php echo $contact->postCode(); ?>
-                <?php echo $contact->county(); ?>
-                <?php echo $contact->country(); ?>
-                <?php echo $contact->phone(); ?>
-                <?php echo $contact->email(); ?>
-            </p>
+		<?php if ($contact->preferred()) { echo "pref"; } ?>
+    		<div class="vcard">
+    			<span class="fn"><?php echo $contact->firstName(); ?> <?php echo $contact->lastName(); ?></span>
+    			<div class="org"><?php echo $contact->orgName(); ?></div>
+    			<a class="email" href="mailto:<?php echo $contact->email(); ?>"><?php echo $contact->email(); ?></a>
+    			<div class="adr">
+    			    <div class="street-address"><?php echo $contact->address1(); ?></div>
+    			    <span class="locality"><?php echo $contact->city(); ?></span>
+    			    <br />
+    			    <span class="region"><?php echo $contact->county(); ?></span>
+    			    <br />
+    			    <span class="postal-code"><?php echo $contact->postCode(); ?></span>
+    			    <br />
+    			    <span class="country-name"><?php echo $contact->country(); ?></span>
+    			</div>
+    			<div class="tel"><?php echo $contact->phone(); ?></div>
+    		</div><!-- end .vcard-->
             <p>
                 <a href="user/editcontact?id=<?php echo $contact->id(); ?>">
                     <?php echo GlobalLang::EDIT; ?>
