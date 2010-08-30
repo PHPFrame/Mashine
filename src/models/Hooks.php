@@ -56,9 +56,9 @@ class Hooks
      * Add a callback function to a given action. Note that the action needs
      * to have been registered before we add callbacks to it.
      *
-     * @param string $action   The action for which to register the callback.
-     * @param string $callback The callback function or method.
-     * @param int    $priority [Optional]
+     * @param string       $action   The action for which to add the callback.
+     * @param string|array $callback The callback function or method.
+     * @param int          $priority [Optional]
      *
      * @return void
      * @since  1.0
