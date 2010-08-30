@@ -154,7 +154,7 @@ class UsersApiController extends PHPFrame_RESTfulController
 
         $this->_ensureUniqueEmail($user->email());
 
-        if (!is_null($notifications)) {
+        if (!is_null($notifications) && $notifications != "") {
             $user->notifications($notifications);
         }
 
