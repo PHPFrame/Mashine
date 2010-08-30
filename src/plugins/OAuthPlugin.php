@@ -53,7 +53,7 @@ class OAuthPlugin extends AbstractPlugin
         $slug = $this->app()->request()->param('slug');
         $slug_exploded = explode('/', $slug);
 
-        if ($slug_exploded[0] == 'api'){
+        if ($slug_exploded[0] == 'api' && isset($slug_exploded[1])) {
             //for api controllers check if action is specified in slug,
             //if not then use http_method as action if there is one defined
             $controller = strtolower($slug_exploded[1]);
