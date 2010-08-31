@@ -64,14 +64,15 @@ class OAuthPlugin extends AbstractPlugin
 
             $http_method = strtolower($this->app()->request()->method());
             $method = $slug;
-            if ( count($slug_exploded) == 2){
+            if (count($slug_exploded) == 2){
                 $method .= '/'.$http_method;
-            } else if (count($slug_exploded) > 3){
+            } else if (count($slug_exploded) > 3) {
                 $method = $slug_exploded[0].'/'.$slug_exploded[1];
                 $method .= '/'.$slug_exploded[2];
             }
-//            $api_model = new OAuthAPIMethods();
-//            $oauth_access = $api_model->findByMethod($method);
+
+            $api_model = new OAuthAPIMethods();
+            $oauth_access = $api_model->findByMethod($method);
 
             if (false){
                 $clients_mapper = new OAuthClientsMapper($this->app()->db());
