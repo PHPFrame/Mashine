@@ -71,7 +71,7 @@ class OAuthPlugin extends AbstractPlugin
                 $method .= '/'.$slug_exploded[2];
             }
 
-            $api_model = new OAuthAPIMethods();
+            $api_model = new OAuthMethodsMapper($this->app()->db());
             $oauth_access = $api_model->findByMethod($method);
 
             if (false){
