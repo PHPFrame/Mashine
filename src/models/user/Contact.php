@@ -98,7 +98,7 @@ class Contact extends PHPFrame_PersistentObject
             "email",
             null,
             false,
-            new PHPFrame_EmailFilter(array("min_length"=>0, "max_length"=>255))
+            new PHPFrame_EmailFilter(array("min_length"=>6, "max_length"=>255))
         );
         $this->addField(
             "fax",
