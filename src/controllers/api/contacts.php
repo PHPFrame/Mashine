@@ -81,8 +81,8 @@ class ContactsApiController extends PHPFrame_RESTfulController
     }
 
     /**
-     * Save contact passed in POST. If no 'id' is passed in request a new 
-     * Contact object will be created, otherwise the existing contact with a 
+     * Save contact passed in POST. If no 'id' is passed in request a new
+     * Contact object will be created, otherwise the existing contact with a
      * matching 'id' will be updated if any of the other parameters are given.
      *
      * @param int    $id            [Optional]
@@ -132,70 +132,70 @@ class ContactsApiController extends PHPFrame_RESTfulController
             $msg = "Permission denied.";
             throw new InvalidArgumentException($msg, 401);
         }
-        
+
         if (!is_int($id) || $id <= 0) {
             $contact = new Contact();
             $contact->group(2);
 
-            if (!$first_name) {
-                throw new InvalidArgumentException("First name is required", 401);
-            } else if (!$last_name) {
-                throw new InvalidArgumentException("Last name is required", 401);
-            } else if (!$address1) {
-                throw new InvalidArgumentException("Address1 is required", 401);
-            } else if (!$city) {
-                throw new InvalidArgumentException("City is required", 401);
-            } else if (!$post_code) {
-                throw new InvalidArgumentException("Post code is required", 401);
-            } else if (!$county) {
-                throw new InvalidArgumentException("County is required", 401);
-            } else if (!$phone) {
-                throw new InvalidArgumentException("Phone is required", 401);
-            } else if (!$email) {
-                throw new InvalidArgumentException("Email is required", 401);
-            }
+            // if (!$first_name) {
+            //     throw new InvalidArgumentException("First name is required", 401);
+            // } else if (!$last_name) {
+            //     throw new InvalidArgumentException("Last name is required", 401);
+            // } else if (!$address1) {
+            //     throw new InvalidArgumentException("Address1 is required", 401);
+            // } else if (!$city) {
+            //     throw new InvalidArgumentException("City is required", 401);
+            // } else if (!$post_code) {
+            //     throw new InvalidArgumentException("Post code is required", 401);
+            // } else if (!$county) {
+            //     throw new InvalidArgumentException("County is required", 401);
+            // } else if (!$phone) {
+            //     throw new InvalidArgumentException("Phone is required", 401);
+            // } else if (!$email) {
+            //     throw new InvalidArgumentException("Email is required", 401);
+            // }
         } else {
             $contact = $this->_fetchContact($id, true);
+        }
 
-            if ($org_name) {
-                $contact->orgName($org_name);
-            }
-            if ($first_name) {
-                $contact->firstName($first_name);
-            }
-            if ($last_name) {
-                $contact->lastName($last_name);
-            }
-            if ($address1) {
-                $contact->address1($address1);
-            }
-            if ($address2) {
-                $contact->address2($address2);
-            }
-            if ($city) {
-                $contact->city($city);
-            }
-            if ($post_code) {
-                $contact->postCode($post_code);
-            }
-            if ($county) {
-                $contact->county($county);
-            }
-            if ($country) {
-                $contact->country($country);
-            }
-            if ($phone) {
-                $contact->phone($phone);
-            }
-            if ($email) {
-                $contact->email($email);
-            }
-            if ($fax) {
-                $contact->fax($fax);
-            }
-            if ($preferred) {
-                $contact->preferred($preferred);
-            }
+        if ($org_name) {
+            $contact->orgName($org_name);
+        }
+        if ($first_name) {
+            $contact->firstName($first_name);
+        }
+        if ($last_name) {
+            $contact->lastName($last_name);
+        }
+        if ($address1) {
+            $contact->address1($address1);
+        }
+        if ($address2) {
+            $contact->address2($address2);
+        }
+        if ($city) {
+            $contact->city($city);
+        }
+        if ($post_code) {
+            $contact->postCode($post_code);
+        }
+        if ($county) {
+            $contact->county($county);
+        }
+        if ($country) {
+            $contact->country($country);
+        }
+        if ($phone) {
+            $contact->phone($phone);
+        }
+        if ($email) {
+            $contact->email($email);
+        }
+        if ($fax) {
+            $contact->fax($fax);
+        }
+        if ($preferred) {
+            $contact->preferred($preferred);
         }
 
         // Save the contact object in the database

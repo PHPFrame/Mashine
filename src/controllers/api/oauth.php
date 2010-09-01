@@ -24,8 +24,7 @@
  */
 class OauthApiController extends PHPFrame_RESTfulController
 {
-    private $_oauth_server, $_tokens_mapper, $_clients_mapper, $_acl_mapper;
-    private $_oauth_error = false;
+    private $_tokens_mapper, $_acl_mapper;
 
     /**
      * Constructor.
@@ -39,29 +38,7 @@ class OauthApiController extends PHPFrame_RESTfulController
     {
         parent::__construct($app);
 
-        if (!$this->request()->param("jsonp_callback")) {
-            $this->response()->document(new PHPFrame_PlainDocument);
-            $this->response()->renderer(new PHPFrame_PlainRenderer);
-        }
-
         $this->response()->header("Cache-Control", "private");
-
-        try {
-            $this->_oauth_server = new OAuthServer(
-                $this->_getClientsMapper(),
-                $this->_getTokensMapper(),
-                $this->config()->get("base_url")."api/oauth/request_token"
-            );
-
-            $api_method = $this->request()->param("api_method");
-            if (!in_array($api_method, array("authorise", "saveacl"))) {
-                $this->_oauth_server->checkOAuthRequest();
-            }
-
-        } catch (OAuthException $e) {
-            $this->response()->body(OAuthProvider::reportProblem($e));
-            $this->_oauth_error = true;
-        }
     }
 
     /**
@@ -70,18 +47,13 @@ class OauthApiController extends PHPFrame_RESTfulController
      * @return string|null
      * @since  1.0
      */
-    public function request_token()
+    public function request_token($oauth_consumer_key, $oauth_callback)
     {
-        if ($this->_oauth_error) { return; }
-
-        $consumer_key = $this->_oauth_server->getConsumerKey();
-        $callback = $this->_oauth_server->getCallback();
-
         try {
             $token = new OAuthToken();
             $token->type("request");
-            $token->consumerKey($consumer_key);
-            $token->callback($callback);
+            $token->consumerKey($oauth_consumer_key);
+            $token->callback($oauth_callback);
             $this->_getTokensMapper()->insert($token);
         } catch (Exception $e) {
             $this->response()->body(OAuthProvider::reportProblem($e));
@@ -89,10 +61,10 @@ class OauthApiController extends PHPFrame_RESTfulController
         }
 
         $str  = "login_url=".$this->config()->get("base_url");
-        $str .= "api/oauth/authorise&oauth_token=".$token->key();
+        $str .= "oauth/authorise&oauth_token=".$token->key();
         $str .= "&oauth_token_secret=".$token->secret();
 
-        if ($callback) {
+        if ($oauth_callback) {
             $str .= "&oauth_callback_accepted=1";
         }
 
@@ -108,11 +80,8 @@ class OauthApiController extends PHPFrame_RESTfulController
      * @return string
      * @since  1.0
      */
-    public function access_token($oauth_token, $oauth_verifier)
+    public function access_token($oauth_consumer_key, $oauth_token, $oauth_verifier)
     {
-        if ($this->_oauth_error) { return; }
-
-        $consumer_key = $this->_oauth_server->getConsumerKey();
         $request_token = $this->_getTokensMapper()->findByKey($oauth_token);
 
         if (!$request_token instanceof OAuthToken) {
@@ -132,7 +101,7 @@ class OauthApiController extends PHPFrame_RESTfulController
 
         $access_token = new OAuthToken();
         $access_token->type("access");
-        $access_token->consumerKey($consumer_key);
+        $access_token->consumerKey($oauth_consumer_key);
         $this->_getTokensMapper()->insert($access_token);
 
         $acl->token($access_token->key());
@@ -142,105 +111,6 @@ class OauthApiController extends PHPFrame_RESTfulController
         $str .= "&oauth_token_secret=".$access_token->secret();
 
         $this->response()->body($str);
-    }
-
-    /**
-     * Show authorisation page.
-     *
-     * @param string $oauth_token The OAuth request token.
-     *
-     * @return void
-     * @since  1.0
-     */
-    public function authorise($oauth_token)
-    {
-        $base_url = $this->config()->get("base_url");
-        $this->response()->document(new PHPFrame_HTMLDocument());
-        $this->response()->renderer(new PHPFrame_HTMLRenderer(""));
-
-        $token = $this->_getTokensMapper()->findByKey($oauth_token);
-        $oauth_client = $this->_getClientsMapper()->findByKey($token->consumerKey());
-
-        if (!$this->session()->isAuth()) {
-            $redirect_url = $base_url."user/login";
-            $ret_url      = $base_url."api/oauth/authorise?oauth_token=";
-            $ret_url     .= $token->key()."&oauth_token_secret=".$token->secret();
-
-            $redirect_url .= "?ret_url=".urlencode($ret_url);
-
-            $this->setRedirect($redirect_url);
-            return;
-        }
-
-        $app_name = $this->config()->get("app_name");
-        $str = '<p>'.$oauth_client->name().' is requesting access to your '.$app_name.' account.</p>
-<form name="oauth_authorise_form" action="'.$base_url.'api/oauth/saveacl" method="post">
-<input type="submit" value="Deny" onclick="document.oauth_authorise_form.status.value = \'revoked\';" />
-<input type="submit" value="Authorise" onclick="document.oauth_authorise_form.status.value = \'active\';" />
-<input type="hidden" name="status" value="" />
-<input type="hidden" name="oauth_token" value="'.$token->key().'" />
-</form>';
-
-        $this->response()->body($str);
-    }
-
-    /**
-     * Save new OAuth authorisation.
-     *
-     * @param string $oauth_token The OAuth request token.
-     * @param string $status      The token status (active or revoked).
-     *
-     * @return void
-     * @since  1.0
-     */
-    public function saveacl($oauth_token, $status)
-    {
-        if (!$this->session()->isAuth()) {
-            throw new Exception("Permission denied!", 401);
-        }
-
-        $request_token = $this->_getTokensMapper()->findByKey($oauth_token);
-        $callback = $request_token->callback();
-        $oauth_client = $this->_getClientsMapper()->findByKey($request_token->consumerKey());
-        $str = "";
-
-        switch ($status) {
-        case "active" :
-            if ($request_token->status() !== "active") {
-                $this->raiseError("Invalid request token.");
-                return;
-            }
-
-            $acl = new OAuthACL(array(
-                "client_id" => $oauth_client->id(),
-                "user_id"   => $this->user()->id(),
-                "resource"  => "*",
-                "token"     => $request_token->key(),
-                "owner"     => $this->user()->id(),
-                "group"     => $this->user()->groupId()
-            ));
-
-            $this->_getACLMapper()->insert($acl);
-
-            $verifier = md5($request_token->secret().$request_token->consumerKey());
-
-            $str .= "oauth_token=".$request_token->key();
-            $str .= "&oauth_verifier=".$verifier;
-            break;
-
-        case "revoked" :
-            $str .= "oauth_problem=permission_denied&code=403";
-            break;
-
-        default :
-            throw new InvalidArgumentException("Unknown token status.");
-        }
-
-        if ($callback) {
-            $this->setRedirect($callback."?".$str);
-        } else {
-            $this->response()->body($str);
-        }
     }
 
     /**
@@ -282,22 +152,6 @@ class OauthApiController extends PHPFrame_RESTfulController
         }
 
         return $this->_tokens_mapper;
-    }
-
-    /**
-     * Get OAuth clients mapper. These are the client applications with OAuth
-     * access. Each has a consumer key and a consumer secret.
-     *
-     * @return OAuthClientsMapper
-     * @since  1.0
-     */
-    private function _getClientsMapper()
-    {
-        if (is_null($this->_clients_mapper)) {
-            $this->_clients_mapper = new OAuthClientsMapper($this->db());
-        }
-
-        return $this->_clients_mapper;
     }
 
     /**
