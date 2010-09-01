@@ -95,7 +95,7 @@ class MashinePlugin extends AbstractPlugin
             $registry->set('api_controllers', $api_controllers);
         }
 
-        // $this->options[$this->getOptionsPrefix()."version"] = "0.0.29";
+        // $this->options[$this->getOptionsPrefix()."version"] = "0.1.1";
 
         if ($app->session()->isAdmin()
             && !$app->request()->ajax()
@@ -197,7 +197,7 @@ class MashinePlugin extends AbstractPlugin
             $installer->installDB();
         }
 
-        $this->options[$this->getOptionsPrefix()."version"] = "0.1.0";
+        $this->options[$this->getOptionsPrefix()."version"] = "0.1.1";
     }
 
     /**
