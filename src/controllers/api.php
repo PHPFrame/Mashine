@@ -163,8 +163,14 @@ class ApiController extends PHPFrame_RESTfulController
 
     private function _doAuth()
     {
-        $api_method  = $this->request()->param("api_object")."/";
-        $api_method .= $this->request()->param("api_method");
+        $api_obj    = $this->request()->param("api_object");
+        $api_method = $this->request()->param("api_method");
+
+        if ((!$api_obj && !$api_method) || $api_method == "usage") {
+            return;
+        }
+
+        $api_method = $api_obj."/".$api_method;
 
         $api_methods_mapper = new OAuthMethodsMapper($this->app()->db());
         $api_method_info = $api_methods_mapper->findByMethod($api_method);

@@ -24,23 +24,18 @@
  */
 class OauthApiController extends PHPFrame_RESTfulController
 {
-    private $_oauth_server, $_tokens_mapper;
+    private $_tokens_mapper, $_acl_mapper;
 
     /**
      * Constructor.
      *
      * @param PHPFrame_Application $app
-     * @param OAuthServer          $oauth_server
      *
      * @return void
      * @since  1.0
      */
-    public function __construct(
-        PHPFrame_Application $app,
-        OAuthServer $oauth_server=null
-    ) {
-        $this->_oauth_server = $oauth_server;
-
+    public function __construct(PHPFrame_Application $app)
+    {
         parent::__construct($app);
 
         $this->response()->header("Cache-Control", "private");
@@ -52,16 +47,13 @@ class OauthApiController extends PHPFrame_RESTfulController
      * @return string|null
      * @since  1.0
      */
-    public function request_token()
+    public function request_token($oauth_consumer_key, $oauth_callback)
     {
-        $consumer_key = $this->_oauth_server->getConsumerKey();
-        $callback = $this->_oauth_server->getCallback();
-
         try {
             $token = new OAuthToken();
             $token->type("request");
-            $token->consumerKey($consumer_key);
-            $token->callback($callback);
+            $token->consumerKey($oauth_consumer_key);
+            $token->callback($oauth_callback);
             $this->_getTokensMapper()->insert($token);
         } catch (Exception $e) {
             $this->response()->body(OAuthProvider::reportProblem($e));
@@ -72,7 +64,7 @@ class OauthApiController extends PHPFrame_RESTfulController
         $str .= "oauth/authorise&oauth_token=".$token->key();
         $str .= "&oauth_token_secret=".$token->secret();
 
-        if ($callback) {
+        if ($oauth_callback) {
             $str .= "&oauth_callback_accepted=1";
         }
 
@@ -88,9 +80,8 @@ class OauthApiController extends PHPFrame_RESTfulController
      * @return string
      * @since  1.0
      */
-    public function access_token($oauth_token, $oauth_verifier)
+    public function access_token($oauth_consumer_key, $oauth_token, $oauth_verifier)
     {
-        $consumer_key = $this->_oauth_server->getConsumerKey();
         $request_token = $this->_getTokensMapper()->findByKey($oauth_token);
 
         if (!$request_token instanceof OAuthToken) {
@@ -110,7 +101,7 @@ class OauthApiController extends PHPFrame_RESTfulController
 
         $access_token = new OAuthToken();
         $access_token->type("access");
-        $access_token->consumerKey($consumer_key);
+        $access_token->consumerKey($oauth_consumer_key);
         $this->_getTokensMapper()->insert($access_token);
 
         $acl->token($access_token->key());
@@ -161,5 +152,20 @@ class OauthApiController extends PHPFrame_RESTfulController
         }
 
         return $this->_tokens_mapper;
+    }
+
+    /**
+     * Get OAuth ACL mapper.
+     *
+     * @return OAuthACLMapper
+     * @since  1.0
+     */
+    private function _getACLMapper()
+    {
+        if (is_null($this->_acl_mapper)) {
+            $this->_acl_mapper = new OAuthACLMapper($this->db());
+        }
+
+        return $this->_acl_mapper;
     }
 }
