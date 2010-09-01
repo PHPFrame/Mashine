@@ -44,7 +44,7 @@ class OAuthController extends PHPFrame_ActionController
 
         $app_name = $this->config()->get("app_name");
         $str = '<p>'.$oauth_client->name().' is requesting access to your '.$app_name.' account.</p>
-<form name="oauth_authorise_form" action="'.$base_url.'api/oauth/saveacl" method="post">
+<form name="oauth_authorise_form" action="'.$base_url.'oauth/saveacl" method="post">
 <input type="submit" value="Deny" onclick="document.oauth_authorise_form.status.value = \'revoked\';" />
 <input type="submit" value="Authorise" onclick="document.oauth_authorise_form.status.value = \'active\';" />
 <input type="hidden" name="status" value="" />
