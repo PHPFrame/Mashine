@@ -155,11 +155,41 @@ class SystemController extends PHPFrame_ActionController
     {
         $content = $this->request()->param("_content_active");
         $view    = $this->view("admin/api/index");
+
         $mapper  = new OAuthClientsMapper($this->db());
         $clients = $mapper->find();
 
+        $mapper = new OAuthMethodsMapper($this->app()->db());
+        $rows   = $mapper->find();
+
+        // Rebuild method info data into a new array using method names as keys
+        // this will allow us to map both arrays when building the table
+        $method_info = array();
+        foreach ($rows as $row) {
+            $method_info[$row["method"]] = $row;
+        }
+
+        $api_controllers = $this->app()->registry()->get("api_controllers");
+        $api_methods = array();
+        foreach ($api_controllers as $controller=>$methods) {
+            foreach ($methods as $method) {
+                $method_name = $controller."/".$method;
+                $api_methods[] = array(
+                    "method" => $method_name,
+                    "oauth"  => @$method_info[$method_name]["oauth"],
+                    "cookie" => @$method_info[$method_name]["cookie"]
+                );
+            }
+        }
+
+        $base_url = $this->app()->config()->get("base_url");
+        $token = base64_encode($this->session()->getToken());
+
         $view->addData("title", $content->title());
         $view->addData("clients", $clients);
+        $view->addData("api_methods", $api_methods);
+        $view->addData("base_url", $base_url);
+        $view->addData("token", $token);
 
         $this->response()->title($content->title());
         $this->response()->body($view);

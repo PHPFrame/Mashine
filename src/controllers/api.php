@@ -25,6 +25,8 @@
 class ApiController extends PHPFrame_RESTfulController
 {
     private $_api_path, $_api_reflector;
+    private $_oauth_server, $_tokens_mapper, $_clients_mapper;
+    private $_oauth_error = false;
 
     /**
      * Constructor.
@@ -36,51 +38,9 @@ class ApiController extends PHPFrame_RESTfulController
      */
     public function __construct(PHPFrame_Application $app)
     {
-        $this->_api_path = $app->getInstallDir().DS."src".DS."controllers".DS."api";
-
-        $request = $app->request();
-        $api_object = $request->action();
-
-        if (!in_array($api_object, $this->_getApiControllers($app))) {
-            $request->action("usage");
-        } else {
-            $request_uri = $request->requestURI();
-            $pattern = "/api\/$api_object\/([a-zA-Z0-9_]+)(?:\/([0-9]+))?/";
-            if (preg_match($pattern, $request_uri, $matches)) {
-                $api_method = $matches[1];
-                if (count($matches) == 3){
-                    $resource_id = $matches[2];
-                }
-            } else {
-                $api_method = "get";
-            }
-
-            $this->_api_reflector = $this->_getApiControllerReflector($api_object);
-
-            $args = array();
-            if ($this->_api_reflector->hasMethod($api_method)) {
-                $reflection_method = $this->_api_reflector->getMethod($api_method);
-                foreach ($reflection_method->getParameters() as $param) {
-                    if (array_key_exists($param->getName(), $request->params())) {
-                        $args[$param->getName()] = $request->param($param->getName());
-                    } else {
-                        if ($param->getName() == 'id' && isset($resource_id)){
-                            $args['id'] = $resource_id;
-                        }
-                        elseif ($param->isDefaultValueAvailable()) {
-                            $args[$param->getName()] = $param->getDefaultValue();
-                        }
-                    }
-                }
-            }
-
-            $request->action("call");
-            $request->param("args", $args);
-            $request->param("api_object", $api_object);
-            $request->param("api_method", $api_method);
-        }
-
         parent::__construct($app);
+        $this->_mapRequest();
+        $this->_doAuth();
     }
 
     /**
@@ -95,12 +55,19 @@ class ApiController extends PHPFrame_RESTfulController
      */
     public function call($api_object, $api_method, array $args=null)
     {
+        if ($this->_oauth_error) { return; }
+
         if (!$this->_api_reflector->hasMethod($api_method)) {
             throw new Exception("Bad Request.", 400);
         }
 
         $reflection_method = $this->_api_reflector->getMethod($api_method);
-        $instance = $this->_api_reflector->newInstance($this->app());
+
+        if ($this->_oauth_server instanceof OAuthServer) {
+            $instance = $this->_api_reflector->newInstance($this->app(), $this->_oauth_server);
+        } else {
+            $instance = $this->_api_reflector->newInstance($this->app());
+        }
 
         foreach ($reflection_method->getParameters() as $param) {
             if (!$param->isOptional()
@@ -147,6 +114,143 @@ class ApiController extends PHPFrame_RESTfulController
         $this->response()->body($array);
     }
 
+    private function _mapRequest()
+    {
+        $install_dir     = $this->app()->getInstallDir();
+        $this->_api_path = $install_dir.DS."src".DS."controllers".DS."api";
+        $request         = $this->app()->request();
+        $api_object      = $request->action();
+
+        if (!in_array($api_object, $this->_getApiControllers($this->app()))) {
+            $request->action("usage");
+        } else {
+            $request_uri = $request->requestURI();
+            $pattern = "/api\/$api_object\/([a-zA-Z0-9_]+)(?:\/([0-9]+))?/";
+            if (preg_match($pattern, $request_uri, $matches)) {
+                $api_method = $matches[1];
+                if (count($matches) == 3){
+                    $resource_id = $matches[2];
+                }
+            } else {
+                $api_method = "get";
+            }
+
+            $this->_api_reflector = $this->_getApiControllerReflector($api_object);
+
+            $args = array();
+            if ($this->_api_reflector->hasMethod($api_method)) {
+                $reflection_method = $this->_api_reflector->getMethod($api_method);
+                foreach ($reflection_method->getParameters() as $param) {
+                    if (array_key_exists($param->getName(), $request->params())) {
+                        $args[$param->getName()] = $request->param($param->getName());
+                    } else {
+                        if ($param->getName() == 'id' && isset($resource_id)){
+                            $args["id"] = $resource_id;
+                        }
+                        elseif ($param->isDefaultValueAvailable()) {
+                            $args[$param->getName()] = $param->getDefaultValue();
+                        }
+                    }
+                }
+            }
+
+            $request->action("call");
+            $request->param("args", $args);
+            $request->param("api_object", $api_object);
+            $request->param("api_method", $api_method);
+        }
+    }
+
+    private function _doAuth()
+    {
+        $api_method  = $this->request()->param("api_object")."/";
+        $api_method .= $this->request()->param("api_method");
+
+        $api_methods_mapper = new OAuthMethodsMapper($this->app()->db());
+        $api_method_info = $api_methods_mapper->findByMethod($api_method);
+
+        if (!is_array($api_method_info) || empty($api_method_info)) {
+            // No auth info has been set for method so to play it safe we do
+            // not allow access.
+            throw new RuntimeException("Permission denied!", 401);
+        }
+
+        if ($this->_isOAuthCall() && $api_method_info["oauth"] > 0) {
+            // If we're doing OAuth we make sure we ignore session that could
+            // have been passed in cookie and already processed
+            $this->session()->setUser(new User());
+
+            try {
+                $this->_oauth_server = new OAuthServer(
+                    $this->_getClientsMapper(),
+                    $this->_getTokensMapper(),
+                    $this->config()->get("base_url")."api/oauth/request_token"
+                );
+
+                $this->_oauth_server->checkOAuthRequest();
+
+            } catch (OAuthException $e) {
+                $this->response()->body(OAuthProvider::reportProblem($e));
+                $this->_oauth_error = true;
+            }
+
+        } elseif ($this->_isFrontendCall() && $api_method_info["cookie"] > 0) {
+            if ($api_method_info["cookie"] == 2) {
+                try {
+                    $this->checkToken();
+                } catch (Exception $e) {
+                    throw new RuntimeException("Permission denied!", 401);
+                }
+            }
+
+        } elseif ($api_method_info["cookie"] == 0) {
+            throw new RuntimeException("Permission denied!", 401);
+        }
+    }
+
+    /**
+     * Check whether current request originated in the site's web frontend.
+     *
+     * @return bool
+     * @since  1.0
+     */
+    private function _isFrontendCall()
+    {
+        $session_name = $this->session()->getName();
+        if (!array_key_exists($session_name, $_COOKIE)) {
+            return false;
+        }
+
+        if ($_COOKIE[$session_name] !== $this->session()->getId()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check whether current request is an API call using OAuth.
+     *
+     * @return bool
+     * @since  1.0
+     */
+    private function _isOAuthCall()
+    {
+        $auth_header = $this->request()->header("Authorization");
+
+        if ($auth_header && (strpos($auth_header, "OAuth") !== false)) {
+            return true;
+        }
+
+        $oauth_signature = $this->request()->param("oauth_signature");
+        $oauth_signature_method = $this->request()->param("oauth_signature_method");
+        if ($oauth_signature && $oauth_signature_method) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Get names of installed controllers. This method reads the api directory
      * in src/controllers/api for installed API components.
@@ -191,5 +295,36 @@ class ApiController extends PHPFrame_RESTfulController
         }
 
         return new ReflectionClass($class_name);
+    }
+
+    /**
+     * Get OAuth clients mapper. These are the client applications with OAuth
+     * access. Each has a consumer key and a consumer secret.
+     *
+     * @return OAuthClientsMapper
+     * @since  1.0
+     */
+    private function _getClientsMapper()
+    {
+        if (is_null($this->_clients_mapper)) {
+            $this->_clients_mapper = new OAuthClientsMapper($this->db());
+        }
+
+        return $this->_clients_mapper;
+    }
+
+    /**
+     * Get OAuth tokens mapper.
+     *
+     * @return OAuthTokensMapper
+     * @since  1.0
+     */
+    private function _getTokensMapper()
+    {
+        if (is_null($this->_tokens_mapper)) {
+            $this->_tokens_mapper = new OAuthTokensMapper($this->db());
+        }
+
+        return $this->_tokens_mapper;
     }
 }

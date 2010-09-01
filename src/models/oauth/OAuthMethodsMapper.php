@@ -63,7 +63,12 @@ class OAuthMethodsMapper
         $sql  = "SELECT * FROM #__oauth_methods";
         $sql .= " WHERE id = :id";
 
-        return $this->_db->fetchAssocList($sql, array(":id"=>$id));
+        $raw = $this->_db->fetchAssocList($sql, array(":id"=>$id));
+        if (is_array($raw) && !empty($raw)) {
+            return $raw[0];
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -71,7 +76,7 @@ class OAuthMethodsMapper
      *
      * @param string $method The API method name.
      *
-     * @return array
+     * @return array|null
      * @since  1.0
      */
     public function findByMethod($method)
@@ -79,7 +84,12 @@ class OAuthMethodsMapper
         $sql  = "SELECT * FROM #__oauth_methods";
         $sql .= " WHERE method = :method";
 
-        return $this->_db->fetchAssocList($sql, array("method"=>$method));
+        $raw = $this->_db->fetchAssocList($sql, array(":method"=>$method));
+        if (is_array($raw) && !empty($raw)) {
+            return $raw[0];
+        } else {
+            return null;
+        }
     }
 
     /**

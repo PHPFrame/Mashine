@@ -87,7 +87,13 @@ class MashinePlugin extends AbstractPlugin
         $this->shortCodes()->add("content", array($this, "handleContentShortCode"));
         $this->shortCodes()->add("nav", array($this, "handleNavShortCode"));
 
-        $this->_init();
+        $this->_mapRequest();
+
+        $registry = $app->registry();
+        if (!$registry->get('api_controllers', false)) {
+            $api_controllers = $this->_getApiControllers();
+            $registry->set('api_controllers', $api_controllers);
+        }
 
         // $this->options[$this->getOptionsPrefix()."version"] = "0.0.29";
 
@@ -285,7 +291,7 @@ class MashinePlugin extends AbstractPlugin
      * @return void
      * @since  1.0
      */
-    private function _init()
+    private function _mapRequest()
     {
         $request     = $this->app()->request();
         $request_uri = $request->requestURI();
@@ -518,5 +524,49 @@ class MashinePlugin extends AbstractPlugin
         }
 
         return $array;
+    }
+
+    /**
+     * Get an associative array where keys are the names of api controllers
+     * and the values is an array containing the actions of that controller.
+     * This method reads the api directory
+     * in src/controllers/api for installed API components.
+     *
+     * @return array An associative array where each key is the name of an
+     * API controller and the values are the actions of that api controller
+     * @since  1.0
+     */
+    private function _getApiControllers()
+    {
+        $api_path = $this->app()->getInstallDir().DS."src".DS."controllers".DS."api";
+        $dir_it   = new DirectoryIterator($api_path);
+        $controllers_array = array();
+
+        foreach ($dir_it as $file) {
+            $fname = $file->getFilename();
+            if ($file->isFile() && preg_match("/\.php$/", $fname)) {
+                $controller_name = substr($fname, 0, strrpos($fname, "."));
+                if (!class_exists($controller_name)) {
+                    include $api_path.DS.$controller_name.".php";
+                }
+                $class_name = ucfirst($controller_name)."ApiController";
+                $controller_class = new ReflectionClass($class_name);
+                $methods = $controller_class->getMethods();
+                $actions = array();
+                if (count($methods) > 0) {
+                    foreach ($methods as $method) {
+                        $declaring_class = $method->getDeclaringClass()->getName();
+                        if ($method->getName() != "__construct"
+                            && $method->isPublic()
+                            && $declaring_class == $class_name
+                        ) {
+                            $actions[] = $method->name;
+                        }
+                    }
+                }
+                $controllers_array[$controller_name] = $actions;
+            }
+        }
+        return $controllers_array;
     }
 }
