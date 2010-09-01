@@ -31,6 +31,11 @@ class OAuthController extends PHPFrame_ActionController
         $token = $this->_getTokensMapper()->findByKey($oauth_token);
         $oauth_client = $this->_getClientsMapper()->findByKey($token->consumerKey());
 
+        if (!$oauth_client instanceof OAuthClient) {
+            $this->raiseError("Invalid OAuth consumer key!");
+            return;
+        }
+
         if (!$this->session()->isAuth()) {
             $redirect_url = $base_url."user/login";
             $ret_url      = $base_url."oauth/authorise?oauth_token=";
