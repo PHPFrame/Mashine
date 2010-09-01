@@ -81,6 +81,29 @@ class Installer
 
         $ort->createTable($db, new OAuthToken(), "#__oauth_tokens");
         $ort->createTable($db, new OAuthACL(), "#__oauth_acl");
+
+        $sql = "DROP TABLE IF EXISTS oauth_methods";
+        $db->query($sql);
+
+        if ($db->isSQLite()) {
+            $sql = "CREATE TABLE `oauth_methods` (
+                `id` INTEGER PRIMARY KEY ASC,
+                `method` varchar NOT NULL,
+                `oauth` int NOT NULL DEFAULT '0',
+                `cookie` int NOT NULL DEFAULT '0'
+            );";
+        } else {
+            $sql = "CREATE TABLE `oauth_methods` (
+            `id` int NOT NULL PRIMARY KEY,
+            `method` varchar NOT NULL,
+            `oauth` int NOT NULL DEFAULT '0',
+            `cookie` int NOT NULL DEFAULT '0'
+            )";
+        }
+
+        $db->query($sql);
+
+        $this->_processSqlScript("api_method_auth_info.sql");
     }
 
     private function _installGroupsTable()
@@ -175,12 +198,25 @@ class Installer
           numcode SMALLINT
         )");
 
+        $this->_processSqlScript("iso_country_list.sql");
+        // $install_dir = $this->app()->getInstallDir();
+        // $sql_file    = $install_dir.DS."data".DS."iso_country_list.sql";
+        // $sql_file    = new SplFileObject($sql_file);
+        // foreach ($sql_file as $line) {
+        //     if ($line) {
+        //         $db->query($line);
+        //     }
+        // }
+    }
+
+    private function _processSqlScript($fname)
+    {
         $install_dir = $this->app()->getInstallDir();
-        $sql_file    = $install_dir.DS."data".DS."iso_country_list.sql";
+        $sql_file    = $install_dir.DS."data".DS.$fname;
         $sql_file    = new SplFileObject($sql_file);
         foreach ($sql_file as $line) {
             if ($line) {
-                $db->query($line);
+                $this->app()->db()->query($line);
             }
         }
     }
