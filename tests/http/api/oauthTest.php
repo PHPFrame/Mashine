@@ -33,12 +33,12 @@ class OAuthApiControllerHttpTest extends MVCTestCase
 
     public function test_request_token()
     {
-        $array = $this->_oauth->getRequestToken($this->_getEndPointURL()."request_token");
-
-        $this->assertType("array", $array);
-        $this->assertArrayHasKey("login_url", $array);
-        $this->assertArrayHasKey("oauth_token", $array);
-        $this->assertArrayHasKey("oauth_token_secret", $array);
+        // $array = $this->_oauth->getRequestToken($this->_getEndPointURL()."request_token");
+        //
+        // $this->assertType("array", $array);
+        // $this->assertArrayHasKey("login_url", $array);
+        // $this->assertArrayHasKey("oauth_token", $array);
+        // $this->assertArrayHasKey("oauth_token_secret", $array);
 
         // // var_dump($array);
         //
