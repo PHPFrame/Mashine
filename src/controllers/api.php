@@ -195,6 +195,25 @@ class ApiController extends PHPFrame_RESTfulController
 
                 $this->_oauth_server->checkOAuthRequest();
 
+                // Add oauth params that may have been sent in headers to
+                // request array to make sure the params are passed to the
+                // relevant method.
+                if ($api_method == "oauth/request_token"
+                    || $api_method == "oauth/access_token"
+                ) {
+                    $this->request()->param(
+                        "oauth_consumer_key",
+                        $this->_oauth_server->getConsumerKey()
+                    );
+                }
+
+                if ($api_method == "oauth/request_token") {
+                    $this->request()->param(
+                        "oauth_callback",
+                        $this->_oauth_server->getCallback()
+                    );
+                }
+
             } catch (OAuthException $e) {
                 $this->response()->body(OAuthProvider::reportProblem($e));
                 $this->_oauth_error = true;
