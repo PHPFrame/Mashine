@@ -125,9 +125,9 @@ class ContactsApiControllerTest extends MVCTestCase
     public function test_postAdminNewUserAndDeletePHP()
     {
         $contact = $this->fixture()->post(
-            null, 
-            null, 
-            "Firstname", 
+            null,
+            null,
+            "Firstname",
             "Last name",
             "Address 1",
             "Adddress 2",
@@ -142,7 +142,7 @@ class ContactsApiControllerTest extends MVCTestCase
         );
 
         $this->assertType("Contact", $contact);
-        $this->assertEquals(2, $contact->groupId());
+        $this->assertEquals(2, $contact->group());
         $this->assertEquals("GB", $contact->country());
         $this->assertEquals("Firstname Last name", $contact->fullName());
 
@@ -156,9 +156,9 @@ class ContactsApiControllerTest extends MVCTestCase
         $api_controller->format("json");
         $api_controller->returnInternalPHP(false);
 
-        $api_controller->post(null, 
-            null, 
-            "Firstname", 
+        $api_controller->post(null,
+            null,
+            "Firstname",
             "Last name",
             "Address 1",
             "Adddress 2",
