@@ -56,37 +56,100 @@ class SocialPlugin extends AbstractPlugin
     public function handleSocialShortCode($attr)
     {
         if (array_key_exists("count", $attr)) {
-            $count = $attr["count"];
+            $count = (int) $attr["count"];
         } else {
             $count = 0;
         }
 
-        $replacement = "";
+        $show_title = true;
+        if (array_key_exists("show_title", $attr)) {
+            $show_title = (bool) $attr["show_title"];
+        }
+
+        $show_description = true;
+        if (array_key_exists("show_description", $attr)) {
+            $show_description = (bool) $attr["show_description"];
+        }
+
+        $twitterify = false;
+        if (array_key_exists("twitterify", $attr)) {
+            $twitterify = (bool) $attr["twitterify"];
+        }
+
+        $user = null;
+        if (array_key_exists("user", $attr)) {
+            $user = (string) $attr["user"];
+        }
+
+        $user = null;
+        if (array_key_exists("user", $attr)) {
+            $user = (string) $attr["user"];
+        }
+
+        $fb = false;
+
+        $ret = "";
 
         if (array_key_exists("type", $attr)) {
             switch ($attr["type"]) {
-            case "tweets" :
-                if (!array_key_exists("user", $attr)) {
+            case "twitter" :
+                if (!$user) {
                     $msg  = "Social plugin error. Twitter user has to be ";
-                    $msg .= "specified in a 'user' attribute when 'type' is ";
-                    $msg .= "set to tweets.";
+                    $msg .= "specified in the 'user' attribute when 'type' is ";
+                    $msg .= "set to twitter.";
                     return $msg;
                 }
 
                 $url  = "http://twitter.com/statuses/user_timeline/";
                 $url .= $attr["user"].".rss";
-                $feed_content = new FeedContent();
-                $feed_content->param("feed_url", $url);
-                $replacement = $this->_renderTwitterFeed(
-                    $feed_content,
-                    $count,
-                    $attr["user"]
-                );
+                $show_title = false;
+                $show_description = true;
+                $twitterify = true;
                 break;
+
+            case "facebook" :
+                if (!$user) {
+                    $msg  = "Social plugin error. Facebook page id has to be ";
+                    $msg .= "specified in the 'user' attribute when 'type' is ";
+                    $msg .= "set to facebook.";
+                    return $msg;
+                }
+
+                $url  = "http://www.facebook.com/feeds/page.php?format=atom10&id=";
+                $url .= $attr["user"];
+                $show_title = true;
+                $show_description = true;
+                $twitterify = false;
+                $fb = true;
+                break;
+
+            case "feed" :
+                if (!array_key_exists("url", $attr)) {
+                    $msg  = "Social plugin error. No URL was specified for ";
+                    $msg .= "for RSS/Atom feed.";
+                    return $msg;
+                }
+
+                $url = $attr["url"];
+                break;
+
+            default :
+                $msg = "Unknown value for attribute 'type in [social] shortcode.'";
+                return $msg;
             }
+
+            $ret = $this->_renderFeed(
+                $url,
+                $count,
+                $show_title,
+                $show_description,
+                $twitterify,
+                $user,
+                $fb
+            );
         }
 
-        return $replacement;
+        return $ret;
     }
 
     /**
@@ -403,23 +466,20 @@ function facebook_connect()
         $db->createTable($tbl);
     }
 
-    private function _renderTwitterFeed(
-        FeedContent $feed,
+    private function _renderFeed(
+        $url,
         $count=0,
-        $twitter_user
+        $show_title=true,
+        $show_description=true,
+        $twitterify=false,
+        $user=null,
+        $fb=false
     ) {
-        $feeds_cache_dir = $this->app()->getTmpDir().DS."cms".DS."feeds";
-        PHPFrame_Filesystem::ensureWritableDir($feeds_cache_dir);
-        $feed->cacheDir($feeds_cache_dir);
-        $feed->param("cache_time", 60*10);
-
         try {
-            $items = $feed->items();
+            $items = $this->_fetchFeedItems($url);
         } catch (Exception $e) {
             return $e->getMessage();
         }
-
-        $count = (int) $count;
 
         if (empty($count)) {
             $count = count($items);
@@ -430,36 +490,38 @@ function facebook_connect()
         if ($count > 0 && count($items) > 0) {
             $str .= "<ul>\n";
             for ($i=0; $i<$count; $i++) {
-                $title = $items[$i]["title"];
-                // Remove username from beggining of title
-                $title = preg_replace("/^".$twitter_user.": /i", "", $title);
+                $title = trim($items[$i]["title"]);
+                $description = trim($items[$i]["description"]);
+                $link = trim($items[$i]["link"]);
 
-                // twitterify
-                $title = preg_replace("#(^|[\n ])([\w]+?://[\w]+[^ \"\n\r\t< ]*)#", "\\1<a href=\"\\2\">\\2</a>", $title);
-                $title = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r< ]*)#", "\\1<a href=\"http://\\2\">\\2</a>", $title);
-                $title = preg_replace("/@(\w+)/", "<a href=\"http://www.twitter.com/\\1\">@\\1</a>", $title);
-                $title = preg_replace("/#(\w+)/", "<a href=\"http://search.twitter.com/search?q=\\1\">#\\1</a>", $title);
-
-                $pub_time = strtotime($items[$i]["pub_date"]);
-                $seconds_ago = (time() - $pub_time);
-
-                if ($seconds_ago < 60) {
-                    $date = $seconds_ago." seconds ago";
-                } elseif ($seconds_ago < 60*60) {
-                    $date = round($seconds_ago/60)." minutes ago";
-                } elseif ($seconds_ago < 60*60*24) {
-                    $date = round($seconds_ago/60/60)." hours ago";
-                } elseif ($seconds_ago < 60*60*24*7) {
-                    $date = round($seconds_ago/60/60/24)." days ago";
-                } else {
-                    $date = round($seconds_ago/60/60/24/7)." weeks ago";
+                if ($twitterify && $user) {
+                    $title = $this->_twitterify($title, $user);
+                    $description = $this->_twitterify($description, $user);
                 }
 
+                if ($fb) {
+                    $description = preg_replace("/^".preg_quote($title)."<br\/><br\/>(<br\/>)?/", "", $description);
+                    $link = "http://www.facebook.com".$link;
+                }
+
+                $date = $this->_pubDateToHuman($items[$i]["pub_date"]);
+
                 $str .= "<li>\n";
-                $str .= $title." - \n";
-                $str .= "<a href=\"".$items[$i]["link"]."\">\n";
-                $str .= $date."\n";
-                $str .= "</a>\n";
+
+                if ($show_title) {
+                    $str .= "<h5>".$title."</h5>\n";
+                }
+
+                if ($show_description) {
+                    $str .= "<p>".$description."</p>\n";
+                }
+
+                if ($date) {
+                    $str .= "<a href=\"".$link."\">";
+                    $str .= $date."";
+                    $str .= "</a>";
+                }
+
                 $str .= "</li>\n";
             }
             $str .= "</ul>\n";
@@ -468,5 +530,63 @@ function facebook_connect()
         $str .= "</div>";
 
         return $str;
+    }
+
+    private function _fetchFeedItems($url)
+    {
+        $feeds_cache_dir = $this->app()->getTmpDir().DS."cms".DS."feeds";
+        PHPFrame_Filesystem::ensureWritableDir($feeds_cache_dir);
+
+        $feed = new FeedContent();
+        $feed->cacheDir($feeds_cache_dir);
+        $feed->param("cache_time", 60*10);
+        $feed->param("feed_url", $url);
+
+        return $feed->items();
+    }
+
+    private function _pubDateToHuman($str)
+    {
+        if (!$str) {
+            return "";
+        } else {
+            $time = strtotime($str);
+            $seconds_ago = (time() - $time);
+
+            if ($seconds_ago < 60) {
+                $str = "just now";
+            } elseif ($seconds_ago < 60*60) {
+                $minutes = round($seconds_ago/60);
+                $str = ($minutes>1) ? $minutes." minutes ago" : " 1 minute ago";
+            } elseif ($seconds_ago < 60*60*24) {
+                $hours = round($seconds_ago/(60*60));
+                $str = ($hours>1) ? $hours." hours ago" : " 1 hour ago";
+            } elseif ($seconds_ago < 60*60*24*7) {
+                $days = round($seconds_ago/(60*60*24));
+                $str = ($days>1) ? $days." days ago" : " yesterday";
+            } elseif ($seconds_ago < 60*60*24*7*4) {
+                $weeks = round($seconds_ago/(60*60*24*7));
+                $str = ($weeks>1) ? $weeks." weeks ago" : " 1 week ago";
+            } else {
+                $months = round($seconds_ago/(60*60*24*30));
+                $str = ($months>1) ? $months." months ago" : " 1 month ago";
+            }
+        }
+
+        return $str;
+    }
+
+    private function _twitterify($tweet, $user)
+    {
+        // Remove username from beggining of title
+        $tweet = preg_replace("/^".$user.": /i", "", $tweet);
+
+        // twitterify
+        $tweet = preg_replace("#(^|[\n ])([\w]+?://[\w]+[^ \"\n\r\t< ]*)#", "\\1<a href=\"\\2\">\\2</a>", $tweet);
+        $tweet = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r< ]*)#", "\\1<a href=\"http://\\2\">\\2</a>", $tweet);
+        $tweet = preg_replace("/@(\w+)/", "<a href=\"http://www.twitter.com/\\1\">@\\1</a>", $tweet);
+        $tweet = preg_replace("/#(\w+)/", "<a href=\"http://search.twitter.com/search?q=\\1\">#\\1</a>", $tweet);
+
+        return $tweet;
     }
 }
