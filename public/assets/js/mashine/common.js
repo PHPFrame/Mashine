@@ -11,43 +11,194 @@
  * @link      https://github.com/lupomontero/Mashine
  */
 
-// Init UI on document ready event
-jQuery(document).ready(function($) {
-    initToolTips();
-    confirmDialog('.confirm');
-    validateForm('.validate');
-    //$('#user-form #password').password_strength();
+"use strict";
 
-    // close sidebar item
-    var closeNote = $('a.close_button');
-    closeNote.live('click', function(e) {
+(function() {
+
+/**
+ * Initialise tooltips using jQuery Tipsy plugin.
+ *
+ * @return void
+ * @since  1.0
+ */
+EN.initToolTips = function() {
+    var options = {
+        gravity: 'w',
+        html: true,
+        opacity: 0.8
+    };
+
+    jQuery('.tooltip').tipsy(options).click(function(e) {
         e.preventDefault();
-        $(this).closest('.sidebar-item-wrapper').fadeOut('2000');
-        $(this).closest('.sysevent').fadeOut('1500');
     });
+};
 
-    var contentInfiniteScrollingTrigger = $('#content-infinite-scrolling-trigger');
-    var contentInfiniteScrollingLoading = false;
-    var contentInfiniteScrollingEnd = false;
+/**
+ * Initialise form validation using jQuery 'validate' plugin.
+ *
+ * @param string selector jQuery selctor to select form.
+ *
+ * @return void
+ * @since  1.0
+ */
+EN.validate = function(selector, options) {
+    var opts = {
+        rules: {
+            email: {
+                required: true,
+                email: true
+            },
+            password: 'required',
+            confirm_password: {
+                equalTo: '#password'
+            }
+        },
+        highlight: function(e, errorClass) {
+            jQuery(e).addClass('validate-error');
+        },
+        unhighlight: function(e, errorClass) {
+            jQuery(e).removeClass('validate-error').css('color', '#222');
+        },
+        errorPlacement: function(error, element) {
+            //this hides error messages
+        }
+    };
 
-    $(window).scroll(function() {
-        if ($(window).scrollTop() == $(document).height() - $(window).height()) {
-           contentInfiniteScrollingTrigger.click();
+    if (typeof options === 'object') {
+        for (var key in options) {
+            if (options.hasOwnProperty(key)) {
+                opts[key] = options[key];
+            }
+        }
+    }
+
+    jQuery(selector).validate(opts);
+};
+
+var confirmDialogDiv;
+var confirmDialogActiveTrigger;
+
+/**
+ * Attach confirm dialog behaviour to links.
+ *
+ * @param string selector jQuery selctor to select anchor tags.
+ *
+ * @return void
+ * @since  1.0
+ */
+EN.confirm = function(selector)
+{
+    // Add HTML element to show the confirmation dialog
+    if (typeof confirmDialogDiv === 'undefined') {
+        jQuery("body").append('<div id="confirm-dialog" title="Delete entry"></div>');
+
+        confirmDialogDiv = jQuery("#confirm-dialog");
+
+        // Add dialog behaviour to the confirm box
+        confirmDialogDiv.dialog({
+            autoOpen: false,
+            bgiframe: true,
+            resizable: false,
+            height:140,
+            modal: true,
+            overlay: {
+                backgroundColor: '#000',
+                opacity: 0.5
+            },
+            buttons: {
+                'Ok': function() {
+                    jQuery(this).dialog('close');
+                    window.location = confirmDialogActiveTrigger.attr('href');
+                },
+                Cancel: function() {
+                    jQuery(this).dialog('close');
+                }
+            }
+        });
+    }
+
+    jQuery(selector).click(function(e) {
+        e.preventDefault();
+        confirmDialogActiveTrigger = jQuery(this);
+        confirmDialogDiv
+            .html(confirmDialogActiveTrigger.attr("title"))
+            .dialog('open');
+    });
+};
+
+/**
+ * Initialise login form, including form validation and forgot pass toggle.
+ *
+ * @return void
+ * @since  1.0
+ */
+EN.initLoginForm = function() {
+    var loginButton = jQuery('#login-button');
+    var ajaxResponse = jQuery('#login-ajax-response');
+    var forgotPassContainer = jQuery('#forgotpass');
+
+    EN.validate('#login-form', {
+        submitHandler: function(e) {
+            var form = jQuery(e);
+            var loginButtonOriginalVal = loginButton.val();
+
+            ajaxResponse.html(' ');
+            loginButton.attr('disabled', true);
+            loginButton.val('Logging in...');
+
+            jQuery.ajax({
+                url: 'api/session/login',
+                type: 'POST',
+                data: form.serialize() + '&suppress_response_codes=1',
+                success: function(data) {
+                    if (typeof data.error !== 'undefined') {
+                        ajaxResponse.html(data.error.message);
+                    } else {
+                        window.location = data.ret_url;
+                        return false;
+                    }
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(textStatus);
+                },
+                complete: function(XMLHttpRequest, textStatus) {
+                    loginButton.attr('disabled', false);
+                    loginButton.val(loginButtonOriginalVal);
+                }
+            });
         }
     });
 
-    contentInfiniteScrollingTrigger.click(function(e) {
+    EN.validate('#forgotpass-form');
+    forgotPassContainer.hide();
+
+    jQuery('a#forgotpass-link').bind('click', function(e) {
         e.preventDefault();
+        forgotPassContainer.toggle('slow');
+    });
+};
 
-        if (contentInfiniteScrollingLoading === true
-            || contentInfiniteScrollingEnd === true
-        ) {
-            return;
+EN.mashineApiClient = function() {
+    return {
+        fetch: function(method, args) { return true; },
+        getRequestToken: function() {},
+        getAccessToken: function() {}
+    };
+};
+
+EN.infiniteScrolling = function(triggerSelector) {
+    var trigger = jQuery(triggerSelector);
+    var loading = false;
+    var end     = false;
+
+    jQuery(window).scroll(function() {
+        if (jQuery(window).scrollTop() == jQuery(document).height() - jQuery(window).height()) {
+           trigger.click();
         }
+    });
 
-        contentInfiniteScrollingLoading = true;
-
-        var el = $(this);
+    trigger.click(function(e) {
+        var el = jQuery(this);
         var elOriginalHtml = el.html();
         var classArray = el.attr('class').split('-');
         var href = el.attr('href');
@@ -58,14 +209,22 @@ jQuery(document).ready(function($) {
             suppress_response_codes: 1
         };
 
-        for (var i in hrefParams) {
+        e.preventDefault();
+
+        if (loading === true || end === true) {
+            return;
+        }
+
+        loading = true;
+
+        for (var i=0; i<hrefParams.length; i++) {
             var pair = hrefParams[i].split("=");
             data[pair[0]] = pair[1];
         }
 
         el.html('Loading...');
 
-        $.ajax({
+        jQuery.ajax({
             url: 'api/content',
             data: data,
             success: function(data) {
@@ -77,13 +236,13 @@ jQuery(document).ready(function($) {
                 if (data.length < 1) {
                     el.css('display', 'none');
                     el.after('<p>-- The end --</p>');
-                    contentInfiniteScrollingEnd = true;
+                    end = true;
                     return false;
                 }
 
                 var str = '';
 
-                for (var i in data) {
+                for (var i=0; i<data.length; i++) {
                     var post = data[i];
 
                     str += '<li>';
@@ -109,138 +268,45 @@ jQuery(document).ready(function($) {
                 }
 
                 var matches = href.match(/page=(\d+)/);
-                var nextPage = parseInt(matches[1]) + 1;
+                var nextPage = parseInt(matches[1], 10) + 1;
                 var nextHref = href.replace(/page=\d+/, 'page=' + nextPage);
 
                 el.attr('href', nextHref);
                 el.html(elOriginalHtml);
 
-                $('#posts').append(str);
+                jQuery('#posts').append(str);
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
                 alert(textStatus);
             },
             complete: function() {
-                contentInfiniteScrollingLoading = false;
+                loading = false;
             }
         });
     });
+};
+
+})(jQuery, EN);
+
+// Init UI on document ready event
+jQuery(document).ready(function() {
+    try {
+        EN({ debug: true });
+    } catch(e) {
+        alert(e);
+    }
+
+    EN.initToolTips();
+    EN.confirm('.confirm');
+    EN.validate('.validate');
+
+    // close sysevent boxes
+    var closeNote = jQuery('a.close_button');
+    closeNote.live('click', function(e) {
+        e.preventDefault();
+        jQuery(this).closest('.sidebar-item-wrapper').fadeOut('2000');
+        jQuery(this).closest('.sysevent').fadeOut('1500');
+    });
+
+    EN.infiniteScrolling('#content-infinite-scrolling-trigger');
 });
-
-/**
- * Initialise tooltips using jQuery Tipsy plugin.
- *
- * @return void
- * @since  1.0
- */
-function initToolTips()
-{
-    var options = {
-        gravity: 'w',
-        html: true,
-        opacity: 0.8
-    };
-
-    jQuery('.tooltip').tipsy(options).click(function(e) {
-        e.preventDefault();
-    });
-}
-
-/**
- * Initialise form validation using jQuery 'validate' plugin.
- *
- * @param string selector jQuery selctor to select form.
- *
- * @return void
- * @since  1.0
- */
-function validateForm(selector, options)
-{
-    if (options == undefined) {
-        options = {};
-    }
-
-    if (options.rules == undefined) {
-        options.rules = {
-            email: {
-                required: true,
-                email: true
-            },
-            password: 'required',
-            confirm_password: {
-                equalTo: '#password'
-            }
-        };
-    }
-
-    if (options.highlight == undefined) {
-        options.highlight = function(e, errorClass) {
-            jQuery(e).addClass('validate-error');
-        };
-    }
-
-    if (options.unhighlight == undefined) {
-        options.unhighlight = function(e, errorClass) {
-            jQuery(e).removeClass('validate-error').css('color', '#222');
-        };
-    }
-
-    if (options.errorPlacement == undefined) {
-        options.errorPlacement = function(error, element) {
-            //this hides error messages
-        };
-    }
-
-    jQuery(selector).validate(options);
-}
-
-var confirmDialogDiv;
-var confirmDialogActiveTrigger;
-
-/**
- * Attach confirm dialog behaviour to links.
- *
- * @param string selector jQuery selctor to select anchor tags.
- *
- * @return void
- * @since  1.0
- */
-function confirmDialog(selector)
-{
-    // Add HTML element to show the confirmation dialog
-    if (typeof confirmDialogDiv === 'undefined') {
-        $("body").append('<div id="confirm-dialog" title="Delete entry"></div>');
-
-        confirmDialogDiv = $("#confirm-dialog");
-
-        // Add dialog behaviour to the confirm box
-        confirmDialogDiv.dialog({
-            autoOpen: false,
-            bgiframe: true,
-            resizable: false,
-            height:140,
-            modal: true,
-            overlay: {
-                backgroundColor: '#000',
-                opacity: 0.5
-            },
-            buttons: {
-                'Ok': function() {
-                    $(this).dialog('close');
-                    window.location = confirmDialogActiveTrigger.attr('href');
-                },
-                Cancel: function() {
-                    $(this).dialog('close');
-                }
-            }
-        });
-    }
-
-    $(selector).click(function(e) {
-        e.preventDefault();
-        confirmDialogActiveTrigger = $(this);
-        confirmDialogDiv
-            .html(confirmDialogActiveTrigger.attr("title"))
-            .dialog('open');
-    });
-}

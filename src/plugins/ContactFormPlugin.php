@@ -161,7 +161,7 @@ class ContactFormPlugin extends AbstractPlugin
 </form>
 
 <script type="text/javascript" charset="utf-8">
-validateForm('form#contact-form', {
+EN.validate('form#contact-form', {
     submitHandler: function(form) {
         form = jQuery(form);
         var response_container = jQuery('#ajax-response');

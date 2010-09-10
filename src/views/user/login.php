@@ -108,4 +108,4 @@
 
 </div><!-- .entry -->
 
-<script>initLoginForm();</script>
+<script>EN.initLoginForm();</script>
