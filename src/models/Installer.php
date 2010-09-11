@@ -91,13 +91,14 @@ class Installer
                 `method` varchar NOT NULL,
                 `oauth` int NOT NULL DEFAULT '0',
                 `cookie` int NOT NULL DEFAULT '0'
-            );";
+            )";
         } else {
-            $sql = "CREATE TABLE `api_methods` (
-            `id` int NOT NULL PRIMARY KEY,
-            `method` varchar NOT NULL,
-            `oauth` int NOT NULL DEFAULT '0',
-            `cookie` int NOT NULL DEFAULT '0'
+            $sql = "CREATE TABLE IF NOT EXISTS `api_methods` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `method` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+              `oauth` enum('0','1','2','3') COLLATE utf8_unicode_ci NOT NULL DEFAULT '0' COMMENT '0 = No, 1= both, 2 = 2-legged, 3 = 3-legged',
+              `cookie` enum('0','1','2') COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
+              PRIMARY KEY (`id`)
             )";
         }
 
