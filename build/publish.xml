@@ -136,7 +136,6 @@
 
     </target>
 
-    <!-- Minify Theme CSS -->
     <target name="minify_css">
 
         <exec
