@@ -96,9 +96,11 @@
         <foreach target="do_minify_js" param="filename">
             <path>
                 <fileset dir="${assets.dir}/js" casesensitive="yes">
-                    <include name="**/*tipsy*.js"/>
-                    <include name="**/en.core.js"/>
-                    <include name="**/en.mshn.js"/>
+                    <include name="jquery/jquery.tipsy.js"/>
+                    <include name="en.core.js"/>
+                    <include name="en.mshn.js"/>
+                    <include name="syntaxhighlighter/shCore.js"/>
+                    <include name="syntaxhighlighter/shAutoloader.js"/>
                 </fileset>
             </path>
 
@@ -109,7 +111,7 @@
             <path>
                 <fileset dir="${assets.dir}/js" casesensitive="yes">
                     <include name="**/*tinymce*.js"/>
-                    <include name="**/en.mshn.user.js"/>
+                    <include name="en.mshn.user.js"/>
                 </fileset>
             </path>
 
@@ -136,6 +138,31 @@
 
     <!-- Minify Theme CSS -->
     <target name="minify_css">
+
+        <exec
+            executable="java"
+            dir="${build.dir}"
+            failonerror="on"
+            output="${assets.dir}/css/mashine.css"
+        >
+            <arg line="-jar yuicompressor-2.4.2.jar ${assets.dir}/css/mashine.css" />
+            <arg line="--charset utf-8 --type css" />
+        </exec>
+
+        <exec
+            executable="java"
+            dir="${build.dir}"
+            failonerror="on"
+            output="${assets.dir}/css/mashine.user.css"
+        >
+            <arg line="-jar yuicompressor-2.4.2.jar ${assets.dir}/css/mashine.user.css" />
+            <arg line="--charset utf-8 --type css" />
+        </exec>
+
+    </target>
+
+    <!-- Minify Theme CSS -->
+    <target name="minify_theme_css">
 
         <move
             file="${theme.dir}/css"
@@ -207,6 +234,6 @@
     </target>
 
     <!-- Build project -->
-    <target name="build" depends="prepare, copy, minify_js, minify_css, tar, upload" />
+    <target name="build" depends="prepare, copy, minify_js, minify_css, minify_theme_css, tar, upload" />
 
 </project>
