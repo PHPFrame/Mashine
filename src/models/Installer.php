@@ -82,18 +82,18 @@ class Installer
         $ort->createTable($db, new OAuthToken(), "#__oauth_tokens");
         $ort->createTable($db, new OAuthACL(), "#__oauth_acl");
 
-        $sql = "DROP TABLE IF EXISTS oauth_methods";
+        $sql = "DROP TABLE IF EXISTS `api_methods`";
         $db->query($sql);
 
         if ($db->isSQLite()) {
-            $sql = "CREATE TABLE `oauth_methods` (
+            $sql = "CREATE TABLE `api_methods` (
                 `id` INTEGER PRIMARY KEY ASC,
                 `method` varchar NOT NULL,
                 `oauth` int NOT NULL DEFAULT '0',
                 `cookie` int NOT NULL DEFAULT '0'
             );";
         } else {
-            $sql = "CREATE TABLE `oauth_methods` (
+            $sql = "CREATE TABLE `api_methods` (
             `id` int NOT NULL PRIMARY KEY,
             `method` varchar NOT NULL,
             `oauth` int NOT NULL DEFAULT '0',
@@ -103,7 +103,7 @@ class Installer
 
         $db->query($sql);
 
-        $this->_processSqlScript("api_method_auth_info.sql");
+        $this->_processSqlScript("api_methods.sql");
     }
 
     private function _installGroupsTable()

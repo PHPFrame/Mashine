@@ -1,6 +1,6 @@
 <?php
 /**
- * src/models/oauth/OAuthMethodsMapper.php
+ * src/models/oauth/ApiMethodsMapper.php
  *
  * PHP version 5
  *
@@ -22,7 +22,7 @@
  * @link     https://github.com/lupomontero/Mashine
  * @since    1.0
  */
-class OAuthMethodsMapper
+class ApiMethodsMapper
 {
     private $_db;
 
@@ -47,7 +47,7 @@ class OAuthMethodsMapper
      */
     public function find()
     {
-        return $this->_db->fetchAssocList("SELECT * FROM #__oauth_methods");
+        return $this->_db->fetchAssocList("SELECT * FROM #__api_methods");
     }
 
     /**
@@ -60,7 +60,7 @@ class OAuthMethodsMapper
      */
     public function findOne($id)
     {
-        $sql  = "SELECT * FROM #__oauth_methods";
+        $sql  = "SELECT * FROM #__api_methods";
         $sql .= " WHERE id = :id";
 
         $raw = $this->_db->fetchAssocList($sql, array(":id"=>$id));
@@ -81,7 +81,7 @@ class OAuthMethodsMapper
      */
     public function findByMethod($method)
     {
-        $sql  = "SELECT * FROM #__oauth_methods";
+        $sql  = "SELECT * FROM #__api_methods";
         $sql .= " WHERE method = :method";
 
         $raw = $this->_db->fetchAssocList($sql, array(":method"=>$method));
@@ -111,7 +111,7 @@ class OAuthMethodsMapper
         $row = $this->findByMethod($method);
 
         if (count($row) > 0) {
-            $sql    = "UPDATE #__oauth_methods SET ";
+            $sql    = "UPDATE #__api_methods SET ";
             $params = array();
 
             if (!is_null($oauth)) {
@@ -130,7 +130,7 @@ class OAuthMethodsMapper
             $params[":method"] = $method;
 
         } else {
-            $sql  = "INSERT INTO #__oauth_methods (method, oauth, cookie)";
+            $sql  = "INSERT INTO #__api_methods (method, oauth, cookie)";
             $sql .= " VALUES (:method, :oauth, :cookie)";
             $params = array(
                 ":method" => $method,
