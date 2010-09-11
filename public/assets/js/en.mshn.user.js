@@ -11,24 +11,9 @@
  * @link      https://github.com/lupomontero/Mashine
  */
 
-// Wrap script in document ready event
-jQuery(document).ready(function($) {
-    var userExportDiv = $('#user-export');
+"use strict";
 
-    userExportDiv.hide();
-
-    $('#user-export-toggle').click(function(e) {
-        e.preventDefault();
-
-        if (userExportDiv.css('display') !== 'none') {
-            userExportDiv.slideUp('slow');
-        } else {
-            userExportDiv.slideDown('slow');
-        }
-    });
-
-    userAutocomplete('input#owner');
-});
+(function() {
 
 /**
  * Attach user autocomplete behaviour to given input text and set hidden
@@ -40,8 +25,7 @@ jQuery(document).ready(function($) {
  * @return void
  * @since  1.0
  */
-function userAutocomplete(input)
-{
+EN.userAutocomplete = function(input) {
     var inputOriginal = jQuery(input);
     var inputAutocomplete = jQuery('#autocomplete-owner');
 
@@ -55,7 +39,7 @@ function userAutocomplete(input)
         minLength: 3,
         search: function(event, ui) {},
         source: function(req, callback) {
-            $.ajax({
+            jQuery.ajax({
                 url: 'user/search',
                 dataType: 'json',
                 data: { s: req.term },
@@ -75,18 +59,28 @@ function userAutocomplete(input)
             return false;
         }
     });
-}
+};
 
-/**
- * Content form
- */
+EN.initContentForm = function() {
+    var slugInput = jQuery('#slug');
+    var titleInput = jQuery('#title');
+    var tinymceTextArea = jQuery('textarea.tinymce');
+    var typeSelect = jQuery('#type');
+    var typeParam = jQuery('.typeparam');
+    var publishingFields = jQuery('#publishing p');
+    var metaDataFields = jQuery('#metadata p');
+    var permissionsFields = jQuery('#permissions p');
 
-// Wrap script in document ready event
-jQuery(document).ready(function($) {
+    var updateSlug = function(slug) {
+        slug = slug.toLowerCase();
+        slug = slug.replace(/[^a-z0-9\-]/g, '-');
+        slugInput.val(jQuery('#parent-slug').val() + '/' + slug);
+    };
 
-    var slug_input  = $('#slug');
-    var title_input = $('#title');
-    var tinymceTextArea = $('textarea.tinymce');
+    var updateType = function(type) {
+        typeParam.hide();
+        jQuery('p.' + type).show();
+    };
 
     // Load TinyMCE
     tinymceTextArea.tinymce({
@@ -109,50 +103,38 @@ jQuery(document).ready(function($) {
         height : "350px"
     });
 
-    $('#tinymce-button-visual').click(function(e) {
+    jQuery('#tinymce-button-visual').click(function(e) {
         e.preventDefault();
-
         tinymceTextArea.tinymce().show();
     });
 
-    $('#tinymce-button-html').click(function(e) {
+    jQuery('#tinymce-button-html').click(function(e) {
         e.preventDefault();
-
         tinymceTextArea.tinymce().hide();
     });
 
-    $('#content_form').validate({
+    jQuery('#content_form').validate({
         submitHandler: function(form) {
             // switch to visual mode before saving to avoid backslash issue
             tinymceTextArea.tinymce().show();
 
-            slug_input.removeAttr('disabled');
+            slugInput.removeAttr('disabled');
             form.submit();
         }
     });
 
-    //slug_input.attr('disabled', true);
+    //slugInput.attr('disabled', true);
 
-    title_input.focusout(function() {
-        updateSlug($(this).val());
+    titleInput.focusout(function() {
+        updateSlug(jQuery(this).val());
     });
 
-    title_input.keypress(function() {
-        updateSlug($(this).val());
+    titleInput.keypress(function() {
+        updateSlug(jQuery(this).val());
     });
 
-    function updateSlug(slug)
-    {
-        slug = slug.toLowerCase();
-        slug = slug.replace(/[^a-z0-9\-]/g, '-');
-        slug_input.val($('#parent-slug').val() + '/' + slug);
-    }
-
-    var type_select = $('#type');
-    var type_param  = $('.typeparam');
-
-    type_select.change(function() {
-        switch ($(this).val()) {
+    typeSelect.change(function() {
+        switch (jQuery(this).val()) {
         case 'PostsCollectionContent' :
             updateType('posts_collection');
             break;
@@ -168,33 +150,41 @@ jQuery(document).ready(function($) {
         }
     });
 
-    function updateType(type)
-    {
-        type_param.hide();
-        $('p.' + type).show();
-    }
+    typeSelect.change();
 
-    type_select.change();
-
-    var publishing_legend = $('#publishing legend');
-    var publishing_fields = $('#publishing p');
-    publishing_fields.hide();
-    publishing_legend.click(function() {
-        publishing_fields.toggle();
+    publishingFields.hide();
+    jQuery('#publishing legend').click(function() {
+        publishingFields.toggle();
     });
 
-    var meta_data_legend = $('#metadata legend');
-    var meta_data_fields = $('#metadata p');
-    meta_data_fields.hide();
-    meta_data_legend.click(function() {
-        meta_data_fields.toggle();
+    metaDataFields.hide();
+    jQuery('#metadata legend').click(function() {
+        metaDataFields.toggle();
     });
 
-    var permissions_legend = $('#permissions legend');
-    var permissions_fields = $('#permissions p');
-    permissions_fields.hide();
-    permissions_legend.click(function() {
-        permissions_fields.toggle();
+    permissionsFields.hide();
+    jQuery('#permissions legend').click(function() {
+        permissionsFields.toggle();
+    });
+};
+
+})(jQuery, EN);
+
+// Wrap script in document ready event
+jQuery(document).ready(function(jQuery) {
+    var userExportDiv = jQuery('#user-export');
+
+    userExportDiv.hide();
+
+    jQuery('#user-export-toggle').click(function(e) {
+        e.preventDefault();
+
+        if (userExportDiv.css('display') !== 'none') {
+            userExportDiv.slideUp('slow');
+        } else {
+            userExportDiv.slideDown('slow');
+        }
     });
 
+    EN.userAutocomplete('input#owner');
 });

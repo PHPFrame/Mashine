@@ -321,3 +321,4 @@ if ($content instanceof FeedContent
 
 <div style="clear:both;"></div>
 
+<script>jQuery(document).ready(function() { EN.initContentForm(); });</script>
