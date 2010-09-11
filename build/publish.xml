@@ -97,8 +97,8 @@
             <path>
                 <fileset dir="${assets.dir}/js" casesensitive="yes">
                     <include name="**/*tipsy*.js"/>
-                    <include name="**/common.js"/>
-                    <include name="**/login.js"/>
+                    <include name="**/en.js"/>
+                    <include name="**/core.js"/>
                 </fileset>
             </path>
 
