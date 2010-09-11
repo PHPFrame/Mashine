@@ -1,5 +1,5 @@
 /**
- * public/assets/js/mashine.admin.js
+ * public/assets/js/mashine.user.js
  *
  * This file's only role is to include all other scripts that need to be
  * available to all authors and admin users after they login.
@@ -20,5 +20,4 @@
 includeScript('assets/js/jquery/jquery.tinymce.js');
 
 // Include Mashine's admin scripts
-includeScript('assets/js/mashine/admin.content.js');
-includeScript('assets/js/mashine/admin.user.js');
+includeScript('assets/js/en.mshn.user.js');

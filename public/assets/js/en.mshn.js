@@ -110,14 +110,14 @@ EN.confirm = function(selector) {
  * @return void
  * @since  1.0
  */
-EN.initToolTips = function() {
+EN.initToolTips = function(selector) {
     var options = {
         gravity: 'w',
         html: true,
         opacity: 0.8
     };
 
-    jQuery('.tooltip').tipsy(options).click(function(e) {
+    jQuery(selector).tipsy(options).click(function(e) {
         e.preventDefault();
     });
 };
@@ -306,7 +306,7 @@ EN.infiniteScrolling = function(triggerSelector) {
 jQuery(document).ready(function() {
     try { EN({ debug: true }); } catch(e) { alert(e); }
 
-    EN.initToolTips();
+    EN.initToolTips('.tooltip');
     EN.confirm('.confirm');
     EN.validate('.validate');
 

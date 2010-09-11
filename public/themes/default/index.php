@@ -15,14 +15,12 @@ $content   = $request->param("_content_active");
 
 // Add Javascript and CSS
 $this->addScript("http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js");
-$this->addScript("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js");
-$this->addScript("http://ajax.microsoft.com/ajax/jquery.validate/1.6/jquery.validate.pack.js");
-$this->addScript($base_url."assets/js/mashine.js");
+// $this->addScript("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js");
+// $this->addScript("http://ajax.microsoft.com/ajax/jquery.validate/1.6/jquery.validate.pack.js");
 $this->addStyleSheet($base_url."assets/css/mashine.css");
 
 if ($user->groupId() > 0 && $user->groupId() <= 2) {
-    $this->addScript($base_url."assets/js/mashine.admin.js");
-    $this->addStyleSheet($base_url."assets/css/mashine.admin.css");
+    $this->addStyleSheet($base_url."assets/css/mashine.user.css");
 }
 ?>
 
@@ -67,6 +65,10 @@ echo $renderer->renderPartial(
 </p>
 </div>
 
-<script type="text/javascript" charset="utf-8">
-    var base_url = '<?php echo $base_url; ?>';
-</script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
+<script src="http://ajax.microsoft.com/ajax/jquery.validate/1.6/jquery.validate.pack.js"></script>
+<script>var base_url = '<?php echo $base_url; ?>';</script>
+<script src="<?php echo $base_url; ?>assets/js/mashine.js"></script>
+<?php if ($user->groupId() > 0 && $user->groupId() <= 2) : ?>
+<script src="<?php echo $base_url; ?>assets/js/mashine.user.js"></script>
+<?php endif; ?>

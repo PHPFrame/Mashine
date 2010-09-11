@@ -91,14 +91,14 @@
     <target name="minify_js">
 
         <delete file="${assets.dir}/js/mashine.js" failonerror="true" />
-        <delete file="${assets.dir}/js/mashine.admin.js" failonerror="true" />
+        <delete file="${assets.dir}/js/mashine.user.js" failonerror="true" />
 
         <foreach target="do_minify_js" param="filename">
             <path>
                 <fileset dir="${assets.dir}/js" casesensitive="yes">
                     <include name="**/*tipsy*.js"/>
-                    <include name="**/en.js"/>
-                    <include name="**/core.js"/>
+                    <include name="**/en.core.js"/>
+                    <include name="**/en.mshn.js"/>
                 </fileset>
             </path>
 
@@ -109,12 +109,11 @@
             <path>
                 <fileset dir="${assets.dir}/js" casesensitive="yes">
                     <include name="**/*tinymce*.js"/>
-                    <include name="**/*admin*.js"/>
-                    <exclude name="mashine.admin.js"/>
+                    <include name="**/en.mshn.user.js"/>
                 </fileset>
             </path>
 
-            <param name="outfile" value="${assets.dir}/js/mashine.admin.js" />
+            <param name="outfile" value="${assets.dir}/js/mashine.user.js" />
         </foreach>
 
     </target>
