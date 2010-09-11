@@ -159,7 +159,7 @@ class SystemController extends PHPFrame_ActionController
         $mapper  = new OAuthClientsMapper($this->db());
         $clients = $mapper->find();
 
-        $mapper = new OAuthMethodsMapper($this->app()->db());
+        $mapper = new ApiMethodsMapper($this->app()->db());
         $rows   = $mapper->find();
 
         // Rebuild method info data into a new array using method names as keys

@@ -172,7 +172,7 @@ class ApiController extends PHPFrame_RESTfulController
 
         $api_method = $api_obj."/".$api_method;
 
-        $api_methods_mapper = new OAuthMethodsMapper($this->app()->db());
+        $api_methods_mapper = new ApiMethodsMapper($this->app()->db());
         $api_method_info = $api_methods_mapper->findByMethod($api_method);
 
         if (!is_array($api_method_info) || empty($api_method_info)) {
