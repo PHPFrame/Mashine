@@ -74,6 +74,8 @@ echo $renderer->renderPartial(
 <?php if ($user->groupId() > 0 && $user->groupId() <= 2) : ?>
 <script src="<?php echo $base_url; ?>assets/js/mashine.user.js"></script>
 <?php endif; ?>
+<script src="<?php echo $base_url; ?>assets/js/syntaxhighlighter/shCore.js"></script>
+<script src="<?php echo $base_url; ?>assets/js/syntaxhighlighter/shAutoloader.js"></script>
 <script>
 jQuery(document).ready(function() {
     SyntaxHighlighter.autoloader(

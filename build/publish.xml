@@ -99,8 +99,6 @@
                     <include name="jquery/jquery.tipsy.js"/>
                     <include name="en.core.js"/>
                     <include name="en.mshn.js"/>
-                    <include name="syntaxhighlighter/shCore.js"/>
-                    <include name="syntaxhighlighter/shAutoloader.js"/>
                 </fileset>
             </path>
 
@@ -131,7 +129,7 @@
             append="true"
         >
             <arg line="-jar yuicompressor-2.4.2.jar ${filename}" />
-            <arg line="--charset utf-8 --type js --nomunge" />
+            <arg line="--charset utf-8 --type js" />
         </exec>
 
     </target>
