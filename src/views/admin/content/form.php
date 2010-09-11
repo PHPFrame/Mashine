@@ -6,7 +6,11 @@
 
 <form id="content_form" name="content_form" action="index.php" method="post">
 
-<?php if (in_array(get_class($content->parent()), array("PageContent", "MVCContent"))) : ?>
+<?php
+$is_new = ((int) $content->id() <= 0);
+$is_post = (get_class($content->parent()) === "PostsCollectionContent");
+if ($is_new && !$is_post) :
+?>
 <p>
     <label for="type" class="inline">Type:</label>
     <select name="type" id="type">
