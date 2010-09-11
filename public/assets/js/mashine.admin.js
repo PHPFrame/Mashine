@@ -19,6 +19,6 @@
 // Include TinyMCE jquery plugin
 includeScript('assets/js/jquery/jquery.tinymce.js');
 
-// Include CMS admin scripts
+// Include Mashine's admin scripts
 includeScript('assets/js/mashine/admin.content.js');
 includeScript('assets/js/mashine/admin.user.js');

@@ -24,13 +24,11 @@
  * @return void
  * @since  1.0
  */
-var includeScript = function(src)
-{
+var includeScript = function(src) {
     var str = '<script type="text/javascript" src="' + src + '"></script>';
-
     document.write(str);
 }
 
 includeScript('assets/js/jquery/jquery.tipsy.js');
 includeScript('assets/js/en.js');
-includeScript('assets/js/mashine/common.js');
+includeScript('assets/js/mashine/core.js');
