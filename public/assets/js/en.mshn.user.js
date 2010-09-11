@@ -122,7 +122,9 @@ EN.initContentForm = function() {
     jQuery('#content_form').validate({
         submitHandler: function(form) {
             // switch to visual mode before saving to avoid backslash issue
-            tinymceTextArea.tinymce().show();
+            if (tinymceTextArea.css('display') === 'inline') {
+                tinymceTextArea.tinymce().show();
+            }
 
             slugInput.removeAttr('disabled');
             form.submit();

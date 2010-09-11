@@ -18,6 +18,8 @@ $this->addScript("http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.j
 // $this->addScript("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js");
 // $this->addScript("http://ajax.microsoft.com/ajax/jquery.validate/1.6/jquery.validate.pack.js");
 $this->addStyleSheet($base_url."assets/css/mashine.css");
+$this->addStyleSheet($base_url."assets/css/syntaxhighlighter/shCore.css");
+$this->addStyleSheet($base_url."assets/css/syntaxhighlighter/shThemeRDark.css");
 
 if ($user->groupId() > 0 && $user->groupId() <= 2) {
     $this->addStyleSheet($base_url."assets/css/mashine.user.css");
@@ -72,3 +74,20 @@ echo $renderer->renderPartial(
 <?php if ($user->groupId() > 0 && $user->groupId() <= 2) : ?>
 <script src="<?php echo $base_url; ?>assets/js/mashine.user.js"></script>
 <?php endif; ?>
+<script>
+jQuery(document).ready(function() {
+    SyntaxHighlighter.autoloader(
+      'js jscript javascript assets/js/syntaxhighlighter/shBrushJScript.js',
+      'php assets/js/syntaxhighlighter/shBrushPhp.js',
+      'css assets/js/syntaxhighlighter/shBrushCss.js',
+      'bash shell assets/js/syntaxhighlighter/shBrushBash.js',
+      'plain assets/js/syntaxhighlighter/shBrushPlain.js',
+      'python assets/js/syntaxhighlighter/shBrushPython.js',
+      'ruby assets/js/syntaxhighlighter/shBrushRuby.js',
+      'sql assets/js/syntaxhighlighter/shBrushSql.js',
+      'xml html assets/js/syntaxhighlighter/shBrushXml.js'
+    );
+
+    SyntaxHighlighter.all();
+});
+</script>

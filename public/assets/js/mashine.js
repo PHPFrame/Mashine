@@ -32,3 +32,5 @@ var includeScript = function(src) {
 includeScript('assets/js/jquery/jquery.tipsy.js');
 includeScript('assets/js/en.core.js');
 includeScript('assets/js/en.mshn.js');
+includeScript('assets/js/syntaxhighlighter/shCore.js');
+includeScript('assets/js/syntaxhighlighter/shAutoloader.js');
