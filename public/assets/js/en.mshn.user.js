@@ -70,11 +70,17 @@ EN.initContentForm = function() {
     var publishingFields = jQuery('#publishing p');
     var metaDataFields = jQuery('#metadata p');
     var permissionsFields = jQuery('#permissions p');
+    var parentSlug = jQuery('#parent-slug');
 
     var updateSlug = function(slug) {
         slug = slug.toLowerCase();
         slug = slug.replace(/[^a-z0-9\-]/g, '-');
-        slugInput.val(jQuery('#parent-slug').val() + '/' + slug);
+
+        if (typeof parentSlug.val() !== 'undefined') {
+            slug = parentSlug.val() + '/' + slug;
+        }
+
+        slugInput.val(slug);
     };
 
     var updateType = function(type) {
@@ -125,12 +131,10 @@ EN.initContentForm = function() {
 
     //slugInput.attr('disabled', true);
 
-    titleInput.focusout(function() {
-        updateSlug(jQuery(this).val());
-    });
-
-    titleInput.keypress(function() {
-        updateSlug(jQuery(this).val());
+    titleInput.keyup(function() {
+        var value = jQuery(this).val();
+        value = jQuery.trim(value);
+        updateSlug(value);
     });
 
     typeSelect.change(function() {
