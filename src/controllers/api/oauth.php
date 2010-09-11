@@ -133,7 +133,7 @@ class OauthApiController extends PHPFrame_RESTfulController
             throw new Exception("Access denied!");
         }
 
-        $mapper = new OAuthMethodsMapper($this->db());
+        $mapper = new ApiMethodsMapper($this->db());
         $mapper->insert($method, $oauth, $cookie);
 
         $this->response()->body(1);
