@@ -26,7 +26,9 @@ class PostContent extends Content
 {
     public function excerpt($limit_chars=null)
     {
-        $str = current(explode("<!-- More -->", $this->body()));
+        $pattern = "/^(.*)(<!--\s*more\s*-->).*$/si";
+        $str = preg_replace($pattern, "$1", $this->body());
+        //$str = current(explode("<!-- More -->", $this->body()));
 
         if ($limit_chars) {
             $str = new PHPFrame_String($str);

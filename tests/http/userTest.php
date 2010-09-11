@@ -15,13 +15,8 @@ class UserControllerHttpTest extends MVCTestCase
         //...
     }
 
-    public function test_construct()
+    public function test_()
     {
-        $request = new PHPFrame_Request();
-        $request->requestURI("/dashboard");
-        $request->scriptName("/index.php");
-        $request->ajax(true);
-
-        //var_dump($this->app()->dispatch($request));
+        //...
     }
 }

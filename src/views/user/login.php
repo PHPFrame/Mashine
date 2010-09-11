@@ -108,4 +108,4 @@
 
 </div><!-- .entry -->
 
-<script>EN.initLoginForm();</script>
+<script>jQuery(document).ready(function() { EN.initLoginForm() });</script>

@@ -83,6 +83,21 @@ class User extends PHPFrame_User
     }
 
     /**
+     * Mark object as clean.
+     *
+     * @return void
+     * @since  1.0
+     */
+    public function markClean()
+    {
+        parent::markClean();
+
+        foreach ($this->contacts() as $contact) {
+            $contact->markClean();
+        }
+    }
+
+    /**
      * Magic method invoked when object is serialised.
      *
      * @return array

@@ -30,5 +30,5 @@ var includeScript = function(src) {
 }
 
 includeScript('assets/js/jquery/jquery.tipsy.js');
-includeScript('assets/js/en.js');
-includeScript('assets/js/mashine/core.js');
+includeScript('assets/js/en.core.js');
+includeScript('assets/js/en.mshn.js');
