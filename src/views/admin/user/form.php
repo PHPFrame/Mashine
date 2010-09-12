@@ -1,8 +1,8 @@
-<div id="content-header">
+<header id="content-header">
     <h1><?php echo $title; ?></h1>
-</div>
+</header>
 
-<div class="entry">
+<div id="content-body">
 
 <?php if ($user->id() && $session->getUser()->id() < 3 && $session->getUser()->id() != $user->id()) : ?>
 Admin actions:
@@ -176,8 +176,4 @@ Admin actions:
 <input type="hidden" name="ret_url" value="<?php echo $ret_url; ?>" />
 </form>
 
-</div><!-- .entry -->
-
-<div style="clear:both;"></div>
-
-<?php //var_dump(iterator_to_array($user)); ?>
+</div><!-- #content-body -->

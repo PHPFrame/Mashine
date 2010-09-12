@@ -7,7 +7,7 @@
 
 <?php if (count($posts) > 0) : ?>
 <?php foreach ($posts as $post) : ?>
-<article class="<?php if ($post->status() == 0) echo "unpublished"; ?>">
+<article<?php if ($post->status() == 0) echo " class=\"unpublished\""; ?>>
 
 <header>
 <?php if ($post->status() == 0) : ?>
@@ -18,26 +18,47 @@
         <?php echo $post->title(); ?>
     </a>
 </h2>
+<p class="post-info">
+    Posted by <a href="#"><?php echo $post->author(); ?></a>
+    on <time datetime="<?php echo date("Y-m-d\TH:i", strtotime($post->pubDate())); ?>" pubdate><?php echo date("l jS F Y", strtotime($post->pubDate())); ?></time>
+</p>
 </header>
 
 <div class="post-excerpt">
 <?php echo $post->excerpt(); ?>
 </div>
 
-<footer>
-<p class="post-info">
-    Posted by <?php echo $post->author(); ?>
-    on <?php echo date("l jS F Y", strtotime($post->pubDate())); ?>
+<p class="post-readmore">
+    <a href="<?php echo $post->slug(); ?>">[ read more... ]</a>
 </p>
-<p class="post-info-readmore">
-    <a href="<?php echo $post->slug(); ?>">read more...</a>
+
+<footer>
+<!--
+<p>Tags: <?php echo $post->keywords(); ?></p>
+<p>Comments...</p>
+-->
+<p>
+    Share:
+    <a href="http://www.facebook.com/sharer.php?u=<?php echo urlencode($base_url.$post->slug()); ?>&t=<?php echo urlencode($post->title()); ?>">
+        Facebook
+    </a>
+     |
+    <a href="http://twitter.com/?status=<?php echo urlencode($post->title()); ?>:%20<?php echo urlencode($base_url.$post->slug()); ?>">
+        Twitter
+    </a>
+     |
+    <a href="http://www.delicious.com/save?jump=yes&url=<?php echo urlencode($base_url.$post->slug()); ?>&title=<?php echo urlencode($post->title()); ?>">
+        Del.icio.us
+    </a>
 </p>
 </footer>
 
 </article>
 <?php endforeach; ?>
 
-<nav>
+</div><!-- #content-body -->
+
+<nav id="pagination">
 <p>
     <a
         id="content-infinite-scrolling-trigger"
@@ -52,6 +73,5 @@
 
 <?php else : ?>
 <p>No posts found.</p>
-<?php endif ?>
-
 </div><!-- #content-body -->
+<?php endif ?>

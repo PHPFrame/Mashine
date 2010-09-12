@@ -84,7 +84,7 @@ html, body {
     display: block;
 }
 
-.entry {
+#content-body {
     width: 520px;
     overflow: hidden;
     margin: 0 0 20px;
@@ -107,7 +107,7 @@ html, body {
     padding: 20px;
 }
 
-footer {
+#footer {
     clear: both;
     height: 39px;
     padding: 20px;
@@ -116,7 +116,7 @@ footer {
     border-top: 1px solid #CCC;
 }
 
-footer p {
+#footer p {
     width: 800px;
     margin: auto;
 }

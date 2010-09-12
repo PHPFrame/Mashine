@@ -1,8 +1,8 @@
-<div id="content-header">
+<header id="content-header">
     <h1><?php echo $title; ?></h1>
-</div>
+</header>
 
-<div class="entry">
+<div id="content-body">
 
 <form class="validate" id="user-contacts-form" action="index.php" method="post">
 
@@ -187,6 +187,4 @@
 <input type="hidden" name="group" value="<?php echo $contact->group(); ?>" />
 </form>
 
-</div><!-- .entry -->
-
-<div style="clear:both;"></div>
+</div><!-- #content-body -->

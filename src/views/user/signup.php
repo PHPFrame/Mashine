@@ -1,8 +1,8 @@
-<div id="content-header">
+<header id="content-header">
     <h1><?php echo $title; ?></h1>
-</div>
+</header>
 
-<div class="entry">
+<div id="content-body">
 
 <form class="validate" id="signup-form" action="index.php" method="post">
 
@@ -140,4 +140,4 @@
 <input type="hidden" name="ret_url" value="<?php echo $ret_url; ?>" />
 </form>
 
-</div><!-- .entry -->
+</div><!-- #content-body -->

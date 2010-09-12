@@ -1,8 +1,8 @@
-<div id="content-header">
+<header id="content-header">
     <h1><?php echo $title; ?></h1>
-</div>
+</header>
 
-<div class="entry">
+<div id="content-body">
 
 <form class="validate" id="login-form" action="index.php" method="post">
 
@@ -106,6 +106,6 @@
 
 </div>
 
-</div><!-- .entry -->
+</div><!-- #content-body -->
 
 <script>jQuery(document).ready(function() { EN.initLoginForm() });</script>

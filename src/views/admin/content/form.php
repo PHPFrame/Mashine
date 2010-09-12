@@ -1,8 +1,8 @@
-<div id="content-header">
+<header id="content-header">
     <h1><?php echo $title; ?></h1>
-</div>
+</header>
 
-<div class="entry">
+<div id="content-body">
 
 <form id="content_form" name="content_form" action="index.php" method="post">
 
@@ -321,8 +321,6 @@ if ($content instanceof FeedContent
 <input type="hidden" name="action" value="save" />
 </form>
 
-</div><!-- .entry -->
-
-<div style="clear:both;"></div>
+</div><!-- #content-body -->
 
 <script>jQuery(document).ready(function() { EN.initContentForm(); });</script>

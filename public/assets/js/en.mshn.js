@@ -208,21 +208,41 @@ var renderPosts = function(posts) {
     for (var i=0; i<posts.length; i++) {
         var post = posts[i];
 
-        str += '<article>';
+        str += '<article';
+        if (+post.status === 0) {
+            str += ' class="unpublished"';
+        }
+        str += '">';
 
+        str += '<header>';
+        if (+post.status === 0) {
+            str += '<div style="float: right;">Unpublished</div>';
+        }
         str += '<h2 class="post-title">';
         str += '<a href="' + post.url + '">' + post.title + '</a>';
         str += '</h2>';
+        str += '<p class="post-info">';
+        str += 'Posted by <a href="">' + post.author + '</a>';
+        str += ' on <time datetime="' + post.pub_date + '" pubdate>' + post.pub_date_human + '</time>';
+        str += '</p>';
+        str += '</header>';
 
         str += '<div class="post-excerpt">' + post.excerpt + '</div>';
 
-        str += '<p class="post-info">';
-        str += 'Posted by ' + post.author + ' on ' + post.pub_date;
-        str += '</p>';
-
-        str += '<p class="post-info-readmore">';
+        str += '<p class="post-readmore">';
         str += '<a href="' + post.url + '">read more...' + '</a>';
         str += '</p>';
+
+        str += '<footer>';
+        str += '<p>Share:';
+        str += '<a href="http://www.facebook.com/sharer.php?u=' + post.url + '&t=' + post.title + '">';
+        str += 'Facebook</a> | ';
+        str += '<a href="http://twitter.com/?status=' + post.title + ':%20' + post.url + '">';
+        str += 'Twitter</a> | ';
+        str += '<a href="http://www.delicious.com/save?jump=yes&url=' + post.url + '&title=' + post.title + '">';
+        str += 'Del.icio.us</a>';
+        str += '</p>';
+        str += '</footer>';
 
         str += '</article>';
     }

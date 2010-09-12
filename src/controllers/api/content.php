@@ -92,9 +92,11 @@ class ContentApiController extends PHPFrame_RESTfulController
                         "id" => $obj->id(),
                         "url" => $this->config()->get("base_url").$obj->slug(),
                         "title" => $obj->title(),
-                        "pub_date" => $obj->pubDate(),
+                        "pub_date" => date("Y-m-d\TH:i", strtotime($obj->pubDate())),
+                        "pub_date_human" => date("l jS F Y", strtotime($obj->pubDate())),
                         "type" => str_replace("Content", "", $obj->type()),
-                        "author" => $obj->author()
+                        "author" => $obj->author(),
+                        "status" => $obj->status()
                     );
 
                     if (method_exists($obj, "excerpt")) {
