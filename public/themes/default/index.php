@@ -53,11 +53,7 @@ if ($user->groupId() > 0 && $user->groupId() <= 2) {
 <div id="push"></div>
 </div><!-- #wrapper -->
 
-<<<<<<< HEAD
 <footer id="footer">
-=======
-<footer>
->>>>>>> dd5358a6cd5f19350a5537e747e721ff4101370b
 <small id="copyright">
 <p>
 Powered by <?php echo nl2br(PHPFrame::version())."\n"; ?>
