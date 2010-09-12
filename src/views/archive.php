@@ -1,10 +1,9 @@
-<?php echo $content->editLink($user); ?>
-
-<div class="content_header_wrapper">
+<header id="content-header">
     <h1><?php echo $content->title(); ?></h1>
-</div>
+    <?php echo $content->editLink($user); ?>
+</header>
 
-<div class="entry blog">
+<div id="content-body" class="archive">
 
 <p>
     Pages:
@@ -30,7 +29,7 @@
 <?php if (count($posts) > 0) : ?>
 <?php foreach ($posts as $post) : ?>
 <li>
-<div class="article">
+<article>
 
 <h2 class="post-title">
     <a href="<?php echo $post->slug(); ?>">
@@ -54,7 +53,7 @@
 
 <div style="clear:both;"></div>
 
-</div><!-- #article -->
+</article>
 </li>
 <?php endforeach; ?>
 </ul>
@@ -66,4 +65,4 @@
 </div><!-- #entry -->
 <?php endif ?>
 
-</div><!-- #entry -->
+</div><!-- #content-body -->

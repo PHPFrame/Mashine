@@ -46,16 +46,16 @@ html, body {
     color: #FFF;
 }
 
-.breadcrumbs {
+#breadcrumbs {
     margin: 0 0 10px;
     font-size: 0.8em;
 }
 
-.breadcrumbs a {
+#breadcrumbs a {
     font-weight: normal !important;
 }
 
-div#sysevents {
+#sysevents {
     margin: 20px 0 0 0;
 }
 
@@ -107,7 +107,7 @@ div#sysevents {
     padding: 20px;
 }
 
-#footer {
+footer {
     clear: both;
     height: 39px;
     padding: 20px;
@@ -116,7 +116,7 @@ div#sysevents {
     border-top: 1px solid #CCC;
 }
 
-#footer p {
+footer p {
     width: 800px;
     margin: auto;
 }

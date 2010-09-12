@@ -1,4 +1,4 @@
-<div class="content_header_wrapper">
+<div id="content-header">
     <h1><?php echo $title; ?></h1>
 </div>
 

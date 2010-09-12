@@ -211,9 +211,7 @@ class HTMLSiteMap
         }
 
         if ($str) {
-            $str  = "<div class=\"breadcrumbs\">".$str;
-            $str .= " &rang; ".$node->shortTitle()."\n";
-            $str .= "</div>";
+            $str  = $str." &rang; ".$node->shortTitle();
         }
 
         return $str;

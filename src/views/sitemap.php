@@ -1,14 +1,9 @@
-<div class="content_header_wrapper">
+<header id="content-header">
     <h1><?php echo $title; ?></h1>
-</div>
+    <?php echo $content->editLink($user); ?>
+</header>
 
-<div id="sitemap" class="entry">
-
+<div id="content-body" class="sitemap">
 [nav exclude="sitemap"]
-
-<p>
-    <a href="sitemap?xml=1">XML Sitemap</a>
-</p>
-
-</div><!-- #entry -->
-
+<p><a href="sitemap?xml=1">XML Sitemap</a></p>
+</div><!-- #content-body -->
