@@ -1,7 +1,6 @@
 <header id="content-header">
     <h1><?php echo $content->title(); ?></h1>
     <?php echo $content->editLink($user); ?>
-<<<<<<< HEAD
     <p class="feed-info">
         Feed URL: <a href="<?php echo $content->link(); ?>"><?php echo $content->link(); ?></a><br />
         <?php $description = $content->description(); ?>
@@ -12,19 +11,6 @@
 </header>
 
 <div id="content-body" class="feed">
-=======
-</header>
-
-<div id="content-body" class="feed">
-
-<p class="feed-info">
-    Feed URL: <a href="<?php echo $content->link(); ?>"><?php echo $content->link(); ?></a><br />
-    <?php $description = $content->description(); ?>
-    <?php echo ($description) ? "Description: ".$description : ""; ?>
-    <?php $img = $helper->displayFeedImage($content); ?>
-    <?php echo ($img) ? "Image: ".$img : ""; ?>
-</p>
->>>>>>> dd5358a6cd5f19350a5537e747e721ff4101370b
 
 <?php foreach ($content->items() as $item) : ?>
 <article>
