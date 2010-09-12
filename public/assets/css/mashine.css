@@ -1,3 +1,8 @@
+html {
+    /* Force scrollbar to avoid content jumping when shorter than view port */
+    overflow-y: scroll;
+}
+
 header, nav, article, footer {
     display: block;
 }
