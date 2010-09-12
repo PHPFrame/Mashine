@@ -208,11 +208,15 @@ var renderPosts = function(posts) {
     for (var i=0; i<posts.length; i++) {
         var post = posts[i];
 
+<<<<<<< HEAD
         str += '<article';
         if (+post.status === 0) {
             str += ' class="unpublished"';
         }
         str += '">';
+=======
+        str += '<article>';
+>>>>>>> dd5358a6cd5f19350a5537e747e721ff4101370b
 
         str += '<header>';
         if (+post.status === 0) {
@@ -229,6 +233,7 @@ var renderPosts = function(posts) {
 
         str += '<div class="post-excerpt">' + post.excerpt + '</div>';
 
+<<<<<<< HEAD
         str += '<p class="post-readmore">';
         str += '<a href="' + post.url + '">read more...' + '</a>';
         str += '</p>';
@@ -244,6 +249,16 @@ var renderPosts = function(posts) {
         str += '</p>';
         str += '</footer>';
 
+=======
+        str += '<p class="post-info">';
+        str += 'Posted by ' + post.author + ' on ' + post.pub_date;
+        str += '</p>';
+
+        str += '<p class="post-info-readmore">';
+        str += '<a href="' + post.url + '">read more...' + '</a>';
+        str += '</p>';
+
+>>>>>>> dd5358a6cd5f19350a5537e747e721ff4101370b
         str += '</article>';
     }
 
