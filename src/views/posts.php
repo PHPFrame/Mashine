@@ -1,49 +1,43 @@
-<?php echo $content->editLink($user); ?>
-
-<div class="content_header_wrapper">
+<header id="content-header">
     <h1><?php echo $content->title(); ?></h1>
-</div>
+    <?php echo $content->editLink($user); ?>
+</header>
 
-<div class="entry blog">
-
-<ul id="posts" class="posts">
+<div id="content-body" class="blog">
 
 <?php if (count($posts) > 0) : ?>
 <?php foreach ($posts as $post) : ?>
-<li>
-<div class="article <?php if ($post->status() == 0) echo "unpublished"; ?>">
+<article class="<?php if ($post->status() == 0) echo "unpublished"; ?>">
 
+<header>
 <?php if ($post->status() == 0) : ?>
 <div style="float: right;">Unpublished</div>
 <?php endif; ?>
-
 <h2 class="post-title">
     <a href="<?php echo $post->slug(); ?>">
         <?php echo $post->title(); ?>
     </a>
 </h2>
+</header>
 
 <div class="post-excerpt">
-    <?php echo $post->excerpt(); ?>
+<?php echo $post->excerpt(); ?>
 </div>
 
-<span class="post-info">
+<footer>
+<p class="post-info">
     Posted by <?php echo $post->author(); ?>
     on <?php echo date("l jS F Y", strtotime($post->pubDate())); ?>
-</span>
-<span class="post-info-readmore">
-    <a href="<?php echo $post->slug(); ?>">
-        read more...
-    </a>
-</span>
+</p>
+<p class="post-info-readmore">
+    <a href="<?php echo $post->slug(); ?>">read more...</a>
+</p>
+</footer>
 
-<div style="clear:both;"></div>
-
-</div><!-- #article -->
-</li>
+</article>
 <?php endforeach; ?>
-</ul>
 
+<nav>
 <p>
     <a
         id="content-infinite-scrolling-trigger"
@@ -54,13 +48,10 @@
 
     </a>
 </p>
+</nav>
 
 <?php else : ?>
-<div class="entry">
-    <p>
-        No posts found.
-    </p>
-</div><!-- #entry -->
+<p>No posts found.</p>
 <?php endif ?>
 
-</div><!-- #entry -->
+</div><!-- #content-body -->

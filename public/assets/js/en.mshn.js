@@ -208,8 +208,7 @@ var renderPosts = function(posts) {
     for (var i=0; i<posts.length; i++) {
         var post = posts[i];
 
-        str += '<li>';
-        str += '<div class="article">';
+        str += '<article>';
 
         str += '<h2 class="post-title">';
         str += '<a href="' + post.url + '">' + post.title + '</a>';
@@ -217,17 +216,15 @@ var renderPosts = function(posts) {
 
         str += '<div class="post-excerpt">' + post.excerpt + '</div>';
 
-        str += '<span class="post-info">';
+        str += '<p class="post-info">';
         str += 'Posted by ' + post.author + ' on ' + post.pub_date;
-        str += '</span>';
+        str += '</p>';
 
-        str += '<span class="post-info-readmore">';
+        str += '<p class="post-info-readmore">';
         str += '<a href="' + post.url + '">read more...' + '</a>';
-        str += '</span>';
+        str += '</p>';
 
-        str += '<div style="clear:both;"></div>';
-        str += '</div><!-- #article -->';
-        str += '</li>';
+        str += '</article>';
     }
 
     return str;
@@ -291,7 +288,7 @@ EN.infiniteScrolling = function(triggerSelector) {
                 el.attr('href', nextHref);
                 el.html(elOriginalHtml);
 
-                jQuery('#posts').append(renderPosts(data));
+                jQuery('#content-body').append(renderPosts(data));
             },
             complete: function() {
                 loading = false;
@@ -304,7 +301,7 @@ EN.infiniteScrolling = function(triggerSelector) {
 
 // Init UI on document ready event
 jQuery(document).ready(function() {
-    try { EN({ debug: true }); } catch(e) { alert(e); }
+    try { EN({ debug: false }); } catch(e) { alert(e); }
 
     EN.initToolTips('.tooltip');
     EN.confirm('.confirm');

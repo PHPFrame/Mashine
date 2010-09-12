@@ -1,6 +1,9 @@
-<?php echo $content->editLink($user); ?>
+<header id="content-header">
+    <h1><?php echo $content->title(); ?></h1>
+    <?php echo $content->editLink($user); ?>
+</header>
 
-<h1><?php echo $content->title(); ?></h1>
+<div id="content-body" class="feed">
 
 <p class="feed-info">
     Feed URL: <a href="<?php echo $content->link(); ?>"><?php echo $content->link(); ?></a><br />
@@ -30,3 +33,5 @@
 
 </div><!-- #entry -->
 <?php endforeach; ?>
+
+</div><!-- #content-body -->

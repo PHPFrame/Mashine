@@ -161,8 +161,8 @@ th {
 
 td {}
 
-div#sitename a {
-    font-size: 4em;
+#sitename a {
+    font-size: 2em;
     text-decoration: none;
     display: inline-block;
     margin: 10px 0;
@@ -173,7 +173,7 @@ div#sitename a {
     font-weight: bold;
 }
 
-#footer {
+footer {
     font-size: 0.8em;
 }
 

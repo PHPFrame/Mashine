@@ -1,3 +1,7 @@
+header, nav, article, footer {
+    display: block;
+}
+
 label {
     display: block;
 }
