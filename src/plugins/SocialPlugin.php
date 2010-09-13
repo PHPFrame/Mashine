@@ -584,8 +584,8 @@ function facebook_connect()
         // twitterify
         $tweet = preg_replace("#(^|[\n ])([\w]+?://[\w]+[^ \"\n\r\t< ]*)#", "\\1<a href=\"\\2\">\\2</a>", $tweet);
         $tweet = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r< ]*)#", "\\1<a href=\"http://\\2\">\\2</a>", $tweet);
-        $tweet = preg_replace("/@(\w+)/", "<a href=\"http://www.twitter.com/\\1\">@\\1</a>", $tweet);
-        $tweet = preg_replace("/#(\w+)/", "<a href=\"http://search.twitter.com/search?q=\\1\">#\\1</a>", $tweet);
+        $tweet = preg_replace("/@(\w+)/", "<a class=\"social-twitter-mention\" href=\"http://www.twitter.com/\\1\">@\\1</a>", $tweet);
+        $tweet = preg_replace("/#(\w+)/", "<a class=\"social-twitter-hash\" href=\"http://search.twitter.com/search?q=\\1\">#\\1</a>", $tweet);
 
         return $tweet;
     }
