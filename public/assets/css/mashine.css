@@ -3,7 +3,7 @@ html {
     overflow-y: scroll;
 }
 
-header, nav, article, footer {
+header, nav, article, footer, aside {
     display: block;
 }
 
