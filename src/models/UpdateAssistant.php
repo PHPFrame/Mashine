@@ -174,6 +174,7 @@ class UpdateAssistant
 
         foreach ($it as $file) {
             if (!preg_match("/^\./", $it->getSubPath())
+                && !preg_match("/\.(git|svn)\//", $it->getSubPath())
                 && !preg_match("/^\./", $file->getFilename())
                 && !is_writable($file->getRealPath())
             ) {
