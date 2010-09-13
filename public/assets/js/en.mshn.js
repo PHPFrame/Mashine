@@ -250,10 +250,14 @@ var renderPosts = function(posts) {
     return str;
 };
 
-EN.infiniteScrolling = function(triggerSelector) {
+EN.infiniteScrolling = function(triggerSelector, renderer) {
     var trigger = jQuery(triggerSelector);
     var loading = false;
     var end     = false;
+
+    if (typeof renderer !== 'function') {
+        renderer = renderPosts;
+    }
 
     jQuery(window).scroll(function() {
         if (jQuery(window).scrollTop() === jQuery(document).height() - jQuery(window).height()) {
@@ -308,7 +312,7 @@ EN.infiniteScrolling = function(triggerSelector) {
                 el.attr('href', nextHref);
                 el.html(elOriginalHtml);
 
-                jQuery('#content-body').append(renderPosts(data));
+                jQuery('#content-body').append(renderer(data));
             },
             complete: function() {
                 loading = false;
