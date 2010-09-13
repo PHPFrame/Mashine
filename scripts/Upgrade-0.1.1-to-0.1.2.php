@@ -25,11 +25,11 @@ class Upgrade_0_1_1_to_0_1_2
         );
 
         foreach ($files as $file) {
-            if (is_file($app->getInstallDir().DS.$file)) {
-                PHPFrame_Filesystem::rm($app->getInstallDir().DS.$file);
+            if (is_file($this->_app->getInstallDir().DS.$file)) {
+                PHPFrame_Filesystem::rm($this->_app->getInstallDir().DS.$file);
             }
         }
 
-        PHPFrame_Filesystem::rm($app->getInstallDir().DS."public/assets/js/mashine/", true);
+        PHPFrame_Filesystem::rm($this->_app->getInstallDir().DS."public/assets/js/mashine/", true);
     }
 }
