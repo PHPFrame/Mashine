@@ -15,6 +15,7 @@ $content   = $request->param("_content_active");
 
 // Add Javascript and CSS
 $this->addScript("http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js");
+$this->addScript($base_url."assets/js/modernizr-1.5.min.js");
 // $this->addScript("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js");
 // $this->addScript("http://ajax.microsoft.com/ajax/jquery.validate/1.6/jquery.validate.pack.js");
 $this->addStyleSheet($base_url."assets/css/mashine.css");
@@ -63,7 +64,6 @@ Powered by <?php echo nl2br(PHPFrame::version())."\n"; ?>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
 <script src="http://ajax.microsoft.com/ajax/jquery.validate/1.6/jquery.validate.pack.js"></script>
-<script src="<?php echo $base_url; ?>assets/js/modernizr-1.5.min.js"></script>
 <script>var base_url = '<?php echo $base_url; ?>';</script>
 <script src="<?php echo $base_url; ?>assets/js/mashine.js"></script>
 <?php if ($user->groupId() > 0 && $user->groupId() <= 2) : ?>
