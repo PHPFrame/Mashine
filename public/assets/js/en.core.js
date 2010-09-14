@@ -129,13 +129,13 @@ EN.parseString = function(str)
 
 var consoleHtml = '<style>' +
     '#EN-debug-console-wrapper { position: fixed; bottom: 0px; left: 0px; width: 100%; background: transparent; }' +
-    '#EN-debug-console { background: rgba(0,0,0,0.75); color: #CCC; padding: 0; margin: 0; border: 1px solid #999; }' +
-    '#EN-debug-console-header { height: 11px; margin:0; padding: 5px 4px 4px; background: #444; font-size: 10px; font-family: Helvetica; }' +
-    '#EN-debug-console-close-button { display: block; position: absolute; right: 3px; margin-top: -15px; color: #FFF; }' +
+    '#EN-debug-console { background: rgba(0,0,0,0.85); color: #999; padding: 0; margin: 0; border: 1px solid #999; }' +
+    '#EN-debug-console-header { height: 13px; margin:0; padding: 5px 4px 4px; background: #444; font-size: 13px; font-family: "helvetica", arial, clean, sans-serif; letter-spacing: 0.05em }' +
+    '#EN-debug-console-close-button { display: block; position: absolute; right: 6px; margin-top: -19px; color: #FFF; text-decoration:none; }' +
     '#EN-debug-console-inner-wrapper { padding: 0; margin: 0; }' +
-    '#EN-debug-console-tabs { margin: 0; padding: 3px; background: #999; }' +
+    '#EN-debug-console-tabs { margin: 0; padding: 3px; background: transparent; border-bottom:1px solid #999999; border-top:1px solid #999999;}' +
     '#EN-debug-console-tabs li { margin: 0; padding: 0; display: inline; }' +
-    '#EN-debug-console-tabs li a { display: inline-block; padding: 3px 5px 2px; margin: 0 3px 0 0; -moz-border-radius: 3px; background: #F5F6CE; text-decoration: none; color: #999; font-size: 10px; font-family: Helvetica; }' +
+    '#EN-debug-console-tabs li a { display: inline-block; padding: 3px 5px 2px; margin: 0 3px 0 0; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; background: red; text-decoration: none; color: #e2e2e2; font-size: 10px; font-family: "helvetica", arial, clean, sans-serif; border:1px solid #666666; outline:none; }' +
     '.EN-debug-console-body { padding: 10px; height: 200px; overflow: auto; font-size: 10px; font-family: Helvetica; }' +
     '.EN-debug-console-body p { padding: 0; margin: 5px 0; }' +
     '</style>' +
@@ -201,7 +201,7 @@ var consoleHtml = '<style>' +
                 } else {
                     state.tabOpen = href;
                     EN.mapper().insert(state);
-                    jQuery(v).css('color', '#999').css('background', '#F5F6CE');
+                    jQuery(v).css('color', '#e2e2e2').css('background', '#444');
                     jQuery('#EN-debug-console-' + href).show();
                 }
             });
