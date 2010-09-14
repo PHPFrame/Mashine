@@ -11,8 +11,6 @@
  * @link      https://github.com/lupomontero/Mashine
  */
 
-"use strict";
-
 (function() {
 
 /**
