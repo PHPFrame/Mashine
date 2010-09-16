@@ -73,6 +73,18 @@ Powered by <?php echo nl2br(PHPFrame::version())."\n"; ?>
 <script src="<?php echo $base_url; ?>assets/js/syntaxhighlighter/shAutoloader.js"></script>
 <script>
 jQuery(document).ready(function() {
+    try { EN({ debug: false }); } catch(e) { alert(e); }
+
+    EN.initToolTips('.tooltip');
+    EN.confirm('.confirm');
+    EN.validate('.validate');
+
+    // close sysevent boxes
+    jQuery('a.close_button').live('click', function(e) {
+        e.preventDefault();
+        jQuery(this).closest('.sysevent').fadeOut('1500');
+    });
+
     SyntaxHighlighter.autoloader(
       'js jscript javascript assets/js/syntaxhighlighter/shBrushJScript.js',
       'php assets/js/syntaxhighlighter/shBrushPhp.js',
@@ -88,3 +100,4 @@ jQuery(document).ready(function() {
     SyntaxHighlighter.all();
 });
 </script>
+

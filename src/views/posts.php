@@ -71,6 +71,11 @@
 </p>
 </nav>
 
+<script>
+jQuery(document).ready(function() { 
+	EN.infiniteScrolling('#content-infinite-scrolling-trigger');
+});
+</script>
 <?php else : ?>
 <p>No posts found.</p>
 </div><!-- #content-body -->
