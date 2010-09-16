@@ -321,21 +321,3 @@ EN.infiniteScrolling = function(triggerSelector, renderer) {
 
 })(jQuery, EN);
 
-// Init UI on document ready event
-jQuery(document).ready(function() {
-    try { EN({ debug: false }); } catch(e) { alert(e); }
-
-    EN.initToolTips('.tooltip');
-    EN.confirm('.confirm');
-    EN.validate('.validate');
-
-    // close sysevent boxes
-    var closeNote = jQuery('a.close_button');
-    closeNote.live('click', function(e) {
-        e.preventDefault();
-        jQuery(this).closest('.sidebar-item-wrapper').fadeOut('2000');
-        jQuery(this).closest('.sysevent').fadeOut('1500');
-    });
-
-    EN.infiniteScrolling('#content-infinite-scrolling-trigger');
-});
