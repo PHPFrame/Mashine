@@ -1,5 +1,7 @@
 # This is an example htaccess file. To use it remember to rename it to
 # .htaccess
+# Also, most of what you see here is based on HTML5Boilerplate by Paul Irish
+# http://github.com/paulirish/html5-boilerplate
 
 RewriteEngine on
 #RewriteBase /
@@ -30,7 +32,9 @@ RewriteRule !\.(ico|js|gif|jpg|png|css|swf|txt|htm|woff|ttf|eot|svg)$ index.php
 ## These are open for discussion as their are from the boilerplate
 
 <IfModule mod_expires.c>
-  Header set Cache-Control "public"
+# Commenting this our for now, see: 
+# http://github.com/svnlto/Mashine/commit/3bf50564258a6c592b9e3edbd109badce1a04ecf
+# Header set Cache-Control "public"
   ExpiresActive on
 
 # Perhaps better to whitelist expires rules? Perhaps.
@@ -82,9 +86,6 @@ RewriteRule !\.(ico|js|gif|jpg|png|css|swf|txt|htm|woff|ttf|eot|svg)$ index.php
 #   developer.yahoo.com/performance/rules.html#etags
 FileETag None
 
-
-
-
 # Force the latest IE version, in various cases when it may fall back to IE7 mode
 #  github.com/rails/rails/commit/123eb25#commitcomment-118920
 # Use ChromeFrame if it's installed for a better experience for the poor IE folk
@@ -103,7 +104,6 @@ FileETag None
   Header append Vary Accept-Encoding
 # Cache control is set only if mod_headers is enabled, so that's unncessary to declare
 </IfModule>
-
 
 # Cache Headers
 <IfModule mod_headers.c>
@@ -154,8 +154,5 @@ AddDefaultCharset utf-8
 # force utf-8 for a number of file formats
 AddCharset utf-8 .html .css .js .xml .json .rss
 
-
-
 # We don't need to tell everyone we're apache.
 ServerSignature Off
-
