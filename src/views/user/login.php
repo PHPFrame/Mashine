@@ -1,8 +1,10 @@
+<?php if (!$ajax) : ?>
 <header id="content-header">
     <h1><?php echo $title; ?></h1>
 </header>
 
 <div id="content-body">
+<?php endif ?>
 
 <form class="validate" id="login-form" action="index.php" method="post">
 
@@ -106,6 +108,8 @@
 
 </div>
 
+<?php if (!$ajax) : ?>
 </div><!-- #content-body -->
+<?php endif; ?>
 
 <script>jQuery(document).ready(function() { EN.initLoginForm() });</script>

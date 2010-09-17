@@ -153,7 +153,7 @@ Please click on the link below to verify your email address.
     // admin
     const NEW_USER = "New user";
     const NAME = "Name";
-    const PRIMARY_GROUP = "Primary group";
+    const PRIMARY_GROUP = "Group";
     const STATUS = "Status";
 
     // user form

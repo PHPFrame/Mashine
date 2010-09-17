@@ -124,6 +124,7 @@ class UserController extends PHPFrame_ActionController
         $view->addData("ret_url", $ret_url);
         $view->addData("email", $request->param("email", ""));
         $view->addData("token", base64_encode($this->session()->getToken()));
+        $view->addData("ajax", $request->ajax());
 
         $hooks = $this->request()->param("_hooks");
         $login_plugins = $hooks->doAction("login_form");
