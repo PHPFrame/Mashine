@@ -1,5 +1,5 @@
 /**
- * public/assets/js/mashine/common.js
+ * public/assets/js/en.mshn.js
  *
  * Javascript
  *
@@ -11,7 +11,7 @@
  * @link      https://github.com/lupomontero/Mashine
  */
 
-(function() {
+(function(jQuery, EN) {
 
 /**
  * Initialise form validation using jQuery 'validate' plugin.
@@ -200,7 +200,7 @@ EN.mashineApi = function(options) {
     jQuery.ajax(opts);
 };
 
-var renderPosts = function(posts) {
+EN.renderPosts = function(posts) {
     var str = '';
 
     for (var i=0; i<posts.length; i++) {
@@ -254,7 +254,7 @@ EN.infiniteScrolling = function(triggerSelector, renderer) {
     var end     = false;
 
     if (typeof renderer !== 'function') {
-        renderer = renderPosts;
+        renderer = EN.renderPosts;
     }
 
     jQuery(window).scroll(function() {
@@ -320,4 +320,5 @@ EN.infiniteScrolling = function(triggerSelector, renderer) {
 };
 
 })(jQuery, EN);
+
 
