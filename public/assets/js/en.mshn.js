@@ -210,7 +210,7 @@ EN.renderPosts = function(posts) {
         if (+post.status === 0) {
             str += ' class="unpublished"';
         }
-        str += '">';
+        str += '>';
 
         str += '<header>';
         if (+post.status === 0) {
