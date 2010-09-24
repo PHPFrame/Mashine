@@ -25,6 +25,8 @@ $this->addStyleSheet($base_url."assets/css/syntaxhighlighter/shThemeRDark.css");
 if ($user->groupId() > 0 && $user->groupId() <= 2) {
     $this->addStyleSheet($base_url."assets/css/mashine.user.css");
 }
+
+$this->addStyleSheet($base_url."themes/default/css/styles.css");
 ?>
 
 <div id="wrapper">
