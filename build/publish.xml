@@ -88,7 +88,7 @@
     </target>
 
     <!-- Minify JavaScript Assets -->
-    <target name="minify_js">
+    <target name="minify_js" depends="copy">
 
         <delete file="${assets.dir}/js/mashine.js" failonerror="true" />
         <delete file="${assets.dir}/js/mashine.user.js" failonerror="true" />
@@ -96,6 +96,7 @@
         <foreach target="do_minify_js" param="filename">
             <path>
                 <fileset dir="${assets.dir}/js" casesensitive="yes">
+                    <include name="jquery/jquery.pstrength.js"/>
                     <include name="jquery/jquery.tipsy.js"/>
                     <include name="en.core.js"/>
                     <include name="en.mshn.js"/>
@@ -134,7 +135,7 @@
 
     </target>
 
-    <target name="minify_css">
+    <target name="minify_css" depends="minify_js">
 
         <exec
             executable="java"
@@ -159,7 +160,7 @@
     </target>
 
     <!-- Minify Theme CSS -->
-    <target name="minify_theme_css">
+    <target name="minify_theme_css" depends="minify_css">
 
         <move
             file="${theme.dir}/css"
@@ -204,7 +205,7 @@
     </target>
 
     <!-- Create archive for distribution -->
-    <target name="tar" depends="copy">
+    <target name="tar" depends="minify_theme_css">
 
         <tar
             basedir="${tmp.dir}"

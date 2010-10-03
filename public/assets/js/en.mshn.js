@@ -28,7 +28,11 @@ EN.validate = function(selector, options) {
                 required: true,
                 email: true
             },
-            password: 'required',
+            password: {
+                required: function (e) {
+                    return !jQuery(e).hasClass('valid');
+                }
+            },
             confirm_password: {
                 equalTo: '#password'
             }
