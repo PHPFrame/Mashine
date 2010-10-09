@@ -5,7 +5,9 @@
  * @version 0.0.1
  */
 
-(function() {
+/*jslint eqeqeq: true */
+
+(function (window, jQuery) {
 
 var state = {
     id: '__state',
@@ -15,7 +17,7 @@ var state = {
     debugAjax: true
 };
 
-var checkDeps = function() {
+var checkDeps = function () {
     var libs = [ 'jQuery', 'JSON' ];
     var browserFeatures = [ 'localStorage', 'sessionStorage' ];
 
@@ -36,7 +38,7 @@ var checkDeps = function() {
     }
 };
 
-var storageStats = function() {
+var storageStats = function () {
     var str = '';
     var types = ['local', 'session'];
     var s;
@@ -68,7 +70,7 @@ var storageStats = function() {
     return str;
 };
 
-var EN = function(options) {
+var EN = function (options) {
     checkDeps();
 
     var storedState = EN.mapper().findOne('__state');
@@ -93,11 +95,11 @@ var EN = function(options) {
     return this;
 };
 
-EN.version = function() {
+EN.version = function () {
     return "0.0.1";
 };
 
-EN.option = function(k, v) {
+EN.option = function (k, v) {
     if (arguments.length > 1) {
         switch (k) {
         case 'debugAjax' :
@@ -112,8 +114,7 @@ EN.option = function(k, v) {
     return state[k];
 };
 
-EN.parseString = function(str)
-{
+EN.parseString = function (str) {
     var pairs = str.split('&');
     var params = {};
 
@@ -163,14 +164,14 @@ var consoleHtml = '<style>' +
     '</div><!-- #EN-debug-console-inner-wrapper -->' +
     '</div><!-- #EN-debug-console -->' +
     '</div><!-- #EN-debug-console-wrapper -->',
-    toggleConsole = function() {
+    toggleConsole = function () {
         var old_debugOpen = state.debugOpen;
 
         if (jQuery('#EN-debug-console-wrapper').length === 0) {
             jQuery('body').append(consoleHtml);
         }
 
-        jQuery('#EN-debug-console-close-button').click(function(e) {
+        jQuery('#EN-debug-console-close-button').click(function (e) {
             e.preventDefault();
 
             if (jQuery('#EN-debug-console-inner-wrapper').css('display') === 'none') {
@@ -186,12 +187,12 @@ var consoleHtml = '<style>' +
             jQuery('#EN-debug-console-inner-wrapper').slideToggle('slow');
         });
 
-        jQuery('#EN-debug-console-tabs a').click(function(e) {
+        jQuery('#EN-debug-console-tabs a').click(function (e) {
             var selectedHref = jQuery(this).attr('href');
 
             e.preventDefault();
 
-            jQuery('#EN-debug-console-tabs a').each(function(k, v) {
+            jQuery('#EN-debug-console-tabs a').each(function (k, v) {
                 var href = jQuery(v).attr('href');
                 if (selectedHref !== href) {
                     jQuery(v).css('color', '#666').css('background', '#CCC');
@@ -208,8 +209,8 @@ var consoleHtml = '<style>' +
         jQuery('#EN-debug-console-tabs a[href='+state.tabOpen+']').click();
     };
 
-EN.debug = function(bool) {
-    var logAjax = function(msg) {
+EN.debug = function (bool) {
+    var logAjax = function (msg) {
         if (state.debugAjax) {
             EN.log(msg);
         }
@@ -227,22 +228,22 @@ EN.debug = function(bool) {
         }
 
         jQuery('body')
-            .ajaxStart(function() {
+            .ajaxStart(function () {
                 logAjax('jQuery triggered the ajaxStart event!');
             })
-            .ajaxSend(function(event, XMLHttpRequest, ajaxOptions) {
+            .ajaxSend(function (event, XMLHttpRequest, ajaxOptions) {
                 logAjax('jQuery.ajax() is sendind ' + ((ajaxOptions.async) ? 'a' : '') + 'synchronous request:<br />' + ajaxOptions.type + ((ajaxOptions.type!=='GET') ? ' --data ' + ajaxOptions.data : '') + ' ' + ajaxOptions.url);
             })
-            .ajaxSuccess(function(event, XMLHttpRequest, ajaxOptions) {
+            .ajaxSuccess(function (event, XMLHttpRequest, ajaxOptions) {
                 logAjax('jQuery.ajax() request completed successfully!<br />Response Headers:<br />' + XMLHttpRequest.getAllResponseHeaders() + '<br />Response body:<br />' + XMLHttpRequest.responseText);
             })
-            .ajaxError(function(event, XMLHttpRequest, ajaxOptions, thrownError) {
+            .ajaxError(function (event, XMLHttpRequest, ajaxOptions, thrownError) {
                 logAjax('ajaxError!');
             })
-            .ajaxComplete(function(event, XMLHttpRequest, ajaxOptions) {
+            .ajaxComplete(function (event, XMLHttpRequest, ajaxOptions) {
                 // logAjax('ajaxComplete!');
             })
-            .ajaxStop(function() {
+            .ajaxStop(function () {
                 logAjax('jQuery triggered the ajaxStop event!');
             });
     }
@@ -250,7 +251,7 @@ EN.debug = function(bool) {
     return state.debug;
 };
 
-EN.log = function() {
+EN.log = function () {
     var o = jQuery('#EN-debug-console-log');
 
     // Send updates to firebug's console
@@ -268,7 +269,7 @@ EN.log = function() {
     }
 };
 
-EN.mapper = function(opts) {
+EN.mapper = function (opts) {
     var options = { type: 'local', store: '__EN_data' };
     var storage = {};
     var data = [];
@@ -314,21 +315,21 @@ EN.mapper = function(opts) {
     }
 
     return {
-        find: function(where, limit, page) {
+        find: function (where, limit, page) {
             if (data === null) {
                 data = [];
             }
 
             return data;
         },
-        findOne: function(id) {
+        findOne: function (id) {
             for (var i in data) {
                 if (data[i].id === id) {
                     return data[i];
                 }
             }
         },
-        insert: function(obj) {
+        insert: function (obj) {
             if (typeof obj.id === 'undefined') {
                 obj.id = data.length;
             }
@@ -341,7 +342,7 @@ EN.mapper = function(opts) {
 
             return true;
         },
-        "delete": function(id) {
+        "delete": function (id) {
             for (var i in data) {
                 if (data.hasOwnProperty(i) && data[i].id === id) {
                     log(options.store, 'Deleting obj id \'' + id + '\' from store \'' + options.store + '\' in ' + options.type + ' storage ...');
@@ -353,13 +354,13 @@ EN.mapper = function(opts) {
 
             return true;
         },
-        empty: function() {
+        empty: function () {
             log(options.store, 'Emptying store \'' + options.store + '\' in ' + options.type + ' storage ...');
             data = [];
             storage.setItem(options.store, data);
             jQuery('#EN-debug-console-storage').html(storageStats());
         },
-        remove: function() {
+        remove: function () {
             log(options.store, 'Removing store \'' + options.store + '\' from ' + options.type + ' storage ...');
             data = [];
             storage.removeItem(options.store);
@@ -370,4 +371,5 @@ EN.mapper = function(opts) {
 
 window.EN = EN;
 
-})();
+})(window, jQuery);
+
