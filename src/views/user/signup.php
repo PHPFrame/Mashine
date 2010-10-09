@@ -4,7 +4,7 @@
 
 <div id="content-body">
 
-<form class="validate" id="signup-form" action="index.php" method="post">
+<form id="signup-form" action="index.php" method="post">
 
 <fieldset id="log_in_credentials" class="">
 <legend><?php echo UserLang::LOGIN_CREDENTIALS; ?></legend>
@@ -24,7 +24,7 @@
 <p>
     <label for="password"><?php echo UserLang::PASSWORD; ?></label>
     <input
-        class="required"
+        class="strongpass"
         type="password"
         name="password"
         id="password"
@@ -145,6 +145,24 @@
 
 <script>
 jQuery(document).ready(function () {
+    // Add custom validator method for password field
+    jQuery.validator.addMethod('password', function (v, e) {
+        return jQuery(e).hasClass('strengthy-valid');
+    }, 'Invalid password.');
+
+    EN.validate('#signup-form', {
+        rules: {
+            email: {
+                required: true,
+                email: true
+            },
+            password: 'password',
+            confirm_password: {
+                equalTo: '#password'
+            }
+        }
+    });
+
     jQuery('#password')
         .strengthy({
             minLength: 6,

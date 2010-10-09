@@ -15,11 +15,6 @@
 
 (function (jQuery, EN) {
 
-// Add custom validator method for password field in signup view
-jQuery.validator.addMethod('password', function (v, e) {
-    return jQuery(e).hasClass('strengthy-valid');
-}, 'Invalid password.');
-
 /**
  * Initialise form validation using jQuery 'validate' plugin.
  *
@@ -29,17 +24,8 @@ jQuery.validator.addMethod('password', function (v, e) {
  * @since  1.0
  */
 EN.validate = function (selector, options) {
+    var objs = jQuery(selector);
     var opts = {
-        rules: {
-            email: {
-                required: true,
-                email: true
-            },
-            password: 'password',
-            confirm_password: {
-                equalTo: '#password'
-            }
-        },
         highlight: function (e, errorClass) {
             jQuery(e).addClass('validate-error');
         },
@@ -47,11 +33,15 @@ EN.validate = function (selector, options) {
             jQuery(e).removeClass('validate-error').css('color', '#222');
         },
         errorPlacement: function (error, element) {
-            if (jQuery(element).attr('id') === 'password') {
+            if (jQuery(element).hasClass('strongpass')) {
                 element.after(error);
             }
         }
     };
+
+    if (objs.length < 1) {
+        return false;
+    }
 
     if (typeof options === 'object') {
         for (var key in options) {
@@ -61,7 +51,7 @@ EN.validate = function (selector, options) {
         }
     }
 
-    jQuery(selector).validate(opts);
+    objs.validate(opts);
 };
 
 var confirmDiv;
@@ -97,7 +87,7 @@ EN.confirm = function (selector) {
                     jQuery(this).dialog('close');
                     window.location = confirmActiveTrigger.attr('href');
                 },
-                Cancel: function () {
+                'Cancel': function () {
                     jQuery(this).dialog('close');
                 }
             }

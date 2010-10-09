@@ -11,7 +11,7 @@
  * @link      https://github.com/lupomontero/Mashine
  */
 
-(function() {
+(function (jQuery, EN) {
 
 /**
  * Attach user autocomplete behaviour to given input text and set hidden
@@ -23,7 +23,7 @@
  * @return void
  * @since  1.0
  */
-EN.userAutocomplete = function(input) {
+EN.userAutocomplete = function (input) {
     var inputOriginal = jQuery(input);
     var inputAutocomplete = jQuery('#autocomplete-owner');
 
@@ -35,31 +35,31 @@ EN.userAutocomplete = function(input) {
 
     inputAutocomplete.autocomplete({
         minLength: 3,
-        search: function(event, ui) {},
-        source: function(req, callback) {
+        search: function (event, ui) {},
+        source: function (req, callback) {
             jQuery.ajax({
                 url: 'user/search',
                 dataType: 'json',
                 data: { s: req.term },
                 async: false,
-                success: function(json) {
+                success: function (json) {
                     callback(json);
                 }
             });
         },
-        open: function() {},
-        focus: function(event, ui) {
+        open: function () {},
+        focus: function (event, ui) {
             inputAutocomplete.val(ui.item.label);
             inputOriginal.val(ui.item.value);
             return false;
         },
-        select: function(event, ui) {
+        select: function (event, ui) {
             return false;
         }
     });
 };
 
-EN.initContentForm = function() {
+EN.initContentForm = function () {
     var slugInput = jQuery('#slug');
     var titleInput = jQuery('#title');
     var tinymceTextArea = jQuery('textarea.tinymce');
@@ -70,7 +70,7 @@ EN.initContentForm = function() {
     var permissionsFields = jQuery('#permissions p');
     var parentSlug = jQuery('#parent-slug');
 
-    var updateSlug = function(slug) {
+    var updateSlug = function (slug) {
         slug = slug.toLowerCase();
         slug = slug.replace(/[^a-z0-9\-]/g, '-');
 
@@ -81,7 +81,7 @@ EN.initContentForm = function() {
         slugInput.val(slug);
     };
 
-    var updateType = function(type) {
+    var updateType = function (type) {
         typeParam.hide();
         jQuery('p.' + type).show();
     };
@@ -107,18 +107,18 @@ EN.initContentForm = function() {
         height : "350px"
     });
 
-    jQuery('#tinymce-button-visual').click(function(e) {
+    jQuery('#tinymce-button-visual').click(function (e) {
         e.preventDefault();
         tinymceTextArea.tinymce().show();
     });
 
-    jQuery('#tinymce-button-html').click(function(e) {
+    jQuery('#tinymce-button-html').click(function (e) {
         e.preventDefault();
         tinymceTextArea.tinymce().hide();
     });
 
-    jQuery('#content_form').validate({
-        submitHandler: function(form) {
+    EN.validate('#content_form', {
+        submitHandler: function (form) {
             // switch to visual mode before saving to avoid backslash issue
             if (tinymceTextArea.css('display') === 'inline') {
                 tinymceTextArea.tinymce().show();
@@ -131,13 +131,13 @@ EN.initContentForm = function() {
 
     //slugInput.attr('disabled', true);
 
-    titleInput.keyup(function() {
+    titleInput.keyup(function () {
         var value = jQuery(this).val();
         value = jQuery.trim(value);
         updateSlug(value);
     });
 
-    typeSelect.change(function() {
+    typeSelect.change(function () {
         switch (jQuery(this).val()) {
         case 'PostsCollectionContent' :
             updateType('posts_collection');
@@ -157,17 +157,17 @@ EN.initContentForm = function() {
     typeSelect.change();
 
     publishingFields.hide();
-    jQuery('#publishing legend').click(function() {
+    jQuery('#publishing legend').click(function () {
         publishingFields.toggle();
     });
 
     metaDataFields.hide();
-    jQuery('#metadata legend').click(function() {
+    jQuery('#metadata legend').click(function () {
         metaDataFields.toggle();
     });
 
     permissionsFields.hide();
-    jQuery('#permissions legend').click(function() {
+    jQuery('#permissions legend').click(function () {
         permissionsFields.toggle();
     });
 };
@@ -175,12 +175,12 @@ EN.initContentForm = function() {
 })(jQuery, EN);
 
 // Wrap script in document ready event
-jQuery(document).ready(function(jQuery) {
+jQuery(document).ready(function (jQuery) {
     var userExportDiv = jQuery('#user-export');
 
     userExportDiv.hide();
 
-    jQuery('#user-export-toggle').click(function(e) {
+    jQuery('#user-export-toggle').click(function (e) {
         e.preventDefault();
 
         if (userExportDiv.css('display') !== 'none') {
@@ -192,3 +192,4 @@ jQuery(document).ready(function(jQuery) {
 
     EN.userAutocomplete('input#owner');
 });
+

@@ -6,7 +6,7 @@
 <div id="content-body">
 <?php endif ?>
 
-<form class="validate" id="login-form" action="index.php" method="post">
+<form id="login-form" action="index.php" method="post">
 
 <p>
     <label for="email"><?php echo UserLang::EMAIL; ?></label>
@@ -71,7 +71,7 @@
 </p>
 
 <div id="forgotpass">
-<form class="validate" id="forgotpass-form" action="index.php" method="post">
+<form id="forgotpass-form" action="index.php" method="post">
 <p>
     <label for="forgot_email"><?php echo UserLang::EMAIL; ?></label>
     <input
@@ -113,3 +113,4 @@
 <?php endif; ?>
 
 <script>jQuery(document).ready(function() { EN.initLoginForm() });</script>
+
