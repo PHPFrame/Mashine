@@ -146,7 +146,15 @@
 <script>
 jQuery(document).ready(function () {
     jQuery('#password')
-        .strengthy({ showMsgs: false })
+        .strengthy({
+            minLength: 6,
+            showMsgs: false,
+            require: {
+                numbers: true,
+                upperAndLower: true,
+                symbols: false
+            }
+        })
         .keyup(function () {
             jQuery(this).valid();
         });
