@@ -95,7 +95,7 @@ class MashinePlugin extends AbstractPlugin
             $registry->set('api_controllers', $api_controllers);
         }
 
-        // $this->options[$this->getOptionsPrefix()."version"] = "0.1.2";
+        // $this->options[$this->getOptionsPrefix()."version"] = "0.1.3";
 
         if ($app->session()->isAdmin()
             && !$app->request()->ajax()
@@ -113,6 +113,85 @@ class MashinePlugin extends AbstractPlugin
                 // Be silent if an exception is thrown when checking for updates
             }
         }
+    }
+
+    /**
+     * Display plugin options in admin panel.
+     *
+     * @return string
+     * @since  1.0
+     */
+    public function displayOptionsForm()
+    {
+        ob_start();
+        ?>
+
+        <form action="index.php" method="post">
+
+        <fieldset id="front-end-signup" class="">
+            <legend>Front-end signup</legend>
+
+            <p>
+                <label
+                    class="inline"
+                    for="options_<?php echo $this->getOptionsPrefix(); ?>frontendsignup_enable"
+                >
+                    Enable:
+                </label>
+                <input
+                    type="radio"
+                    name="options_<?php echo $this->getOptionsPrefix(); ?>frontendsignup_enable"
+                    value="1"
+                    <?php if ($this->options[$this->getOptionsPrefix()."frontendsignup_enable"]) : ?>
+                        checked="checked"
+                    <?php endif; ?>
+                /> Yes /
+                <input
+                    type="radio"
+                    name="options_<?php echo $this->getOptionsPrefix(); ?>frontendsignup_enable"
+                    value="0"
+                    <?php if (!$this->options[$this->getOptionsPrefix()."frontendsignup_enable"]) : ?>
+                        checked="checked"
+                    <?php endif; ?>
+                /> No
+            </p>
+
+            <p>
+                <label class="inline">Show billing details:</label>
+                <input
+                    type="radio"
+                    name="options_<?php echo $this->getOptionsPrefix(); ?>frontendsignup_show_billing"
+                    value="1"
+                    <?php if ($this->options[$this->getOptionsPrefix()."frontendsignup_show_billing"]) : ?>
+                        checked="checked"
+                    <?php endif; ?>
+                /> Yes /
+                <input
+                    type="radio"
+                    name="options_<?php echo $this->getOptionsPrefix(); ?>frontendsignup_show_billing"
+                    value="0"
+                    <?php if (!$this->options[$this->getOptionsPrefix()."frontendsignup_show_billing"]) : ?>
+                        checked="checked"
+                    <?php endif; ?>
+                /> No
+            </p>
+        </fieldset>
+
+        <p>
+            <input type="button" value="&larr; Back" onclick="window.history.back();" />
+            <input type="submit" value="Save &rarr;" />
+        </p>
+
+        <input type="hidden" name="controller" value="plugins" />
+        <input type="hidden" name="action" value="save_options" />
+
+        </form>
+
+        <?php
+        $str = ob_get_contents();
+        ob_end_clean();
+
+        return $str;
     }
 
     public function handleContentShortCode($attr)
@@ -197,7 +276,7 @@ class MashinePlugin extends AbstractPlugin
             $installer->installDB();
         }
 
-        $this->options[$this->getOptionsPrefix()."version"] = "0.1.2";
+        $this->options[$this->getOptionsPrefix()."version"] = "0.1.3";
     }
 
     /**

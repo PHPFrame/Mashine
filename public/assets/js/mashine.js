@@ -29,7 +29,7 @@ var includeScript = function(src) {
     document.write(str);
 }
 
-includeScript('assets/js/jquery/jquery.pstrength.js');
+includeScript('assets/js/jquery/jquery.strengthy-0.0.1.min.js');
 includeScript('assets/js/jquery/jquery.tipsy.js');
 includeScript('assets/js/en.core.js');
 includeScript('assets/js/en.mshn.js');

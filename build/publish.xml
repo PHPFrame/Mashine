@@ -13,7 +13,7 @@
     <property name="tmp.dir" value="${build.dir}/tmp" />
     <property name="assets.dir" value="${tmp.dir}/public/assets" />
     <property name="theme.dir" value="${tmp.dir}/public/themes/default" />
-    <property name="release.version" value="0.1.2" />
+    <property name="release.version" value="0.1.3" />
 
     <!-- Prepare directories -->
     <target name="prepare">
@@ -96,7 +96,7 @@
         <foreach target="do_minify_js" param="filename">
             <path>
                 <fileset dir="${assets.dir}/js" casesensitive="yes">
-                    <include name="jquery/jquery.pstrength.js"/>
+                    <include name="jquery/jquery.strengthy-0.0.1.min.js"/>
                     <include name="jquery/jquery.tipsy.js"/>
                     <include name="en.core.js"/>
                     <include name="en.mshn.js"/>

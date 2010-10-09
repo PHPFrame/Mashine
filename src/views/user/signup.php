@@ -45,6 +45,7 @@
 
 </fieldset>
 
+<?php if ($show_billing) : ?>
 <fieldset id="billing_details" class="">
 <legend><?php echo UserLang::BILLING_DETAILS; ?></legend>
 
@@ -128,7 +129,7 @@
 </p>
 
 </fieldset>
-
+<?php endif; ?>
 <p>
     <span class="button_wrapper">
         <input class="button" type="submit" value="<?php echo UserLang::SIGNUP; ?>" />
@@ -141,3 +142,14 @@
 </form>
 
 </div><!-- #content-body -->
+
+<script>
+jQuery(document).ready(function () {
+    jQuery('#password')
+        .strengthy({ showMsgs: false })
+        .keyup(function () {
+            jQuery(this).valid();
+        });
+});
+</script>
+

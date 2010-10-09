@@ -156,9 +156,18 @@ class UserController extends PHPFrame_ActionController
     public function signup()
     {
         $base_url = $this->config()->get("base_url");
+        $options  = $this->request()->param("_options");
+        $enable = (bool) $options["mashineplugin_frontendsignup_enable"];
+        $show_billing = (bool) $options["mashineplugin_frontendsignup_show_billing"];
 
         if ($this->session()->isAuth()) {
             $this->setRedirect($base_url."dashboard");
+            return;
+        }
+
+        if (!$enable) {
+            $msg = "Front-end signup feature has been disabled.";
+            $this->raiseError($msg);
             return;
         }
 
@@ -169,6 +178,7 @@ class UserController extends PHPFrame_ActionController
         $view->addData("ret_url", $this->request()->param("ret_url", null));
         $view->addData("email", $this->request()->param("email", null));
         $view->addData("helper", $this->helper("user"));
+        $view->addData("show_billing", $show_billing);
 
         $this->response()->title($title);
         $this->response()->body($view);

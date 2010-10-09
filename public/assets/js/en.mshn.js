@@ -11,7 +11,14 @@
  * @link      https://github.com/lupomontero/Mashine
  */
 
-(function(jQuery, EN) {
+/*jslint eqeqeq: true */
+
+(function (jQuery, EN) {
+
+// Add custom validator method for password field in signup view
+jQuery.validator.addMethod('password', function (v, e) {
+    return jQuery(e).hasClass('strengthy-valid');
+}, 'Invalid password.');
 
 /**
  * Initialise form validation using jQuery 'validate' plugin.
@@ -21,30 +28,28 @@
  * @return void
  * @since  1.0
  */
-EN.validate = function(selector, options) {
+EN.validate = function (selector, options) {
     var opts = {
         rules: {
             email: {
                 required: true,
                 email: true
             },
-            password: {
-                required: function (e) {
-                    return !jQuery(e).hasClass('valid');
-                }
-            },
+            password: 'password',
             confirm_password: {
                 equalTo: '#password'
             }
         },
-        highlight: function(e, errorClass) {
+        highlight: function (e, errorClass) {
             jQuery(e).addClass('validate-error');
         },
-        unhighlight: function(e, errorClass) {
+        unhighlight: function (e, errorClass) {
             jQuery(e).removeClass('validate-error').css('color', '#222');
         },
-        errorPlacement: function(error, element) {
-            //this hides error messages
+        errorPlacement: function (error, element) {
+            if (jQuery(element).attr('id') === 'password') {
+                element.after(error);
+            }
         }
     };
 
@@ -70,7 +75,7 @@ var confirmActiveTrigger;
  * @return void
  * @since  1.0
  */
-EN.confirm = function(selector) {
+EN.confirm = function (selector) {
     // Add HTML element to show the confirmation dialog
     if (typeof confirmDiv === 'undefined') {
         jQuery("body").append('<div id="confirm-dialog" title="Delete entry"></div>');
@@ -88,18 +93,18 @@ EN.confirm = function(selector) {
                 opacity: 0.5
             },
             buttons: {
-                'Ok': function() {
+                'Ok': function () {
                     jQuery(this).dialog('close');
                     window.location = confirmActiveTrigger.attr('href');
                 },
-                Cancel: function() {
+                Cancel: function () {
                     jQuery(this).dialog('close');
                 }
             }
         });
     }
 
-    jQuery(selector).click(function(e) {
+    jQuery(selector).click(function (e) {
         e.preventDefault();
         confirmActiveTrigger = jQuery(this);
         confirmDiv.html(confirmActiveTrigger.attr("title")).dialog('open');
@@ -112,14 +117,14 @@ EN.confirm = function(selector) {
  * @return void
  * @since  1.0
  */
-EN.initToolTips = function(selector) {
+EN.initToolTips = function (selector) {
     var options = {
         gravity: 'w',
         html: true,
         opacity: 0.8
     };
 
-    jQuery(selector).tipsy(options).click(function(e) {
+    jQuery(selector).tipsy(options).click(function (e) {
         e.preventDefault();
     });
 };
@@ -130,13 +135,13 @@ EN.initToolTips = function(selector) {
  * @return void
  * @since  1.0
  */
-EN.initLoginForm = function() {
+EN.initLoginForm = function () {
     var loginButton = jQuery('#login-button');
     var ajaxResponse = jQuery('#login-ajax-response');
     var forgotPassContainer = jQuery('#forgotpass');
 
     EN.validate('#login-form', {
-        submitHandler: function(e) {
+        submitHandler: function (e) {
             var form = jQuery(e);
             var loginButtonOriginalVal = loginButton.val();
 
@@ -147,7 +152,7 @@ EN.initLoginForm = function() {
             EN.mashineApi({
                 url: 'api/session/login',
                 data: form.serialize(),
-                success: function(data) {
+                success: function (data) {
                     if (typeof data.error !== 'undefined') {
                         ajaxResponse.html(data.error.message);
                     } else {
@@ -155,7 +160,7 @@ EN.initLoginForm = function() {
                         return false;
                     }
                 },
-                complete: function(XMLHttpRequest, textStatus) {
+                complete: function (XMLHttpRequest, textStatus) {
                     loginButton.attr('disabled', false);
                     loginButton.val(loginButtonOriginalVal);
                 }
@@ -166,25 +171,25 @@ EN.initLoginForm = function() {
     EN.validate('#forgotpass-form');
     forgotPassContainer.hide();
 
-    jQuery('a#forgotpass-link').bind('click', function(e) {
+    jQuery('a#forgotpass-link').bind('click', function (e) {
         e.preventDefault();
         forgotPassContainer.toggle('slow');
     });
 };
 
-EN.mashineApi = function(options) {
+EN.mashineApi = function (options) {
     var opts = {
         url: 'api/usage',
         type: 'POST',
         data: {
             suppress_response_codes: 1
         },
-        success: function(response) {
+        success: function (response) {
             if (typeof response.error !== 'undefined') {
                 alert(response.error.message);
             }
         },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
             alert(textStatus);
         }
     };
@@ -204,7 +209,7 @@ EN.mashineApi = function(options) {
     jQuery.ajax(opts);
 };
 
-EN.renderPosts = function(posts) {
+EN.renderPosts = function (posts) {
     var str = '';
 
     for (var i=0; i<posts.length; i++) {
@@ -252,7 +257,7 @@ EN.renderPosts = function(posts) {
     return str;
 };
 
-EN.infiniteScrolling = function(triggerSelector, renderer) {
+EN.infiniteScrolling = function (triggerSelector, renderer) {
     var trigger = jQuery(triggerSelector);
     var loading = false;
     var end     = false;
@@ -261,13 +266,13 @@ EN.infiniteScrolling = function(triggerSelector, renderer) {
         renderer = EN.renderPosts;
     }
 
-    jQuery(window).scroll(function() {
+    jQuery(window).scroll(function () {
         if (jQuery(window).scrollTop() === jQuery(document).height() - jQuery(window).height()) {
            trigger.click();
         }
     });
 
-    trigger.click(function(e) {
+    trigger.click(function (e) {
         var el = jQuery(this);
         var elOriginalHtml = el.html();
         var classArray = el.attr('class').split('-');
@@ -294,7 +299,7 @@ EN.infiniteScrolling = function(triggerSelector, renderer) {
         EN.mashineApi({
             url: 'api/content',
             data: data,
-            success: function(data) {
+            success: function (data) {
                 if (typeof data.error !== 'undefined') {
                     alert(data.error.message);
                     return;
@@ -316,7 +321,7 @@ EN.infiniteScrolling = function(triggerSelector, renderer) {
 
                 jQuery('#content-body').append(renderer(data));
             },
-            complete: function() {
+            complete: function () {
                 loading = false;
             }
         });
