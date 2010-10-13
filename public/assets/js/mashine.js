@@ -24,16 +24,13 @@
  * @return void
  * @since  1.0
  */
-function includeScript(src)
-{
+var includeScript = function(src) {
     var str = '<script type="text/javascript" src="' + src + '"></script>';
-
     document.write(str);
 }
 
-// Include tooltip jQuery plugin
+includeScript('assets/js/jquery/jquery.strengthy-0.0.1.min.js');
 includeScript('assets/js/jquery/jquery.tipsy.js');
+includeScript('assets/js/en.core.js');
+includeScript('assets/js/en.mshn.js');
 
-// Include CMS public scripts
-includeScript('assets/js/mashine/common.js');
-includeScript('assets/js/mashine/login.js');

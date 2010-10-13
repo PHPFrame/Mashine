@@ -9,6 +9,10 @@ body {
     color: #333;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
+}
+
 h1 {
     font-size: 2.4em;
     line-height: 1.8em;
@@ -161,8 +165,8 @@ th {
 
 td {}
 
-div#sitename a {
-    font-size: 4em;
+#sitename a {
+    font-size: 2em;
     text-decoration: none;
     display: inline-block;
     margin: 10px 0;
@@ -173,7 +177,7 @@ div#sitename a {
     font-weight: bold;
 }
 
-#footer {
+footer {
     font-size: 0.8em;
 }
 

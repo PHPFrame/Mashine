@@ -1,10 +1,12 @@
-<div class="content_header_wrapper">
+<?php if (!$ajax) : ?>
+<header id="content-header">
     <h1><?php echo $title; ?></h1>
-</div>
+</header>
 
-<div class="entry">
+<div id="content-body">
+<?php endif ?>
 
-<form class="validate" id="login-form" action="index.php" method="post">
+<form id="login-form" action="index.php" method="post">
 
 <p>
     <label for="email"><?php echo UserLang::EMAIL; ?></label>
@@ -69,7 +71,7 @@
 </p>
 
 <div id="forgotpass">
-<form class="validate" id="forgotpass-form" action="index.php" method="post">
+<form id="forgotpass-form" action="index.php" method="post">
 <p>
     <label for="forgot_email"><?php echo UserLang::EMAIL; ?></label>
     <input
@@ -106,6 +108,9 @@
 
 </div>
 
-</div><!-- .entry -->
+<?php if (!$ajax) : ?>
+</div><!-- #content-body -->
+<?php endif; ?>
 
-<script>initLoginForm();</script>
+<script>jQuery(document).ready(function() { EN.initLoginForm() });</script>
+

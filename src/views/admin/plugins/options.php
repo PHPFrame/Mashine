@@ -1,17 +1,13 @@
-<div class="content_header_wrapper">
+<header id="content-header">
     <h1><?php echo $title; ?></h1>
-</div>
+</header>
 
-<div class="entry">
+<div id="content-body">
 
 <?php if (is_callable(array($plugin, "displayOptionsForm"))) : ?>
 <?php echo $plugin->displayOptionsForm(); ?>
 <?php else : ?>
-<p>
-    This plugin does not have any options.
-</p>
+<p>This plugin does not have any options.</p>
 <?php endif; ?>
 
-</div><!-- .entry -->
-
-<div style="clear:both;"></div>
+</div><!-- #content-body -->

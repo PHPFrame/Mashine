@@ -1,5 +1,5 @@
-# This is an example htaccess file. To use it remember to rename it to
-# .htaccess
+# Most of what you see here is based on HTML5Boilerplate by Paul Irish
+# http://github.com/paulirish/html5-boilerplate
 
 RewriteEngine on
 #RewriteBase /
@@ -7,50 +7,147 @@ RewriteRule !\.(ico|js|gif|jpg|png|css|swf|txt|htm|woff|ttf|eot|svg)$ index.php
 
 # Enable GZIP
 <IfModule mod_deflate.c>
-    AddOutputFilterByType DEFLATE text/text
-    AddOutputFilterByType DEFLATE text/html
-    AddOutputFilterByType DEFLATE text/plain
-    AddOutputFilterByType DEFLATE text/xml
-    AddOutputFilterByType DEFLATE text/css
-    AddOutputFilterByType DEFLATE application/x-javascript
-    AddOutputFilterByType DEFLATE application/javascript
-    AddOutputFilterByType DEFLATE application/json
-    BrowserMatch ^Mozilla/4 gzip-only-text/html
-    BrowserMatch ^Mozilla/4\.0[678] no-gzip
-    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+  AddOutputFilter DEFLATE text/text
+  AddOutputFilter DEFLATE text/html
+  AddOutputFilter DEFLATE text/plain
+  AddOutputFilter DEFLATE text/xml
+  AddOutputFilter DEFLATE text/css
+  AddOutputFilter DEFLATE text/x-component
+  AddOutputFilter DEFLATE application/x-javascript
+  AddOutputFilter DEFLATE application/javascript
+  AddOutputFilter DEFLATE application/json
+  AddOutputFilter DEFLATE application/xml
+  BrowserMatch ^Mozilla/4 gzip-only-text/html
+  BrowserMatch ^Mozilla/4\.0[678] no-gzip
+  BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+
+  # webfonts and svg:
+  <FilesMatch "\.(ttf|otf|eot|svg)$" >
+    SetOutputFilter DEFLATE
+  </FilesMatch>
 </IfModule>
 
-# Expires Headers - 2678400s = 31 days
+## These are open for discussion as their are from the boilerplate
+
 <IfModule mod_expires.c>
-    ExpiresActive On
-    ExpiresDefault "access plus 1 seconds"
-    ExpiresByType text/html "access plus 7200 seconds"
-    ExpiresByType image/gif "access plus 2678400 seconds"
-    ExpiresByType image/jpeg "access plus 2678400 seconds"
-    ExpiresByType image/png "access plus 2678400 seconds"
-    ExpiresByType text/css "access plus 518400 seconds"
-    ExpiresByType text/javascript "access plus 2678400 seconds"
-    ExpiresByType application/x-javascript "access plus 2678400 seconds"
+  # Commenting this our for now, see:
+  # http://github.com/svnlto/Mashine/commit/3bf50564258a6c592b9e3edbd109badce1a04ecf
+  # Header set Cache-Control "public"
+
+  ExpiresActive on
+
+  # Perhaps better to whitelist expires rules? Perhaps.
+  ExpiresDefault                          "access plus 1 seconds"
+
+  # cache.manifest needs re-reqeusts in FF 3.6 (thx Remy ~Introducing HTML5)
+  ExpiresByType text/cache-manifest       "access plus 0 seconds"
+
+  # your document html
+  ExpiresByType text/html                 "access plus 0 seconds"
+
+  # data
+  ExpiresByType text/xml                  "access plus 7200 seconds"
+  ExpiresByType application/xml           "access plus 0 seconds"
+  ExpiresByType application/json          "access plus 0 seconds"
+
+  # rss feed
+  ExpiresByType application/rss+xml       "access plus 1 hour"
+
+  # favicon (cannot be renamed)
+  ExpiresByType image/vnd.microsoft.icon  "access plus 1 week"
+
+  # media: images, video, audio
+  ExpiresByType image/gif                 "access plus 1 month"
+  ExpiresByType image/png                 "access plus 1 month"
+  ExpiresByType image/jpg                 "access plus 1 month"
+  ExpiresByType image/jpeg                "access plus 1 month"
+  ExpiresByType video/ogg                 "access plus 1 month"
+  ExpiresByType audio/ogg                 "access plus 1 month"
+  ExpiresByType video/mp4                 "access plus 1 month"
+  ExpiresByType video/webm                "access plus 1 month"
+
+  # webfonts
+  ExpiresByType font/truetype             "access plus 1 month"
+  ExpiresByType font/opentype             "access plus 1 month"
+  ExpiresByType font/woff                 "access plus 1 month"
+  ExpiresByType image/svg+xml             "access plus 1 month"
+  ExpiresByType application/vnd.ms-fontobject "access plus 1 month"
+
+  # css and javascript
+  ExpiresByType text/css                  "access plus 1 week"
+  ExpiresByType application/javascript    "access plus 1 week"
+  ExpiresByType text/javascript           "access plus 1 week"
 </IfModule>
 
-# Cache Headers
+# Since we're sending far-future expires, we don't need ETags for
+# static content.
+# developer.yahoo.com/performance/rules.html#etags
+FileETag None
+
+# Force the latest IE version, in various cases when it may fall back to IE7 mode
+# github.com/rails/rails/commit/123eb25#commitcomment-118920
+# Use ChromeFrame if it's installed for a better experience for the poor IE folk
+<IfModule mod_setenvif.c>
+  <IfModule mod_headers.c>
+    BrowserMatch MSIE ie
+    Header set X-UA-Compatible "IE=Edge,chrome=1" env=ie
+  </IfModule>
+</IfModule>
+
 <IfModule mod_headers.c>
-    Header unset Pragma
+  # Because X-UA-Compatible isn't sent to non-IE (to save header bytes),
+  # We need to inform proxies that content changes based on UA
+  Header append Vary User-Agent
+  # Ensure proxy caching, since gzip is accept-encoding dependent.
+  Header append Vary Accept-Encoding
 
-    # Cache specified files for 31 days
-    <filesmatch "\.(ico|flv|jpg|jpeg|png|gif|css|swf)$">
-        Header set Cache-Control "max-age=2678400, public"
-    </filesmatch>
-    # Cache HTML files for a couple hours
-    <filesmatch "\.(html|htm)$">
-        Header set Cache-Control "max-age=7200, private, must-revalidate"
-    </filesmatch>
-    # Cache PDFs for a day
-    <filesmatch "\.(pdf)$">
-        Header set Cache-Control "max-age=86400, public"
-    </filesmatch>
-    # Cache Javascripts for 31 days
-    <filesmatch "\.(js)$">
-        Header set Cache-Control "max-age=2678400, private"
-    </filesmatch>
+  Header unset Pragma
+
+  # Cache specified files for 31 days
+  <filesmatch "\.(ico|flv|jpg|jpeg|png|gif|css|swf)$">
+    Header set Cache-Control "max-age=2678400, public"
+  </filesmatch>
+  # Cache HTML files for a couple hours
+  <filesmatch "\.(html|htm)$">
+    Header set Cache-Control "max-age=7200, private, must-revalidate"
+  </filesmatch>
+  # Cache PDFs for a day
+  <filesmatch "\.(pdf)$">
+    Header set Cache-Control "max-age=86400, public"
+  </filesmatch>
+  # Cache Javascripts for 31 days
+  <filesmatch "\.(js)$">
+    Header set Cache-Control "max-age=2678400, private"
+  </filesmatch>
 </IfModule>
+
+# video
+AddType video/ogg  ogg ogv
+AddType video/mp4  mp4
+AddType video/webm webm
+
+# Proper svg serving. Required for svg webfonts on iPad
+# twitter.com/FontSquirrel/status/14855840545
+AddType     image/svg+xml             svg svgz
+AddEncoding gzip                      svgz
+
+# webfonts
+AddType application/vnd.ms-fontobject eot
+AddType font/truetype                 ttf
+AddType font/opentype                 otf
+AddType font/woff                     woff
+
+AddType text/cache-manifest           manifest
+AddType text/x-component              htc
+
+# custom 404 page
+# ErrorDocument 404 /404.html
+
+# use utf-8 encoding for anything served text/plain or text/html
+AddDefaultCharset utf-8
+# force utf-8 for a number of file formats
+AddCharset utf-8 .html .css .js .xml .json .rss
+
+# We don't need to tell everyone we're apache.
+ServerSignature Off
+

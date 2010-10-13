@@ -1,12 +1,16 @@
-<div class="content_header_wrapper">
+<header id="content-header">
     <h1><?php echo $title; ?></h1>
-</div>
+</header>
 
-<div class="entry">
+<div id="content-body">
 
 <form id="content_form" name="content_form" action="index.php" method="post">
 
-<?php if (in_array(get_class($content->parent()), array("PageContent", "MVCContent"))) : ?>
+<?php
+$is_new = ((int) $content->id() <= 0);
+$is_post = (get_class($content->parent()) === "PostsCollectionContent");
+if ($is_new && !$is_post) :
+?>
 <p>
     <label for="type" class="inline">Type:</label>
     <select name="type" id="type">
@@ -317,7 +321,7 @@ if ($content instanceof FeedContent
 <input type="hidden" name="action" value="save" />
 </form>
 
-</div><!-- .entry -->
+</div><!-- #content-body -->
 
-<div style="clear:both;"></div>
+<script>jQuery(document).ready(function() { EN.initContentForm(); });</script>
 

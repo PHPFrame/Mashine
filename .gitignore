@@ -1,4 +1,5 @@
 .DS_Store
+*.swp
 Mashine.tmproj
 etc/phpframe.ini
 tmp/

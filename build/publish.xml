@@ -13,7 +13,7 @@
     <property name="tmp.dir" value="${build.dir}/tmp" />
     <property name="assets.dir" value="${tmp.dir}/public/assets" />
     <property name="theme.dir" value="${tmp.dir}/public/themes/default" />
-    <property name="release.version" value="0.1.1" />
+    <property name="release.version" value="0.1.3" />
 
     <!-- Prepare directories -->
     <target name="prepare">
@@ -88,17 +88,18 @@
     </target>
 
     <!-- Minify JavaScript Assets -->
-    <target name="minify_js">
+    <target name="minify_js" depends="copy">
 
         <delete file="${assets.dir}/js/mashine.js" failonerror="true" />
-        <delete file="${assets.dir}/js/mashine.admin.js" failonerror="true" />
+        <delete file="${assets.dir}/js/mashine.user.js" failonerror="true" />
 
         <foreach target="do_minify_js" param="filename">
             <path>
                 <fileset dir="${assets.dir}/js" casesensitive="yes">
-                    <include name="**/*tipsy*.js"/>
-                    <include name="**/common.js"/>
-                    <include name="**/login.js"/>
+                    <include name="jquery/jquery.strengthy-0.0.1.min.js"/>
+                    <include name="jquery/jquery.tipsy.js"/>
+                    <include name="en.core.js"/>
+                    <include name="en.mshn.js"/>
                 </fileset>
             </path>
 
@@ -109,12 +110,11 @@
             <path>
                 <fileset dir="${assets.dir}/js" casesensitive="yes">
                     <include name="**/*tinymce*.js"/>
-                    <include name="**/*admin*.js"/>
-                    <exclude name="mashine.admin.js"/>
+                    <include name="en.mshn.user.js"/>
                 </fileset>
             </path>
 
-            <param name="outfile" value="${assets.dir}/js/mashine.admin.js" />
+            <param name="outfile" value="${assets.dir}/js/mashine.user.js" />
         </foreach>
 
     </target>
@@ -135,8 +135,32 @@
 
     </target>
 
+    <target name="minify_css" depends="minify_js">
+
+        <exec
+            executable="java"
+            dir="${build.dir}"
+            failonerror="on"
+            output="${assets.dir}/css/mashine.css"
+        >
+            <arg line="-jar yuicompressor-2.4.2.jar ${assets.dir}/css/mashine.css" />
+            <arg line="--charset utf-8 --type css" />
+        </exec>
+
+        <exec
+            executable="java"
+            dir="${build.dir}"
+            failonerror="on"
+            output="${assets.dir}/css/mashine.user.css"
+        >
+            <arg line="-jar yuicompressor-2.4.2.jar ${assets.dir}/css/mashine.user.css" />
+            <arg line="--charset utf-8 --type css" />
+        </exec>
+
+    </target>
+
     <!-- Minify Theme CSS -->
-    <target name="minify_css">
+    <target name="minify_theme_css" depends="minify_css">
 
         <move
             file="${theme.dir}/css"
@@ -181,7 +205,7 @@
     </target>
 
     <!-- Create archive for distribution -->
-    <target name="tar" depends="copy">
+    <target name="tar" depends="minify_theme_css">
 
         <tar
             basedir="${tmp.dir}"
@@ -208,6 +232,6 @@
     </target>
 
     <!-- Build project -->
-    <target name="build" depends="prepare, copy, minify_js, minify_css, tar, upload" />
+    <target name="build" depends="prepare, copy, minify_js, minify_css, minify_theme_css, tar, upload" />
 
 </project>

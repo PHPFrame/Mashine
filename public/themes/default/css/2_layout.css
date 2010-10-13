@@ -46,16 +46,16 @@ html, body {
     color: #FFF;
 }
 
-.breadcrumbs {
+#breadcrumbs {
     margin: 0 0 10px;
     font-size: 0.8em;
 }
 
-.breadcrumbs a {
+#breadcrumbs a {
     font-weight: normal !important;
 }
 
-div#sysevents {
+#sysevents {
     margin: 20px 0 0 0;
 }
 
@@ -84,7 +84,7 @@ div#sysevents {
     display: block;
 }
 
-.entry {
+#content-body {
     width: 520px;
     overflow: hidden;
     margin: 0 0 20px;

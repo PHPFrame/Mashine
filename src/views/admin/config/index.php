@@ -1,13 +1,11 @@
-<div class="content_header_wrapper">
+<header id="content-header">
     <h1><?php echo $title; ?></h1>
-</div>
+</header>
 
-<div class="entry">
+<div id="content-body">
 
 <pre>
 <?php echo $config; ?>
 </pre>
 
-</div><!-- .entry -->
-
-<div style="clear:both;"></div>
+</div><!-- #content-body -->

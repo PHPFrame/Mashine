@@ -169,6 +169,7 @@ class ContentController extends PHPFrame_ActionController
         $view->addData("content", $content);
         $view->addData("user", $this->user());
         $view->addData("helper", $this->helper("cms"));
+        $view->addData("base_url", $base_url);
 
         $this->response()->title($content->title());
         $this->response()->body($view);

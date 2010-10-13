@@ -1,8 +1,8 @@
-<div class="content_header_wrapper">
+<header id="content-header">
     <h1><?php echo $title; ?></h1>
-</div>
+</header>
 
-<div class="entry">
+<div id="content-body">
 
 <p>
     <?php include "OS/Guess.php"; $os = new OS_Guess(); ?>
@@ -16,6 +16,4 @@
     <strong>Server admin</strong>: <?php echo $_SERVER["SERVER_ADMIN"]; ?>
 </p>
 
-</div><!-- .entry -->
-
-<div style="clear:both;"></div>
+</div><!-- #content-body -->

@@ -1,8 +1,8 @@
-<div class="content_header_wrapper">
+<header id="content-header">
     <h1><?php echo $title; ?></h1>
-</div>
+</header>
 
-<div class="entry">
+<div id="content-body">
 
 <?php foreach ($dashboard_boxes as $box) : ?>
 <div class="dashboard-box-outer">
@@ -15,8 +15,4 @@
 </div>
 <?php endforeach; ?>
 
-<div style="clear:both;"></div>
-
-</div><!-- .entry -->
-
-<div style="clear:both;"></div>
+</div><!-- #content-body -->

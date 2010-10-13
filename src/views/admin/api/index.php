@@ -1,11 +1,11 @@
-<div class="content_header_wrapper">
+<header id="content-header">
     <h1><?php echo $title; ?></h1>
-</div>
+</header>
 
-<div class="entry">
+<div id="content-body">
 
+<section>
 <h2>Client Apps</h2>
-
 <?php if (count($clients) > 0) : ?>
 <ul>
 <?php foreach ($clients as $client) : ?>
@@ -21,15 +21,11 @@
 <?php endforeach; ?>
 </ul>
 <?php else : ?>
-<p>
-    No client apps registered with system.
-</p>
+<p>No client apps registered with system.</p>
 <?php endif; ?>
+</section>
 
-</div><!-- .entry -->
-
-<div class="entry">
-
+<section>
 <h2>API Methods</h2>
 
 <table>
@@ -80,6 +76,9 @@
 </tr>
 <?php endforeach; ?>
 </table>
+</section>
+
+</div><!-- #content-body -->
 
 <script>
 jQuery('.api-method-link').click(function(e) {
@@ -122,8 +121,7 @@ jQuery('.api-method-link').click(function(e) {
     jQuery('#' + selectName).val(jQuery(this).attr('title'));
 });
 
-var saveOAuthMethod = function(method, select)
-{
+var saveOAuthMethod = function(method, select) {
     var form = jQuery('#api-method-form');
     var selectedValue = select.options[select.selectedIndex].value;
     var data = {
@@ -173,7 +171,3 @@ var saveOAuthMethod = function(method, select)
     });
 }
 </script>
-
-</div><!-- .entry -->
-
-<div style="clear:both;"></div>

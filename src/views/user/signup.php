@@ -1,10 +1,10 @@
-<div class="content_header_wrapper">
+<header id="content-header">
     <h1><?php echo $title; ?></h1>
-</div>
+</header>
 
-<div class="entry">
+<div id="content-body">
 
-<form class="validate" id="signup-form" action="index.php" method="post">
+<form id="signup-form" action="index.php" method="post">
 
 <fieldset id="log_in_credentials" class="">
 <legend><?php echo UserLang::LOGIN_CREDENTIALS; ?></legend>
@@ -24,7 +24,7 @@
 <p>
     <label for="password"><?php echo UserLang::PASSWORD; ?></label>
     <input
-        class="required"
+        class="strongpass"
         type="password"
         name="password"
         id="password"
@@ -45,6 +45,7 @@
 
 </fieldset>
 
+<?php if ($show_billing) : ?>
 <fieldset id="billing_details" class="">
 <legend><?php echo UserLang::BILLING_DETAILS; ?></legend>
 
@@ -128,7 +129,7 @@
 </p>
 
 </fieldset>
-
+<?php endif; ?>
 <p>
     <span class="button_wrapper">
         <input class="button" type="submit" value="<?php echo UserLang::SIGNUP; ?>" />
@@ -140,4 +141,41 @@
 <input type="hidden" name="ret_url" value="<?php echo $ret_url; ?>" />
 </form>
 
-</div><!-- .entry -->
+</div><!-- #content-body -->
+
+<script>
+jQuery(document).ready(function () {
+    // Add custom validator method for password field
+    jQuery.validator.addMethod('password', function (v, e) {
+        return jQuery(e).hasClass('strengthy-valid');
+    }, 'Invalid password.');
+
+    EN.validate('#signup-form', {
+        rules: {
+            email: {
+                required: true,
+                email: true
+            },
+            password: 'password',
+            confirm_password: {
+                equalTo: '#password'
+            }
+        }
+    });
+
+    jQuery('#password')
+        .strengthy({
+            minLength: 6,
+            showMsgs: false,
+            require: {
+                numbers: true,
+                upperAndLower: true,
+                symbols: false
+            }
+        })
+        .keyup(function () {
+            jQuery(this).valid();
+        });
+});
+</script>
+

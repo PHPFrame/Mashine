@@ -1,3 +1,12 @@
+html {
+    /* Force scrollbar to avoid content jumping when shorter than view port */
+    overflow-y: scroll;
+}
+
+header, nav, article, footer, aside {
+    display: block;
+}
+
 label {
     display: block;
 }
@@ -62,3 +71,25 @@ label.inline {
 textarea.tinymce {
     font-family: "Arial", Helvetica, sans-serif !important;
 }
+
+/* Password strength */
+
+#password-pstrength-msg {
+    border: 1px solid #CCC;
+    margin: 0 0 0 5px;
+    padding: 2px 5px;
+    display: inline-block;
+    position: relative;
+    top: 1px;
+}
+
+.pstrength-weak {
+    background: red;
+    color: white;
+}
+
+.pstrength-strong {
+    background: green;
+    color: white;
+}
+
