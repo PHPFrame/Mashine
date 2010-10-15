@@ -102,12 +102,17 @@ class MashinePlugin extends AbstractPlugin
             && $app->request()->controllerName() != "api"
         ) {
             $update_assistant = new UpdateAssistant($app);
+            $sysevents = $app->session()->getSysevents();
+
+            $msg  = "A new version of Mashine is available. <a href=\"";
+            $msg .= $app->config()->get("base_url")."admin/upgrade\">";
+            $msg .= "Click here</a> to upgrade automatically";
+
             try {
-                if (!$update_assistant->isUpToDate()) {
-                    $msg  = "A new version of Mashine is available. <a href=\"";
-                    $msg .= $app->config()->get("base_url")."admin/upgrade\">";
-                    $msg .= "Click here</a> to upgrade automatically";
-                    $app->session()->getSysevents()->append($msg);
+                if (!$update_assistant->isUpToDate()
+                    && !in_array(array($msg, 4), iterator_to_array($sysevents))
+                ) {
+                    $sysevents->append($msg);
                 }
             } catch (RuntimeException $e) {
                 // Be silent if an exception is thrown when checking for updates
