@@ -243,54 +243,48 @@ class UserController extends PHPFrame_ActionController
     }
 
     /**
-     * Save User passed in POST
+     * Save User passed in POST. If no 'id' is passed in request a new User
+     * object will be created, otherwise the existing user with a matching 'id'
+     * will be updated.
      *
-     * @param int    $id      [Optional]
-     * @param string $ret_url [Optional]
+     * @param int    $id            [Optional]
+     * @param int    $group_id      [Optional]
+     * @param string $email         [Optional]
+     * @param string $password      [Optional]
+     * @param string $status        [Optional]
+     * @param int    $notifications [Optional]
+     * @param string $ret_url       [Optional]
      *
-     * @return void
+     * @return object The user object after saving it.
      * @since  1.0
      */
-    public function save($id=null, $ret_url=null)
-    {
-        $base_url = $this->config()->get("base_url");
+    public function save(
+        $id=0,
+        $group_id=0,
+        $email=null,
+        $password=null,
+        $status=null,
+        $notifications=null,
+        $ret_url=null
+    ) {
         $request  = $this->request();
-        $email    = $request->param("email");
-        $id       = filter_var($id, FILTER_VALIDATE_INT);
 
         try {
-            if (!is_int($id) || $id <= 0) {
-                // if new user it is signup or admin
-                if (!$this->_ensureUniqueEmail($email, $ret_url)) {
-                    return;
-                }
+            $api_controller = new UsersApiController($this->app(), true);
+            $api_controller->format("php");
+            $api_controller->returnInternalPHP(true);
 
-                $new_user = true;
-                $user = new User();
-                $user->email($email);
+            $user = $api_controller->post(
+                $id,
+                $group_id,
+                $email,
+                $password,
+                $status,
+                $notifications
+            );
 
-                if ($this->session()->isAuth() && $this->user()->groupId() < 3) {
-                    $user->groupId($request->param("group_id"));
-                    $password = $this->crypt()->genRandomPassword(8);
-                } else {
-                    $user->groupId(3); // Initially set group to 'registered'
-                    $password = $request->param("password");
-                }
-
-                // Encrypt password and store along with salt
-                $salt      = $this->crypt()->genRandomPassword(32);
-                $encrypted = $this->crypt()->encryptPassword($password, $salt);
-                $user->password($encrypted.":".$salt);
-                $user->activation($this->crypt()->genRandomPassword(32));
-
-                // Store first time to generate id
-                $this->_getUsersMapper()->insert($user);
-
-                // Set ownership to itself once we have an id
-                $user->owner($user->id());
-                $user->group(2);
-                $user->perms(664);
-
+            // if new user
+            if ($id <= 0 && $user->id() > 0) {
                 // if contact details are passed we create contact
                 $first_name = $request->param("first_name", null);
                 if ($first_name) {
@@ -300,92 +294,65 @@ class UserController extends PHPFrame_ActionController
                     $user->groupId(4);
                 }
 
-            } else {
-                // update existing user details
-                $new_user = false;
+                $this->_sendConfirmationEmail($user, $password);
 
-                if (!$user = $this->_fetchUser($id, true)) {
-                    return;
-                }
-
-                if ($this->session()->isAuth() && $this->user()->groupId() < 3) {
-                    $user->groupId($this->request()->param("group_id"));
-                }
-
-                $user->email($this->request()->param("email"));
-
-                // Update password if needed
-                $password = $this->request()->param("password");
-                if ($password) {
-                    // Encrypt password and store along with salt
-                    $salt      = $this->crypt()->genRandomPassword(32);
-                    $encrypted = $this->crypt()->encryptPassword($password, $salt);
-                    $user->password($encrypted.":".$salt);
-                }
-            }
-
-            // Add 'registered' as secondary group to every other group except
-            // wheel and the 'registered' group itself.
-            if ($user->groupId() == 2 || $user->groupId() > 3) {
-                $user->params(array("secondary_groups"=>3));
-            }
-
-            // Save the user object in the database
-            $this->_getUsersMapper()->insert($user);
-
-            // Notify user if new signup
-            $mailer = $this->mailer();
-            if ($new_user && $mailer instanceof PHPFrame_Mailer) {
-                $confirm_url  = $base_url."user/confirm?email=";
-                $confirm_url .= urlencode($user->email());
-                $confirm_url .= "&activation=".$user->activation();
-                $email        = $user->email();
-
-                if ($this->session()->isAuth() && $this->user()->groupId() < 3) {
-                    $body = UserLang::NEW_USER_EMAIL_BODY;
-                    $body = sprintf($body, $email, $password, $confirm_url);
-                } else {
-                    $name = $user->contact()->firstName();
-                    $body = UserLang::SIGNUP_EMAIL_BODY;
-                    $body = sprintf($body, $name, $email, $password, $confirm_url);
-                }
-
-                $mailer->Subject = UserLang::NEW_USER_EMAIL_SUBJECT;
-                $mailer->Body    = $body;
-                $mailer->AddAddress($user->email());
-                if (!$mailer->send()) {
-                    $this->raiseWarning($mailer->ErrorInfo);
-                }
-
-                $msg = sprintf(UserLang::NEW_USER_SUCCESS, $user->email());
-                $this->notifyInfo($msg);
-
-                // Automatically log in the new user signup
                 if (!$this->session()->isAuth()) {
                     $this->session()->setUser($user);
+                    $ret_url = $this->config()->get("base_url")."dashboard";
                 }
-
-            } else {
-                $this->notifySuccess(UserLang::UPDATE_USER_SUCCESS);
             }
 
-            $ret_url = $request->param("ret_url", "index.php");
-            $this->setRedirect($ret_url);
+            $msg = sprintf(UserLang::NEW_USER_SUCCESS, $user->email());
+            $this->notifyInfo($msg);
 
-        } catch (Exception $e) {
-            $this->raiseError($e->getMessage());
-
-            if ($new_user) {
-                if (!$ret_url) {
-                    $ret_url  = "index.php?controller=user&action=signup";
-                    $ret_url .= "&email=".$request->param("email");
-                }
-
-            } else {
+            if (!$ret_url) {
                 $ret_url = $_SERVER["HTTP_REFERER"];
             }
 
             $this->setRedirect($ret_url);
+
+        } catch (Exception $e) {
+            $this->raiseError($e->getMessage());
+            $this->setRedirect($_SERVER["HTTP_REFERER"]);
+        }
+    }
+
+    private function _sendConfirmationEmail(User $user, $password)
+    {
+        $mailer = $this->mailer();
+        if (!$mailer instanceof PHPFrame_Mailer) {
+            $msg  = "Mailer not initialised. Please check mail configuration ";
+            $msg .= "in etc/phpframe.ini";
+            throw new Exception($msg);
+        }
+
+        $email        = $user->email();
+        $name         = $email;
+        $confirm_url  = $this->config()->get("base_url")."user/confirm?email=";
+        $confirm_url .= urlencode($email)."&activation=".$user->activation();
+
+        if ($this->session()->isAuth() && $this->user()->groupId() < 3) {
+            $body = UserLang::NEW_USER_EMAIL_BODY;
+        } else {
+            $contact = $user->contact();
+            if ($contact instanceof Contact) {
+                $name = $user->contact()->firstName();
+            }
+            $body = UserLang::SIGNUP_EMAIL_BODY;
+        }
+
+        $mailer->Subject = UserLang::NEW_USER_EMAIL_SUBJECT;
+        $mailer->Body = sprintf(
+            $body,
+            $name,
+            $this->config()->get("app_name"),
+            $email,
+            $password,
+            $confirm_url
+        );
+        $mailer->AddAddress($email);
+        if (!$mailer->send()) {
+            $this->raiseWarning($mailer->ErrorInfo);
         }
     }
 
@@ -840,34 +807,6 @@ class UserController extends PHPFrame_ActionController
         $this->response()->renderer(new PHPFrame_JSONRenderer());
         $this->response()->header("Content-Type", "application/json");
         $this->response()->body($ret);
-    }
-
-    /**
-     * Ensure that email is not yet registered.
-     *
-     * @param string      $email
-     * @param string      $ret_url [Optional]
-     *
-     * @return void
-     * @since  1.0
-     */
-    private function _ensureUniqueEmail($email, $ret_url=null)
-    {
-        if (count($this->_getUsersMapper()->findByEmail($email)) > 0) {
-            $this->raiseError(sprintf(
-                UserLang::ERROR_EMAIL_ALREADY_REGISTERED,
-                $email
-            ));
-
-            if (!$ret_url) {
-                $ret_url  = $base_url."user/login?&username=".$user->email();
-            }
-
-            $this->setRedirect($ret_url);
-            return false;
-        }
-
-        return true;
     }
 
     /**
