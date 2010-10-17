@@ -37,11 +37,6 @@ class UsersApiController extends PHPFrame_RESTfulController
     public function __construct(PHPFrame_Application $app)
     {
         parent::__construct($app);
-
-        if (!$this->session()->isAuth()) {
-            $msg = "Permission denied.";
-            throw new Exception($msg, 401);
-        }
     }
 
     /**
@@ -180,9 +175,8 @@ class UsersApiController extends PHPFrame_RESTfulController
      */
     public function delete($id)
     {
-        $user = $this->_fetchUser($id, true);
         $this->ensureIsStaff();
-
+        $user = $this->_fetchUser($id, true);
         $this->_getUsersMapper()->delete($user);
 
         return $this->handleReturnValue(true);
@@ -199,6 +193,8 @@ class UsersApiController extends PHPFrame_RESTfulController
      */
     public function search($s)
     {
+        $this->ensureIsStaff();
+
         $sql  = "SELECT u.id, u.email, u.status, c.first_name, c.last_name ";
         $sql .= "FROM #__users AS u ";
         $sql .= "LEFT OUTER JOIN #__contacts c ON c.owner = u.id ";
