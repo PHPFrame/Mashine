@@ -138,6 +138,7 @@
 
 <input type="hidden" name="controller" value="user" />
 <input type="hidden" name="action" value="save" />
+<input type="hidden" name="group_id" value="<?php echo $group_id; ?>" />
 <input type="hidden" name="ret_url" value="<?php echo $ret_url; ?>" />
 </form>
 

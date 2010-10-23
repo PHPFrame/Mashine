@@ -4,12 +4,13 @@
  *
  * PHP version 5
  *
- * @category  PHPFrame_Applications
- * @package   Mashine
- * @author    Lupo Montero <lupo@e-noise.com>
- * @copyright 2010 E-NOISE.COM LIMITED
- * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link      https://github.com/lupomontero/Mashine
+ * @category   PHPFrame_Applications
+ * @package    Mashine
+ * @subpackage ApiControllers
+ * @author     Lupo Montero <lupo@e-noise.com>
+ * @copyright  2010 E-NOISE.COM LIMITED
+ * @license    http://www.opensource.org/licenses/bsd-license.php New BSD License
+ * @link       https://github.com/lupomontero/Mashine
  */
 
 /**
@@ -100,11 +101,13 @@ class UsersApiController extends PHPFrame_RESTfulController
     ) {
         $id       = filter_var($id, FILTER_VALIDATE_INT);
         $group_id = filter_var($group_id, FILTER_VALIDATE_INT);
-        $is_staff = ($this->session()->isAuth() && $this->user()->groupId() < 3);
+        $is_auth  = $this->session()->isAuth();
+        $is_staff = ($is_auth && $this->user()->groupId() < 3);
         $crypt    = $this->crypt();
 
         if (!is_int($id) || $id <= 0) {
             $user = new User();
+            $this->_ensureUniqueEmail($email);
             $user->email($email);
             $user->activation($crypt->genRandomPassword(32));
 
@@ -133,7 +136,8 @@ class UsersApiController extends PHPFrame_RESTfulController
                 $user->groupId($group_id);
             }
 
-            if ($email) {
+            if ($email != $user->email()) {
+                $this->_ensureUniqueEmail($email);
                 $user->email($email);
             }
         }
@@ -147,9 +151,7 @@ class UsersApiController extends PHPFrame_RESTfulController
             $user->password($encrypted.":".$salt);
         }
 
-        $this->_ensureUniqueEmail($user->email());
-
-        if (!is_null($notifications) && $notifications != "") {
+        if ($notifications) {
             $user->notifications($notifications);
         }
 
@@ -157,6 +159,13 @@ class UsersApiController extends PHPFrame_RESTfulController
         // wheel and the 'registered' group itself.
         if ($user->groupId() == 2 || $user->groupId() > 3) {
             $user->params(array("secondary_groups"=>3));
+        }
+
+        // Update user object in session if editing own profile
+        if ($user->isDirty()
+            && $user->id() == $this->session()->getUser()->id()
+        ) {
+            $this->session()->setUser($user);
         }
 
         // Save the user object in the database
