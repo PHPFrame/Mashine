@@ -4,12 +4,13 @@
  *
  * PHP version 5
  *
- * @category  PHPFrame_Applications
- * @package   Mashine
- * @author    Lupo Montero <lupo@e-noise.com>
- * @copyright 2010 E-NOISE.COM LIMITED
- * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link      https://github.com/lupomontero/Mashine
+ * @category   PHPFrame_Applications
+ * @package    Mashine
+ * @subpackage Controllers
+ * @author     Lupo Montero <lupo@e-noise.com>
+ * @copyright  2010 E-NOISE.COM LIMITED
+ * @license    http://www.opensource.org/licenses/bsd-license.php New BSD License
+ * @link       https://github.com/lupomontero/Mashine
  */
 
 /**
@@ -159,6 +160,7 @@ class UserController extends PHPFrame_ActionController
         $options  = $this->request()->param("_options");
         $enable = (bool) $options["mashineplugin_frontendsignup_enable"];
         $show_billing = (bool) $options["mashineplugin_frontendsignup_show_billing"];
+        $def_group = (int) $options["mashineplugin_frontendsignup_def_group"];
 
         if ($this->session()->isAuth()) {
             $this->setRedirect($base_url."dashboard");
@@ -179,6 +181,7 @@ class UserController extends PHPFrame_ActionController
         $view->addData("email", $this->request()->param("email", null));
         $view->addData("helper", $this->helper("user"));
         $view->addData("show_billing", $show_billing);
+        $view->addData("group_id", $def_group);
 
         $this->response()->title($title);
         $this->response()->body($view);
@@ -267,8 +270,6 @@ class UserController extends PHPFrame_ActionController
         $notifications=null,
         $ret_url=null
     ) {
-        $request  = $this->request();
-
         try {
             $api_controller = new UsersApiController($this->app(), true);
             $api_controller->format("php");
@@ -286,24 +287,28 @@ class UserController extends PHPFrame_ActionController
             // if new user
             if ($id <= 0 && $user->id() > 0) {
                 // if contact details are passed we create contact
-                $first_name = $request->param("first_name", null);
+                $first_name = $this->request()->param("first_name", null);
                 if ($first_name) {
                     $contact = new Contact($this->request()->params());
                     $user->addContact($contact);
-                    // If contact is being added we set group to 'customer'
-                    $user->groupId(4);
+                    $this->_getUsersMapper()->insert($user);
                 }
 
+                $password = $this->request()->param("password");
                 $this->_sendConfirmationEmail($user, $password);
 
                 if (!$this->session()->isAuth()) {
                     $this->session()->setUser($user);
                     $ret_url = $this->config()->get("base_url")."dashboard";
                 }
-            }
 
-            $msg = sprintf(UserLang::NEW_USER_SUCCESS, $user->email());
-            $this->notifyInfo($msg);
+                $msg = sprintf(UserLang::NEW_USER_SUCCESS, $user->email());
+                $this->notifyInfo($msg);
+
+            } else {
+                $msg = UserLang::UPDATE_USER_SUCCESS;
+                $this->notifySuccess($msg);
+            }
 
             if (!$ret_url) {
                 $ret_url = $_SERVER["HTTP_REFERER"];
@@ -513,16 +518,9 @@ class UserController extends PHPFrame_ActionController
             $ret_url = $this->config()->get("base_url")."admin/user";
         }
 
-        if (!$user = $this->_fetchUser($id, true)) {
-            return;
-        }
+        $user = $this->_fetchUser($id, true);
 
-        if (!$this->ensureIsStaff()) {
-            $msg = "Permission denied.";
-            $this->raiseError($msg);
-            $this->response()->statusCode(401);
-            return;
-        }
+        $this->ensureIsStaff();
 
         try {
             $user->status($status);
@@ -867,3 +865,4 @@ class UserController extends PHPFrame_ActionController
         return $this->_contacts_mapper;
     }
 }
+

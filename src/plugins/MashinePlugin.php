@@ -128,6 +128,7 @@ class MashinePlugin extends AbstractPlugin
      */
     public function displayOptionsForm()
     {
+        $helper = new UserHelper($this->app());
         ob_start();
         ?>
 
@@ -162,7 +163,9 @@ class MashinePlugin extends AbstractPlugin
             </p>
 
             <p>
-                <label class="inline">Show billing details:</label>
+                <label class="inline" for="options_<?php echo $this->getOptionsPrefix(); ?>frontendsignup_show_billing">
+                    Show billing details:
+                </label>
                 <input
                     type="radio"
                     name="options_<?php echo $this->getOptionsPrefix(); ?>frontendsignup_show_billing"
@@ -179,6 +182,17 @@ class MashinePlugin extends AbstractPlugin
                         checked="checked"
                     <?php endif; ?>
                 /> No
+            </p>
+            <p>
+                <label class="inline" for="options_<?php echo $this->getOptionsPrefix(); ?>frontendsignup_def_group">
+                    Default group for new users:
+                </label>
+                <?php
+                echo $helper->getGroupsSelect(
+                    "options_".$this->getOptionsPrefix()."frontendsignup_def_group",
+                    $this->options[$this->getOptionsPrefix()."frontendsignup_def_group"]
+                );
+                ?>
             </p>
         </fieldset>
 
@@ -406,6 +420,10 @@ class MashinePlugin extends AbstractPlugin
             $query_string = $array[1];
         } else {
             $query_string = "";
+        }
+
+        if ($request->method() == "POST" && $request->param("slug")) {
+            $slug = $request->param("slug");
         }
 
         if (empty($slug) || $slug == "index.php") {

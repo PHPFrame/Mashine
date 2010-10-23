@@ -45,7 +45,7 @@ class UserLang
     Please check your mail to confirm your address and activate your account.";
 
     const SIGNUP_EMAIL_BODY =
-"Dear %s,
+"Hi %s,
 
 Welcome to your new account on %s.
 
@@ -62,7 +62,9 @@ confirmed.";
 
     const NEW_USER_EMAIL_SUBJECT = "New account created";
     const NEW_USER_EMAIL_BODY =
-"An admin has created a user account for you on E-NOISE.com.
+"Hi %s
+
+An admin has created a user account for you on %s.
 
 Your user details are:
 
@@ -70,7 +72,10 @@ Email: %s
 Password: %s
 
 Please click on the link below to verify your email address.
-%s";
+%s
+
+The new account will not be fully active until the email address has been
+confirmed.";
     const NEW_USER_SUCCESS = "An email with the activation link has been
     sent to %s. The new account will not be fully active until the email address
     has been confirmed.";

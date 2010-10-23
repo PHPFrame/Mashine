@@ -35,6 +35,23 @@ class UserHelper extends PHPFrame_ViewHelper
         return $str;
     }
 
+    public function getGroupsSelect($name, $selected=null)
+    {
+        $str = "<select name=\"".$name."\">\n";
+
+        foreach ($this->getGroups() as $key=>$value) {
+            $str .= "<option value=\"".$key."\"";
+            if ($key == $selected) {
+                $str .= " selected";
+            }
+            $str .= ">".$value."</option>\n";
+        }
+
+        $str .= "</select>\n";
+
+        return $str;
+    }
+
     public function contactTypeSelect($selected="billing")
     {
         $array = array("billing", "owner", "admin", "tech");
@@ -66,3 +83,4 @@ class UserHelper extends PHPFrame_ViewHelper
         return $str;
     }
 }
+

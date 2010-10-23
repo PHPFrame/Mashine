@@ -15,7 +15,7 @@ Admin actions:
 </a>
 <?php endif ?>
 
-<form class="validate" id="user-form" action="index.php" method="post">
+<form id="user-form" action="index.php" method="post">
 
 <fieldset id="login_credentails" style="width: 50%; float:left">
     <legend><?php echo UserLang::LOGIN_CREDENTIALS; ?></legend>
@@ -177,3 +177,40 @@ Admin actions:
 </form>
 
 </div><!-- #content-body -->
+
+<script>
+jQuery(document).ready(function () {
+    // Add custom validator method for password field
+    jQuery.validator.addMethod('password', function (v, e) {
+        return jQuery(e).hasClass('strengthy-valid');
+    }, 'Invalid password.');
+
+    EN.validate('#user-form', {
+        rules: {
+            email: {
+                required: true,
+                email: true
+            },
+            password: 'password',
+            confirm_password: {
+                equalTo: '#password'
+            }
+        }
+    });
+
+    jQuery('#password')
+        .strengthy({
+            minLength: 6,
+            showMsgs: false,
+            require: {
+                numbers: true,
+                upperAndLower: true,
+                symbols: false
+            }
+        })
+        .keyup(function () {
+            jQuery(this).valid();
+        });
+});
+</script>
+
