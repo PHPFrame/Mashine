@@ -22,8 +22,6 @@
         <copy todir="${tmp.dir}" overwrite="true">
             <fileset dir="${basedir}">
                 <include name="src/controllers/**" />
-                <include name="src/models/**" />
-                <include name="README.md" />
             </fileset>
         </copy>
     </target>
