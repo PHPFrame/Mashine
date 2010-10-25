@@ -41,6 +41,16 @@ class SocialPlugin extends AbstractPlugin
             array($this, "getLoginForm")
         );
 
+        $this->hooks()->addCallBack(
+            "post_footer",
+            array($this, "getDisqusComments")
+        );
+
+        $this->hooks()->addCallBack(
+            "posts_footer",
+            array($this, "getDisqusCommentCount")
+        );
+
         $this->shortCodes()->add("social", array($this, "handleSocialShortCode"));
     }
 
@@ -228,6 +238,43 @@ function facebook_connect()
         return $str;
     }
 
+    public function getDisqusComments(array $args)
+    {
+        $str = "";
+
+        if ($this->options[$this->getOptionsPrefix()."disqus_enable"]) {
+            $str .= $this->getDisqusCommentCount($args);
+            $shortname = $this->options[$this->getOptionsPrefix()."disqus_shortname"];
+            ob_start();
+            ?>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  (function() {
+   var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+   dsq.src = 'http://<?php echo $shortname; ?>.disqus.com/embed.js';
+   (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript=<?php echo $shortname; ?>">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+            <?php
+            $str .= ob_get_contents();
+            ob_end_clean();
+        }
+
+        return $str;
+    }
+
+    public function getDisqusCommentCount($args)
+    {
+        $base_url = $this->app()->config()->get("base_url");
+
+        $str  = "<a href=\"".$base_url.$args[0]->slug()."#disqus_thread\">";
+        $str .= "Comments</a>";
+
+        return $str;
+    }
+
     /**
      * Hook into PHPFrame's 'routeStartUp' event to handle plugin's 'login'
      * action.
@@ -285,7 +332,8 @@ function facebook_connect()
      */
     public function postApplyTheme()
     {
-        $request = $this->app()->request();
+        $request  = $this->app()->request();
+        $base_url = $this->app()->config()->get("base_url");
 
         if ($request->ajax()) {
             return;
@@ -299,22 +347,37 @@ function facebook_connect()
         }
 
         $document = $this->app()->response()->document();
-        if ($this->options[$this->getOptionsPrefix()."facebook_enable"]
-            && $document instanceof PHPFrame_HTMLDocument
-        ) {
-            // Add HTML attributes
+        if ($document instanceof PHPFrame_HTMLDocument) {
             $html_node = $document->dom()->getElementsByTagName("html")->item(0);
-            $document->addNodeAttr($html_node, "xmlns:fb", "http://www.facebook.com/2008/fbml");
 
-            $base_url = $this->app()->config()->get("base_url");
-            if (strpos($base_url, "https://") !== false) {
-                $script  = "https://ssl.connect.facebook.com/js/api_lib/v0.4/";
-            } else {
-                $script  = "http://static.ak.connect.facebook.com/js/api_lib/v0.4/";
+            if ($this->options[$this->getOptionsPrefix()."facebook_enable"]) {
+                $document->addNodeAttr($html_node, "xmlns:fb", "http://www.facebook.com/2008/fbml");
+
+                if (strpos($base_url, "https://") !== false) {
+                    $script  = "https://ssl.connect.facebook.com/js/api_lib/v0.4/";
+                } else {
+                    $script  = "http://static.ak.connect.facebook.com/js/api_lib/v0.4/";
+                }
+
+                $script .= "FeatureLoader.js.php";
+                $document->addScript($script);
             }
 
-            $script .= "FeatureLoader.js.php";
-            $document->addScript($script);
+            if ($this->options[$this->getOptionsPrefix()."disqus_enable"]) {
+                $shortname = $this->options[$this->getOptionsPrefix()."disqus_shortname"];
+                ob_start();
+                ?>
+<script>
+var disqus_shortname = '<?php echo $shortname; ?>';
+(function () {
+  var s = document.createElement('script'); s.async = true;
+  s.src = 'http://disqus.com/forums/<?php echo $shortname; ?>/count.js';
+  (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+}());
+</script>
+                <?php
+                $document->appendBody(ob_get_clean());
+            }
         }
     }
 
@@ -330,6 +393,39 @@ function facebook_connect()
         ?>
 
         <form action="index.php" method="post">
+
+        <fieldset id="disqus" class="">
+            <legend>Disqus (comments)</legend>
+
+            <p>
+                <label class="inline" for="options_<?php echo $this->getOptionsPrefix(); ?>disqus_enable">Enable:</label>
+                <input
+                    type="radio"
+                    name="options_<?php echo $this->getOptionsPrefix(); ?>disqus_enable"
+                    value="1"
+                    <?php if ($this->options[$this->getOptionsPrefix()."disqus_enable"]) : ?>
+                        checked="checked"
+                    <?php endif; ?>
+                /> Yes /
+                <input
+                    type="radio"
+                    name="options_<?php echo $this->getOptionsPrefix(); ?>disqus_enable"
+                    value="0"
+                    <?php if (!$this->options[$this->getOptionsPrefix()."disqus_enable"]) : ?>
+                        checked="checked"
+                    <?php endif; ?>
+                /> No
+            </p>
+
+            <p>
+                <label for="options_<?php echo $this->getOptionsPrefix(); ?>disqus_shortname">Website shortname:</label>
+                <input
+                    type="text"
+                    name="options_<?php echo $this->getOptionsPrefix(); ?>disqus_shortname"
+                    value="<?php echo $this->options[$this->getOptionsPrefix()."disqus_shortname"]; ?>"
+                />
+            </p>
+        </fieldset>
 
         <fieldset id="facebook" class="">
             <legend>Facebook</legend>
@@ -584,9 +680,10 @@ function facebook_connect()
         // twitterify
         $tweet = preg_replace("#(^|[\n ])([\w]+?://[\w]+[^ \"\n\r\t< ]*)#", "\\1<a href=\"\\2\">\\2</a>", $tweet);
         $tweet = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r< ]*)#", "\\1<a href=\"http://\\2\">\\2</a>", $tweet);
-        $tweet = preg_replace("/@(\w+)/", "<a class=\"social-twitter-mention\" href=\"http://www.twitter.com/\\1\">@\\1</a>", $tweet);
+        $tweet = preg_replace("/@(\w+)/", "<a class=\"social-twitter-mention\" href=\"http://twitter.com/\\1\">@\\1</a>", $tweet);
         $tweet = preg_replace("/#(\w+)/", "<a class=\"social-twitter-hash\" href=\"http://search.twitter.com/search?q=\\1\">#\\1</a>", $tweet);
 
         return $tweet;
     }
 }
+

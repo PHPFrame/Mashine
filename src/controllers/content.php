@@ -47,6 +47,7 @@ class ContentController extends PHPFrame_ActionController
     public function index()
     {
         $content  = $this->request()->param("_content_active");
+        $hooks    = $this->request()->param("_hooks");
         $base_url = $this->config()->get("base_url");
 
         if (!$content instanceof Content) {
@@ -171,6 +172,7 @@ class ContentController extends PHPFrame_ActionController
         $view->addData("user", $this->user());
         $view->addData("helper", $this->helper("cms"));
         $view->addData("base_url", $base_url);
+        $view->addData("hooks", $hooks);
 
         $this->response()->title($content->title());
         $this->response()->body($view);
