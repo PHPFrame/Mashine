@@ -51,10 +51,13 @@ class ContactFormPlugin extends AbstractPlugin
         if ($request->controllerName() == "contactplugin"
             && $request->action() == "send"
         ) {
+            $appname = $this->app()->config()->get("app_name");
             $name    = $request->param("name");
             $email   = $request->param("email");
             $subject = $request->param("subject");
             $body    = $request->param("body");
+
+            $body = "Email sent from contact form in ".$appname.".\n---\n\n".$body;
 
             if (empty($name) || empty($subject) || empty($body)) {
                 $msg = "Required field missing!";
@@ -127,19 +130,19 @@ jQuery(document).ready(function () {
   EN.validate('form#contact-form', {
     submitHandler: function(form) {
       form = jQuery(form);
-      var response_container = jQuery('#ajax-response');
+      var responseContainer = jQuery('#ajax-response');
 
-      response_container.html('Loading...');
+      responseContainer.html('Loading...');
 
       jQuery.ajax({
         type: 'POST',
         url: base_url,
         data: form.serialize() + '&ajax=1',
         success: function(response) {
-          response_container.html(response);
+          responseContainer.addClass('success').html(response);
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
-          response_container.html(XMLHttpRequest.responseText);
+          responseContainer.addClass('error').html(XMLHttpRequest.responseText);
         }
       });
     }
@@ -162,6 +165,23 @@ jQuery(document).ready(function () {
      */
     public function handleContactFormShortCode($attr)
     {
+        // check whether options are valid
+        $to_address = $this->options[$this->getOptionsPrefix()."to_address"];
+        if (filter_var($to_address, FILTER_VALIDATE_EMAIL) === false) {
+            ob_start();
+            ?>
+
+<div class="error">
+  <p>
+    No email has been set for the contact form. Please set it in the plugin 
+    <a href="admin/plugins">options</a>.
+  </p>
+</div>
+
+            <?php
+            return ob_get_clean();
+        }
+
         // Flag this page as having a contactform so that postApplyTheme()
         // knowns that it has to add the js
         $this->app()->request()->param("_contactform", true);
@@ -199,10 +219,7 @@ jQuery(document).ready(function () {
 
 </form>
         <?php
-        $str = ob_get_contents();
-        ob_end_clean();
-
-        return $str;
+        return ob_get_clean();
     }
 
     public function displayOptionsForm()
@@ -251,10 +268,7 @@ jQuery(document).ready(function () {
 </form>
 
         <?php
-        $str = ob_get_contents();
-        ob_end_clean();
-
-        return $str;
+        return ob_get_clean();
     }
 
     /**
