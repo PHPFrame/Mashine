@@ -339,9 +339,21 @@ class ContentController extends PHPFrame_ActionController
                 $content->owner($this->user()->id());
             }
 
-            $pub_date   = $this->request()->param("pub_date", date("Y-m-d"));
-            $pub_time_h = $this->request()->param("pub_time_h", date("H"));
-            $pub_time_m = $this->request()->param("pub_time_m", date("i"));
+            $pub_date = $this->request()->param("pub_date");
+            if (!$pub_date) {
+                $pub_date = date("Y-m-d");
+            }
+
+            $pub_time_h = $this->request()->param("pub_time_h");
+            if ($pub_time_h) {
+                $pub_time_h = date("H");
+            }
+
+            $pub_time_m = $this->request()->param("pub_time_m");
+            if ($pub_time_m) {
+                $pub_time_m = date("i");
+            }
+
             $params["pub_date"] = $pub_date." ".$pub_time_h.":".$pub_time_m.":00";
 
             if (!array_key_exists("robots_index", $params)) {
