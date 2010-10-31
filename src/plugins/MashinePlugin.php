@@ -128,83 +128,82 @@ class MashinePlugin extends AbstractPlugin
      */
     public function displayOptionsForm()
     {
+        $prefix = $this->getOptionsPrefix();
         $helper = new UserHelper($this->app());
+
         ob_start();
         ?>
 
-        <form action="index.php" method="post">
+<form action="index.php" method="post">
 
-        <fieldset id="front-end-signup" class="">
-            <legend>Front-end signup</legend>
+<fieldset id="front-end-signup" class="">
+  <legend>Front-end signup</legend>
+    <p>
+      <label
+        class="inline"
+        for="options_<?php echo $prefix; ?>frontendsignup_enable"
+      >
+        Enable:
+      </label>
+      <input
+        type="radio"
+        name="options_<?php echo $prefix; ?>frontendsignup_enable"
+        value="1"
+        <?php if ($this->options[$prefix."frontendsignup_enable"]) : ?>
+          checked="checked"
+        <?php endif; ?>
+      /> Yes /
+      <input
+        type="radio"
+        name="options_<?php echo $prefix; ?>frontendsignup_enable"
+        value="0"
+        <?php if (!$this->options[$prefix."frontendsignup_enable"]) : ?>
+          checked="checked"
+        <?php endif; ?>
+      /> No
+    </p>
+    <p>
+      <label class="inline" for="options_<?php echo $prefix; ?>frontendsignup_show_billing">
+        Show billing details:
+      </label>
+      <input
+        type="radio"
+        name="options_<?php echo $prefix; ?>frontendsignup_show_billing"
+        value="1"
+        <?php if ($this->options[$prefix."frontendsignup_show_billing"]) : ?>
+          checked="checked"
+        <?php endif; ?>
+      /> Yes /
+      <input
+        type="radio"
+        name="options_<?php echo $prefix; ?>frontendsignup_show_billing"
+        value="0"
+        <?php if (!$this->options[$prefix."frontendsignup_show_billing"]) : ?>
+          checked="checked"
+        <?php endif; ?>
+      /> No
+    </p>
+    <p>
+      <label class="inline" for="options_<?php echo $prefix; ?>frontendsignup_def_group">
+        Default group for new users:
+      </label>
+      <?php
+      echo $helper->getGroupsSelect(
+        "options_".$prefix."frontendsignup_def_group",
+        $this->options[$prefix."frontendsignup_def_group"]
+      );
+      ?>
+    </p>
+  </fieldset>
 
-            <p>
-                <label
-                    class="inline"
-                    for="options_<?php echo $this->getOptionsPrefix(); ?>frontendsignup_enable"
-                >
-                    Enable:
-                </label>
-                <input
-                    type="radio"
-                    name="options_<?php echo $this->getOptionsPrefix(); ?>frontendsignup_enable"
-                    value="1"
-                    <?php if ($this->options[$this->getOptionsPrefix()."frontendsignup_enable"]) : ?>
-                        checked="checked"
-                    <?php endif; ?>
-                /> Yes /
-                <input
-                    type="radio"
-                    name="options_<?php echo $this->getOptionsPrefix(); ?>frontendsignup_enable"
-                    value="0"
-                    <?php if (!$this->options[$this->getOptionsPrefix()."frontendsignup_enable"]) : ?>
-                        checked="checked"
-                    <?php endif; ?>
-                /> No
-            </p>
+  <p>
+    <input type="button" value="&larr; Back" onclick="window.history.back();" />
+    <input type="submit" value="Save &rarr;" />
+  </p>
 
-            <p>
-                <label class="inline" for="options_<?php echo $this->getOptionsPrefix(); ?>frontendsignup_show_billing">
-                    Show billing details:
-                </label>
-                <input
-                    type="radio"
-                    name="options_<?php echo $this->getOptionsPrefix(); ?>frontendsignup_show_billing"
-                    value="1"
-                    <?php if ($this->options[$this->getOptionsPrefix()."frontendsignup_show_billing"]) : ?>
-                        checked="checked"
-                    <?php endif; ?>
-                /> Yes /
-                <input
-                    type="radio"
-                    name="options_<?php echo $this->getOptionsPrefix(); ?>frontendsignup_show_billing"
-                    value="0"
-                    <?php if (!$this->options[$this->getOptionsPrefix()."frontendsignup_show_billing"]) : ?>
-                        checked="checked"
-                    <?php endif; ?>
-                /> No
-            </p>
-            <p>
-                <label class="inline" for="options_<?php echo $this->getOptionsPrefix(); ?>frontendsignup_def_group">
-                    Default group for new users:
-                </label>
-                <?php
-                echo $helper->getGroupsSelect(
-                    "options_".$this->getOptionsPrefix()."frontendsignup_def_group",
-                    $this->options[$this->getOptionsPrefix()."frontendsignup_def_group"]
-                );
-                ?>
-            </p>
-        </fieldset>
-
-        <p>
-            <input type="button" value="&larr; Back" onclick="window.history.back();" />
-            <input type="submit" value="Save &rarr;" />
-        </p>
-
-        <input type="hidden" name="controller" value="plugins" />
-        <input type="hidden" name="action" value="save_options" />
-
-        </form>
+  <input type="hidden" name="controller" value="plugins" />
+  <input type="hidden" name="action" value="save_options" />
+</form>
 
         <?php
         $str = ob_get_contents();
