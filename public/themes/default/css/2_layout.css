@@ -121,6 +121,13 @@ html, body {
     margin: auto;
 }
 
+#user-form fieldset,
+#user-contacts-form fieldset {
+  width: 42%;
+  float: left;
+  margin: 0 10px 10px 0;
+}
+
 /* jQuery UI stuff */
 
 .ui-widget-overlay {
@@ -160,3 +167,4 @@ html, body {
 .ui-button {
     margin: 0 5px 0 0;
 }
+
