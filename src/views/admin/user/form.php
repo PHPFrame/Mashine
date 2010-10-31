@@ -17,7 +17,7 @@ Admin actions:
 
 <form id="user-form" action="index.php" method="post">
 
-<fieldset id="login_credentails" style="width: 50%; float:left">
+<fieldset id="login_credentails">
     <legend><?php echo UserLang::LOGIN_CREDENTIALS; ?></legend>
 
     <?php if ($session->getUser()->groupId() < 3) : ?>
@@ -88,7 +88,7 @@ Admin actions:
     <?php endif; ?>
 </fieldset>
 
-<fieldset id="contacts" style="width: 50%; float:left">
+<fieldset id="contacts">
     <legend><?php echo UserLang::CONTACTS; ?></legend>
 
     <?php if (!$user->id()) : ?>
