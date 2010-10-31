@@ -78,13 +78,14 @@ if (is_array($footer) && count($footer) > 0) {
     </a>
 </p>
 </nav>
-<?php endif; ?>
 
 <script>
 jQuery(document).ready(function() {
 	EN.infiniteScrolling('#content-infinite-scrolling-trigger');
 });
 </script>
+<?php endif; ?>
+
 <?php else : ?>
 <p>No posts found.</p>
 </div><!-- #content-body -->
