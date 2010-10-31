@@ -392,119 +392,118 @@ var disqus_shortname = '<?php echo $shortname; ?>';
      */
     public function displayOptionsForm()
     {
+        $prefix = $this->getOptionsPrefix();
+
         ob_start();
         ?>
 
-        <form action="index.php" method="post">
+<form action="index.php" method="post">
+  <fieldset id="disqus" class="">
+    <legend>Disqus (comments)</legend>
 
-        <fieldset id="disqus" class="">
-            <legend>Disqus (comments)</legend>
+    <p>
+      <label class="inline" for="options_<?php echo $prefix; ?>disqus_enable">Enable:</label>
+      <input
+        type="radio"
+        name="options_<?php echo $prefix; ?>disqus_enable"
+        value="1"
+        <?php if ($this->options[$prefix."disqus_enable"]) : ?>
+          checked="checked"
+        <?php endif; ?>
+      /> Yes /
+      <input
+        type="radio"
+        name="options_<?php echo $prefix; ?>disqus_enable"
+        value="0"
+        <?php if (!$this->options[$prefix."disqus_enable"]) : ?>
+          checked="checked"
+        <?php endif; ?>
+      /> No
+    </p>
+    <p>
+      <label for="options_<?php echo $prefix; ?>disqus_shortname">Website shortname:</label>
+      <input
+        type="text"
+        name="options_<?php echo $prefix; ?>disqus_shortname"
+        id="options_<?php echo $prefix; ?>disqus_shortname"
+        value="<?php echo $this->options[$prefix."disqus_shortname"]; ?>"
+      />
+    </p>
+  </fieldset>
 
-            <p>
-                <label class="inline" for="options_<?php echo $this->getOptionsPrefix(); ?>disqus_enable">Enable:</label>
-                <input
-                    type="radio"
-                    name="options_<?php echo $this->getOptionsPrefix(); ?>disqus_enable"
-                    value="1"
-                    <?php if ($this->options[$this->getOptionsPrefix()."disqus_enable"]) : ?>
-                        checked="checked"
-                    <?php endif; ?>
-                /> Yes /
-                <input
-                    type="radio"
-                    name="options_<?php echo $this->getOptionsPrefix(); ?>disqus_enable"
-                    value="0"
-                    <?php if (!$this->options[$this->getOptionsPrefix()."disqus_enable"]) : ?>
-                        checked="checked"
-                    <?php endif; ?>
-                /> No
-            </p>
+  <fieldset id="facebook" class="">
+    <legend>Facebook</legend>
+    <p>
+      <label class="inline">Enable:</label>
+      <input
+        type="radio"
+        name="options_<?php echo $prefix; ?>facebook_enable"
+        value="1"
+        <?php if ($this->options[$prefix."facebook_enable"]) : ?>
+          checked="checked"
+        <?php endif; ?>
+      /> Yes /
+      <input
+        type="radio"
+        name="options_<?php echo $prefix; ?>facebook_enable"
+        value="0"
+        <?php if (!$this->options[$prefix."facebook_enable"]) : ?>
+          checked="checked"
+        <?php endif; ?>
+      /> No
+    </p>
+    <p>
+      <label for="options_<?php echo $prefix; ?>facebook_api_key">API Key:</label>
+      <input
+        type="text"
+        name="options_<?php echo $prefix; ?>facebook_api_key"
+        id="options_<?php echo $prefix; ?>facebook_api_key"
+        value="<?php echo $this->options[$prefix."facebook_api_key"]; ?>"
+      />
+    </p>
+  </fieldset>
 
-            <p>
-                <label for="options_<?php echo $this->getOptionsPrefix(); ?>disqus_shortname">Website shortname:</label>
-                <input
-                    type="text"
-                    name="options_<?php echo $this->getOptionsPrefix(); ?>disqus_shortname"
-                    value="<?php echo $this->options[$this->getOptionsPrefix()."disqus_shortname"]; ?>"
-                />
-            </p>
-        </fieldset>
+  <fieldset id="twitter" class="">
+    <legend>Twitter Auth</legend>
+    <p>
+      <label class="inline">Enable:</label>
+      <input
+        type="radio"
+        name="options_<?php echo $prefix; ?>twitter_enable"
+        value="1"
+        <?php if ($this->options[$prefix."twitter_enable"]) : ?>
+          checked="checked"
+        <?php endif; ?>
+      /> Yes /
+      <input
+        type="radio"
+        name="options_<?php echo $prefix; ?>twitter_enable"
+        value="0"
+        <?php if (!$this->options[$prefix."twitter_enable"]) : ?>
+          checked="checked"
+        <?php endif; ?>
+      /> No
+    </p>
+    <p>
+      <label for="options_<?php echo $prefix; ?>twitter_api_key">API Key:</label>
+      <input
+        type="text"
+        name="options_<?php echo $prefix; ?>twitter_api_key"
+        id="options_<?php echo $prefix; ?>twitter_api_key"
+        value=""
+      />
+    </p>
+  </fieldset>
 
-        <fieldset id="facebook" class="">
-            <legend>Facebook</legend>
+  <p>
+    <input type="button" value="&larr; Back" onclick="window.history.back();" />
+    <input type="submit" value="Save &rarr;" />
+  </p>
 
-            <p>
-                <label class="inline">Enable:</label>
-                <input
-                    type="radio"
-                    name="options_<?php echo $this->getOptionsPrefix(); ?>facebook_enable"
-                    value="1"
-                    <?php if ($this->options[$this->getOptionsPrefix()."facebook_enable"]) : ?>
-                        checked="checked"
-                    <?php endif; ?>
-                /> Yes /
-                <input
-                    type="radio"
-                    name="options_<?php echo $this->getOptionsPrefix(); ?>facebook_enable"
-                    value="0"
-                    <?php if (!$this->options[$this->getOptionsPrefix()."facebook_enable"]) : ?>
-                        checked="checked"
-                    <?php endif; ?>
-                /> No
-            </p>
+  <input type="hidden" name="controller" value="plugins" />
+  <input type="hidden" name="action" value="save_options" />
 
-            <p>
-                <label>API Key:</label>
-                <input
-                    type="text"
-                    name="options_<?php echo $this->getOptionsPrefix(); ?>facebook_api_key"
-                    value="<?php echo $this->options[$this->getOptionsPrefix()."facebook_api_key"]; ?>"
-                />
-            </p>
-        </fieldset>
-
-        <fieldset id="twitter" class="">
-            <legend>Twitter Auth</legend>
-
-            <p>
-                <label class="inline">Enable:</label>
-                <input
-                    type="radio"
-                    name="options_<?php echo $this->getOptionsPrefix(); ?>twitter_enable"
-                    value="1"
-                    <?php if ($this->options[$this->getOptionsPrefix()."twitter_enable"]) : ?>
-                        checked="checked"
-                    <?php endif; ?>
-                /> Yes /
-                <input
-                    type="radio"
-                    name="options_<?php echo $this->getOptionsPrefix(); ?>twitter_enable"
-                    value="0"
-                    <?php if (!$this->options[$this->getOptionsPrefix()."twitter_enable"]) : ?>
-                        checked="checked"
-                    <?php endif; ?>
-                /> No
-            </p>
-
-            <p>
-                <label>API Key:</label>
-                <input
-                    type="text"
-                    name="options_<?php echo $this->getOptionsPrefix(); ?>twitter_api_key"
-                    value=""
-                />
-            </p>
-        </fieldset>
-
-        <p>
-            <input type="button" value="&larr; Back" onclick="window.history.back();" />
-            <input type="submit" value="Save &rarr;" />
-        </p>
-
-        <input type="hidden" name="controller" value="plugins" />
-        <input type="hidden" name="action" value="save_options" />
-
-        </form>
+</form>
 
         <?php
         $str = ob_get_contents();
