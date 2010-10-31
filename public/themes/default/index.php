@@ -54,7 +54,7 @@ $this->addStyleSheet($base_url."themes/default/css/styles.css");
 
 <footer id="footer">
   <small id="copyright">
-    <p>Powered by <?php echo nl2br(PHPFrame::version())."\n"; ?></p>
+    <p>Powered by Mashine | Theme by Lupo Montero</p>
   </small>
 </footer>
 
