@@ -201,8 +201,7 @@ FB.ensureInit(function() {
 
 });
 
-function facebook_connect()
-{
+var facebook_connect = function () {
     var fbuid = FB.Connect.get_loggedInUser();
     var data  = 'controller=socialplugin&action=login';
     data     += '&fbuid=' + fbuid + '&ajax=1';
@@ -218,7 +217,7 @@ function facebook_connect()
             alert(XMLHttpRequest.responseText);
         }
     });
-}
+};
 </script>
 
             <?php
@@ -267,10 +266,14 @@ function facebook_connect()
 
     public function getDisqusCommentCount($args)
     {
-        $base_url = $this->app()->config()->get("base_url");
+        $str = "";
 
-        $str  = "<a href=\"".$base_url.$args[0]->slug()."#disqus_thread\">";
-        $str .= "Comments</a>";
+        if ($this->options[$this->getOptionsPrefix()."disqus_enable"]) {
+            $base_url = $this->app()->config()->get("base_url");
+
+            $str .= "<a href=\"".$base_url.$args[0]->slug()."#disqus_thread\">";
+            $str .= "Comments</a>";
+        }
 
         return $str;
     }
