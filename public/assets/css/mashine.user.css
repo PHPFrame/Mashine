@@ -66,18 +66,19 @@ input#title {
 }
 
 .edit-content {
-    float: right;
     display: block;
-    position: relative;
+    position: absolute;
+    top: 10px;
+    right: 10px;
     z-index: 99999999999999;
 }
 
 .edit-content a {
-    color: #F0F0F0;
-    background: #333;
-    display: inline-block;
-    padding: 4px 8px;
-    border: 1px solid #333;
+  color: #F0F0F0;
+  background: #333;
+  display: inline-block;
+  padding: 4px 8px;
+  border: 1px solid #333;
 }
 
 .edit-content a:hover {

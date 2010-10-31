@@ -139,7 +139,13 @@ jQuery(document).ready(function () {
         url: base_url,
         data: form.serialize() + '&ajax=1',
         success: function(response) {
-          responseContainer.addClass('success').html(response);
+          if (/error/i.test(response)) {
+            responseContainer.addClass('error');
+          } else {
+            responseContainer.addClass('success');
+          }
+
+          responseContainer.html(response);
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
           responseContainer.addClass('error').html(XMLHttpRequest.responseText);
