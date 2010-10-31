@@ -152,6 +152,10 @@ table {
   width: 95%;
 }
 
+tr:hover {
+  background: #F2F5A9 !important;
+}
+
 tbody tr:nth-child(even) {
   background: #FFF
 }
