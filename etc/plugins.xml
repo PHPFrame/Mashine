@@ -107,4 +107,22 @@
         <group>2</group>
         <perms>664</perms>
     </PHPFrame_PluginInfo>
+    <PHPFrame_PluginInfo>
+        <name>ImageBrowserPlugin</name>
+        <channel>http://dist.phpframe.org</channel>
+        <summary>ImageBrowser plugin for Mashine.</summary>
+        <description>ImageBrowser plugin...</description>
+        <author>Lupo Montero</author>
+        <date>2010-10-31</date>
+        <version>1.0</version>
+        <license>BSD New</license>
+        <license_url>http://www.opensource.org/licenses/bsd-license.php</license_url>
+        <enabled />
+        <id>7</id>
+        <ctime>1252985443</ctime>
+        <mtime>1288558878</mtime>
+        <owner>1</owner>
+        <group>2</group>
+        <perms>664</perms>
+    </PHPFrame_PluginInfo>
 </collection>
