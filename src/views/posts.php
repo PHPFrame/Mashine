@@ -65,6 +65,7 @@ if (is_array($footer) && count($footer) > 0) {
 
 </div><!-- #content-body -->
 
+<?php if (count($posts) < $posts->getTotal()) : ?>
 <nav id="pagination">
 <p>
     <a
@@ -77,9 +78,10 @@ if (is_array($footer) && count($footer) > 0) {
     </a>
 </p>
 </nav>
+<?php endif; ?>
 
 <script>
-jQuery(document).ready(function() { 
+jQuery(document).ready(function() {
 	EN.infiniteScrolling('#content-infinite-scrolling-trigger');
 });
 </script>
