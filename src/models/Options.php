@@ -117,6 +117,20 @@ class Options
         }
     }
 
+    public function filterByPrefix($prefix)
+    {
+        $a = array();
+
+        foreach ($this as $k=>$v) {
+            $pos = strpos($k, $prefix);
+            if ($pos === 0) {
+                $a[substr($k, strlen($prefix))] = $v;
+            }
+        }
+
+        return $a;
+    }
+
     private function _installDB()
     {
         if ($this->_db->isSQLite()) {
