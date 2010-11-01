@@ -57,7 +57,7 @@ class ContactFormPlugin extends AbstractPlugin
             $subject = $request->param("subject");
             $body    = $request->param("body");
 
-            $body = "Email sent from contact form in ".$appname.".\n---\n\n".$body;
+            $body = "Email sent from ".$appname.".\n---\n\n".$body;
 
             if (empty($name) || empty($subject) || empty($body)) {
                 $msg = "Required field missing!";
@@ -124,7 +124,7 @@ class ContactFormPlugin extends AbstractPlugin
         $document = $this->app()->response()->document();
         if ($document instanceof PHPFrame_HTMLDocument) {
             ob_start();
-                ?>
+            ?>
 <script>
 jQuery(document).ready(function () {
   EN.validate('form#contact-form', {
@@ -155,8 +155,8 @@ jQuery(document).ready(function () {
   });
 });
 </script>
-                <?php
-                $document->appendBody(ob_get_clean());
+            <?php
+            $document->appendBody(ob_get_clean());
         }
     }
 
