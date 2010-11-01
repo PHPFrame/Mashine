@@ -101,10 +101,7 @@ class GoogleAnalyticsPlugin extends AbstractPlugin
 </form>
 
         <?php
-        $str = ob_get_contents();
-        ob_end_clean();
-
-        return $str;
+        return ob_get_clean();
     }
 
     /**

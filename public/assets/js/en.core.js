@@ -235,7 +235,10 @@ EN.debug = function (bool) {
                 logAjax('jQuery.ajax() is sendind ' + ((ajaxOptions.async) ? 'a' : '') + 'synchronous request:<br />' + ajaxOptions.type + ((ajaxOptions.type!=='GET') ? ' --data ' + ajaxOptions.data : '') + ' ' + ajaxOptions.url);
             })
             .ajaxSuccess(function (event, XMLHttpRequest, ajaxOptions) {
-                logAjax('jQuery.ajax() request completed successfully!<br />Response Headers:<br />' + XMLHttpRequest.getAllResponseHeaders() + '<br />Response body:<br />' + XMLHttpRequest.responseText);
+                logAjax('jQuery.ajax() request completed successfully!<br />');
+                if (XMLHttpRequest) {
+                    logAjax('Response Headers:<br />' + XMLHttpRequest.getAllResponseHeaders() + '<br />Response body:<br />' + XMLHttpRequest.responseText);
+                }
             })
             .ajaxError(function (event, XMLHttpRequest, ajaxOptions, thrownError) {
                 logAjax('ajaxError!');
