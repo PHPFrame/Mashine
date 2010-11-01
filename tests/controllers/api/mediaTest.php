@@ -13,6 +13,11 @@ class MediaApiControllerTest extends MVCTestCase
         //$this->fixture(new MediaApiController($app));
     }
 
+    public function test_foo()
+    {
+        $this->assertTrue(true);
+    }
+
 //    public function test_get()
 //    {
 //        $this->fixture()->get(21);
