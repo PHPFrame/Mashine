@@ -218,28 +218,6 @@ abstract class MediaNode
     }
 
     /**
-     * Get the absolute path to the image browser installation.
-     *
-     * @return string
-     * @since  2.0
-     */
-    public function getIbPath()
-    {
-        return $this->_config["ib_path"];
-    }
-
-    /**
-     * Get URL to imagebrowser installation.
-     *
-     * @return string
-     * @since  2.0
-     */
-    public function getIbURL()
-    {
-        return $this->_config["ib_url"];
-    }
-
-    /**
      * Get the relative path to the uploads dir.
      *
      * @return string
@@ -276,62 +254,6 @@ abstract class MediaNode
     }
 
     /**
-     * Get the parent node's backend URL.
-     *
-     * @return string
-     * @since  2.0
-     */
-    public function getParentBackendURL()
-    {
-        $url = "index.php?option=com_imagebrowser";
-        if ($this->getParentRelativePath()) {
-            $url .= "&node=".urlencode($this->getParentRelativePath());
-        }
-
-        return $url;
-    }
-
-    /**
-     * Get URL to display node in backend.
-     *
-     * @return string
-     * @since  2.0
-     */
-    public function getNodeURL()
-    {
-        $url  = "index.php?option=com_imagebrowser";
-
-        if ($this->getRelativePath()) {
-            $url .= "&node=".urlencode($this->getRelativePath());
-        }
-
-        if (array_key_exists("Itemid", $_REQUEST) && !empty($_REQUEST["Itemid"])) {
-            $url .= "&amp;Itemid=".$_REQUEST["Itemid"];
-        }
-
-        return $url;
-    }
-
-    /**
-     * Get URL to form used to rename node.
-     *
-     * @return string
-     * @since  2.0
-     */
-    public function getRenameURL()
-    {
-        return $this->getNodeURL()."&task=rename";
-    }
-
-    /**
-     * Get URL to delete node in backend.
-     *
-     * @return string
-     * @since  2.0
-     */
-    abstract public function getDeleteURL();
-
-    /**
      * Get URL to thumbnail.
      *
      * @return string
@@ -347,17 +269,14 @@ abstract class MediaNode
      */
     public function getBreadCrumbs()
     {
-        $base_url = "index.php?option=com_imagebrowser";
-        if (array_key_exists("Itemid", $_REQUEST)) {
-            $base_url .= "&amp;Itemid=".$_REQUEST["Itemid"];
-        }
+        $base_url = "admin/media";
         $str = "<a href=\"".$base_url."\">".MediaLang::ROOT."</a>";
         $array = explode(DS, $this->getRelativePath());
 
         $rel_path = "";
         foreach ($array as $item) {
             if ($item) {
-                $str .= " / <a href=\"".$base_url."&amp;node=";
+                $str .= " / <a href=\"".$base_url."?node=";
                 $str .= urlencode($rel_path.$item);
                 $str .= "\">".$item."</a>";
                 $rel_path .= $item."/";

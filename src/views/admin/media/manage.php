@@ -4,220 +4,161 @@
 
 <div id="content-body">
 
-<div id="imagebrowser-server-info">
-
-<h4><a href="#"><?php echo MediaLang::PHP_UPLOAD_DIRECTIVES; ?></a></h4>
-
-<ul>
-    <li>
-        memory_limit: <?php echo ini_get("memory_limit"); ?>
-    </li>
-    <li>
-        upload_max_filesize: <?php echo ini_get("upload_max_filesize"); ?>
-    </li>
-    <li>
-        post_max_size: <?php echo ini_get("post_max_size"); ?>
-    </li>
-    <li>
-        max_execution_time: <?php echo ini_get("max_execution_time"); ?>
-    </li>
-    <li>
-        max_input_time: <?php echo ini_get("max_input_time"); ?>
-    </li>
-</ul>
-
-</div><!-- #imagebrowser-server-info -->
+<p id="media-server-info">
+  Having trouble uploading files? Check you PHP upload directives
+  <a href="admin/system#php-upload-directives">here</a>.
+</p><!-- #media-server-info -->
 
 <?php if ($current_dir->isWritable()): ?>
 
-<div id="imagebrowser-toolbar">
-
-<div class="imagebrowser-toolbar-item">
-<form name="new_dir_form" action="index.php" method="post">
-<table cellpadding="3" cellspacing="1" border="0">
-    <tr>
-        <td><img src="components/com_imagebrowser/assets/img/folder_new.png" alt="<?php echo MediaLang::NEW_DIR; ?>" /></td>
-        <td><?php echo MediaLang::NEW_DIR; ?>:</td>
-        <td><input type="text" name="name" size="" /></td>
-        <td><input type="button" name="submitbutton" onclick="submitNewDir();" value="<?php echo MediaLang::GO; ?>" /></td>
-    </tr>
-</table>
-<input type="hidden" name="parent" value="<?php echo $current_dir->getRelativePath(); ?>" />
-<input type="hidden" name="task" value="mkdir" />
-<input type="hidden" name="option" value="com_imagebrowser" />
-</form>
-</div><!-- #imagebrowser-toolbar-item -->
-
-<div class="imagebrowser-toolbar-item">
-<form name="upload_form" action="index.php" method="post" enctype="multipart/form-data">
-<table cellpadding="3" cellspacing="1" border="0">
-    <tr>
-        <td><img src="components/com_imagebrowser/assets/img/up.png" alt="<?php echo MediaLang::UPLOAD_IMAGE; ?>" /></td>
-        <td><?php echo MediaLang::UPLOAD_IMAGE; ?>:</td>
-        <td><input type="file" name="upload_file" size="" /></td>
-        <td><input type="submit" name="submit" onclick="return submitUpload();" value="<?php echo MediaLang::UPLOAD; ?>" /></td>
-        <td>(<?php echo MediaLang::MAX_UPLOAD_SIZE; ?>: <?php echo ini_get("upload_max_filesize"); ?>)</td>
-    </tr>
-</table>
-<input type="hidden" name="parent" value="<?php echo $current_dir->getRelativePath(); ?>" />
-<input type="hidden" name="task" value="upload" />
-<input type="hidden" name="option" value="com_imagebrowser" />
-</form>
-</div><!-- #imagebrowser-toolbar-item -->
-
-<div style="clear: left;"></div>
-
-<div class="imagebrowser-toolbar-item">
-<form action="index.php" method="post">
-<table cellpadding="3" cellspacing="1" border="0">
-    <tr>
-        <td><img src="components/com_imagebrowser/assets/img/generate_thumb.png" alt="<?php echo MediaLang::GENERATE_DIR_THUMBS; ?>" /></td>
-        <td><?php echo MediaLang::GENERATE_DIR_THUMBS; ?>:</td>
-        <td><input type="submit" name="submit" value="<?php echo MediaLang::GO; ?>" /></td>
-    </tr>
-</table>
-<input type="hidden" name="node" value="<?php echo $current_dir->getRelativePath(); ?>" />
-<input type="hidden" name="task" value="generateThumbs" />
-<input type="hidden" name="option" value="com_imagebrowser" />
-</form>
-</div><!-- #imagebrowser-toolbar-item -->
-
-<div class="imagebrowser-toolbar-item">
-<form action="index.php" method="post">
-<table cellpadding="3" cellspacing="1" border="0">
-    <tr>
-        <td><img src="components/com_imagebrowser/assets/img/resize.png" alt="<?php echo MediaLang::PROCESS_FORCE_MAX_DIMENSIONS; ?>" /></td>
-        <td><?php echo MediaLang::PROCESS_FORCE_MAX_DIMENSIONS; ?>:</td>
-        <td><input type="submit" name="submit" value="<?php echo MediaLang::GO; ?>" /></td>
-    </tr>
-</table>
-<input type="hidden" name="node" value="<?php echo $current_dir->getRelativePath(); ?>" />
-<input type="hidden" name="task" value="resize" />
-<input type="hidden" name="option" value="com_imagebrowser" />
-</form>
-</div><!-- #imagebrowser-toolbar-item -->
-
-<div style="clear: left;"></div>
-
-</div><!-- #imagebrowser-toolbar -->
+<ul id="media-toolbar">
+  <li>
+    <a href="media/mkdir?parent=<?php echo $current_dir->getRelativePath(); ?>">
+      <span class="ui-icon ui-icon-plusthick"></span>New dir
+    </a>
+  </li>
+  <li>
+    <a href="media/upload?parent=<?php echo $current_dir->getRelativePath(); ?>">
+      <span class="ui-icon ui-icon-document"></span>Upload
+    </a>
+  </li>
+  <li>
+    <a
+      href="media/generate_thumbs?node=<?php echo $current_dir->getRelativePath(); ?>"
+      class="tooltip"
+      title="<?php echo MediaLang::GENERATE_DIR_THUMBS; ?>"
+    >
+      <span class="ui-icon ui-icon-gear"></span>Process thumbs
+    </a>
+  </li>
+  <li>
+    <a
+      href="media/resize?node=<?php echo $current_dir->getRelativePath(); ?>"
+      class="tooltip"
+      title="<?php echo MediaLang::PROCESS_FORCE_MAX_DIMENSIONS; ?>"
+    >
+      <span class="ui-icon ui-icon-arrow-4-diag"></span>Process images
+    </a>
+  </li>
+</ul>
 
 <?php endif; ?>
 
-<div id="imagebrowser-breadcrumbs">
-    <?php echo MediaLang::PATH; ?>: <?php echo $current_dir->getBreadCrumbs(); ?>
+<div id="media-breadcrumbs">
+  <?php echo MediaLang::PATH; ?>: <?php echo $current_dir->getBreadCrumbs()."\n"; ?>
 </div>
 
-<div id="imagebrowser-nodes">
+<div id="media-nodes">
 <?php foreach ($current_dir as $child) : ?>
 <?php if ($child instanceof MediaDirectory): ?>
 
-    <div class="imagebrowser-node-wrapper">
+  <div class="media-node-wrapper">
 
-    <div class="imagebrowser-node">
-        <div class="imagebrowser-dir-thumb">
-        <a href="<?php echo $child->getNodeURL(); ?>">
+    <div class="media-node">
+      <div class="media-dir-thumb">
+        <a href="admin/media?node=<?php echo $child->getRelativePath(); ?>">
         <img
-            src="<?php echo $child->getThumbURL(); ?>"
-            alt="<?php echo $child->getFilename(); ?>"
+          src="<?php echo $child->getThumbURL(); ?>"
+          alt="<?php echo $child->getFilename(); ?>"
         />
         </a>
-        </div>
+      </div>
 
-        <div class="imagebrowser-node-info">
-            <h3 class="imagebrowser-node-info-name">
-                <a href="<?php echo $child->getNodeURL(); ?>">
-                    <?php echo $child->getFilename(16); ?>
-                </a>
-            </h3>
-        </div>
+      <div class="media-node-info">
+        <h3 class="media-node-info-name">
+          <a href="admin/media?node=<?php echo $child->getRelativePath(); ?>">
+            <?php echo $child->getFilename(12)."\n"; ?>
+          </a>
+        </h3>
+      </div>
 
-        <div style="clear: left;"></div>
-    </div><!-- imagebrowser-node -->
+      <div style="clear: left;"></div>
+    </div><!-- media-node -->
 
-    <div class="imagebrowser-node-buttons">
-        <?php if ($current_dir->isWritable()): ?>
-        <a href="<?php echo $child->getRenameURL(); ?>">
-            <?php echo MediaLang::RENAME; ?>
-        </a>
-        <?php endif; ?>
+    <div class="media-node-buttons">
+      <?php if ($current_dir->isWritable()): ?>
+      <a href="media/rename?node=<?php echo $child->getRelativePath(); ?>">
+        <?php echo MediaLang::RENAME."\n"; ?>
+      </a>
+      <?php endif; ?>
 
-        <?php if ($child->isWritable()): ?>
-        <a
-            class="imagebrowser-node-buttons-delete"
-            href="<?php echo $child->getDeleteURL(); ?>"
-            onclick="return confirmDelete('dir', '<?php echo $child->getFilename(); ?>');"
-        >
-            <?php echo MediaLang::DELETE; ?>
-        </a>
-        <?php endif; ?>
+      <?php if ($child->isWritable()): ?>
+      <a
+        class="media-node-buttons-delete"
+        href="media/delete?node=<?php echo $child->getRelativePath(); ?>"
+        onclick="return confirmDelete('dir', '<?php echo $child->getFilename(); ?>');"
+      >
+        <?php echo MediaLang::DELETE."\n"; ?>
+      </a>
+      <?php endif; ?>
     </div>
 
-    </div><!-- imagebrowser-node-wrapper -->
+  </div><!-- media-node-wrapper -->
 
-<?php elseif ($child instanceof ImageBrowser_Image) : ?>
+<?php elseif ($child instanceof Image) : ?>
 
-    <div class="imagebrowser-node-wrapper">
+  <div class="media-node-wrapper">
 
-    <div class="imagebrowser-node">
-        <div class="imagebrowser-img-thumb">
+    <div class="media-node">
+      <div class="media-img-thumb">
         <img
-            src="<?php echo $child->getThumbURL(); ?>"
-            alt="<?php echo $child->getFilename(); ?>"
-            title="<?php echo $child->getCaption(); ?>"
+          src="<?php echo $child->getThumbURL(); ?>"
+          alt="<?php echo $child->getFilename(); ?>"
+          title="<?php echo $child->getCaption(); ?>"
         />
-        </div>
+      </div>
 
-        <div class="imagebrowser-node-info">
-            <h3 class="imagebrowser-node-info-name">
-                <?php echo $child->getFilename(16); ?>
-            </h3>
-            <p>
-                <?php echo MediaLang::FILESIZE; ?>:
-                <?php echo $child->getSize(true); ?>
-                <br />
-                <?php echo MediaLang::MODIFIED; ?>:
-                <?php echo $child->getMTime(true); ?>
-            </p>
-        </div>
+      <div class="media-node-info">
+        <h3 class="media-node-info-name">
+          <?php echo $child->getFilename(12)."\n"; ?>
+        </h3>
+        <p>
+          <?php echo MediaLang::FILESIZE; ?>:
+          <?php echo $child->getSize(true)."\n"; ?>
+          <br />
+          <?php echo MediaLang::MODIFIED; ?>:
+          <?php echo $child->getMTime(true)."\n"; ?>
+        </p>
+      </div>
 
-        <div style="clear: left;"></div>
-    </div><!-- .imagebrowser-node -->
+      <div style="clear: left;"></div>
+    </div><!-- .media-node -->
 
-    <div class="imagebrowser-node-buttons">
-        <?php if ($current_dir->isWritable()): ?>
-        <a href="<?php echo $child->getCaptionEditURL(); ?>">
-               <?php echo MediaLang::EDIT_CAPTION; ?>
-        </a>
-        <a href="<?php echo $child->getGenerateThumbURL(); ?>">
-            <?php echo MediaLang::GENERATE_THUMB; ?>
-        </a>
-        <?php endif; ?>
-        <?php if ($child->isWritable()): ?>
-        <a
-            class="imagebrowser-node-buttons-delete"
-            href="<?php echo $child->getDeleteURL(); ?>"
-            onclick="return confirmDelete('img', '<?php echo $child->getFilename(); ?>');"
-        >
-            <?php echo MediaLang::DELETE; ?>
-        </a>
-        <?php endif; ?>
+    <div class="media-node-buttons">
+<?php if ($current_dir->isWritable()): ?>
+      <a href="media/caption?node=<?php echo $child->getRelativePath(); ?>">
+         <?php echo MediaLang::EDIT_CAPTION."\n"; ?>
+      </a>
+      <a href="media/generate_thumbs?node=<?php echo $child->getRelativePath(); ?>">
+        <?php echo MediaLang::GENERATE_THUMB."\n"; ?>
+      </a>
+<?php endif; ?>
+<?php if ($child->isWritable()): ?>
+      <a
+        class="media-node-buttons-delete"
+        href="media/delete?node=<?php echo $child->getRelativePath(); ?>"
+        onclick="return confirmDelete('img', '<?php echo $child->getFilename(); ?>');"
+      >
+        <?php echo MediaLang::DELETE."\n"; ?>
+      </a>
+<?php endif; ?>
     </div>
 
-    </div><!-- imagebrowser-node-wrapper -->
+  </div><!-- media-node-wrapper -->
 
 <?php endif; ?>
 <?php endforeach; ?>
-</div><!-- #imagebrowser-nodes -->
+</div><!-- #media-nodes -->
 
 <div style="clear: left;"></div>
 
-<div id="imagebrowser-footer">
-    <p>
-        <a href="Javascript:history.go(-1)">
-            [ <?php echo MediaLang::BACK; ?> ]
-        </a>
-    </p>
-</div><!-- #imagebrowser-footer -->
+<div id="media-footer">
+  <p>
+    <a href="Javascript:history.go(-1)">[ <?php echo MediaLang::BACK; ?> ]</a>
+  </p>
+</div><!-- #media-footer -->
+
+</div><!-- #content-body -->
 
 <script>
 var submitNewDir = function () {
@@ -252,40 +193,35 @@ var confirmDelete = function (type, fname) {
 };
 
 jQuery(document).ready(function($) {
-  var server_info_ul = $('#imagebrowser-server-info ul');
+  var server_info_ul = $('#media-server-info ul');
   server_info_ul.hide();
 
-  $('#imagebrowser-server-info h4 a').click(function(e) {
+  $('#media-server-info h4 a').click(function(e) {
     e.preventDefault();
     server_info_ul.toggle('slow');
   });
 
-  $('.imagebrowser-node-buttons').hide();
+  $('.media-node-buttons').hide();
 
   var showNodeButtons = function(node) {
-    $(node).next('.imagebrowser-node-buttons').show();
+    $(node).next('.media-node-buttons').show();
   };
 
   var hideNodeButtons = function(node) {
-    $(node).children('.imagebrowser-node-buttons').hide();
+    $(node).children('.media-node-buttons').hide();
   };
 
-  $(".imagebrowser-node").bind({
+  $(".media-node").bind({
     mouseenter: function(){
       showNodeButtons(this);
     }
   });
 
-  $(".imagebrowser-node-wrapper").bind({
+  $(".media-node-wrapper").bind({
     mouseleave: function() {
       hideNodeButtons(this);
     }
   });
 });
-
 </script>
-
-
-</div><!-- #content-body -->
-
 

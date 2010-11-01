@@ -8,6 +8,7 @@ class MediaLang
     const RESET = "Reset";
     const DELETE = "Delete";
     const FILENAME = "File name";
+    const DIRNAME = "Directory name";
     const CAPTION = "Caption";
     const FILESIZE = "File size";
     const MODIFIED = "Modified";
@@ -15,6 +16,7 @@ class MediaLang
     const PATH = "Path";
 
     // Admin
+    const MANAGE = "Manage media";
     const DIR_NOT_WRITABLE = "Current directory (%s) is NOT writeable. You will
     need to make this directory writable to the web server in order to create
     new galleries and upload images using this interface.";
@@ -30,7 +32,7 @@ class MediaLang
     const NODE_ERROR_INVALID_DIR_PATH = "Path is not a directory!";
 
     // Dir creation
-    const NEW_DIR = "Create new directory.";
+    const NEW_DIR = "Create new media directory.";
     const NEW_DIR_OK = "Directory created successfully.";
     const NEW_DIR_ERROR = "Directory could not be created.";
     const NEW_DIR_ERROR_ALREADY_EXISTS = "Directory already exists.";
@@ -73,7 +75,9 @@ class MediaLang
 
     // Upload
     const UPLOAD = "Upload";
-    const UPLOAD_IMAGE = "Upload Image or ZIP archive";
+    const UPLOAD_TITLE = "Upload single media file or ZIP archive.";
+    const UPLOAD_LEGEND = "File details";
+    const UPLOAD_FILE = "File";
     const UPLOAD_OK = "File uploaded successfully.";
     const UPLOAD_ERROR_NO_FILE_SELECTED = "No file selected for upload.";
     const UPLOAD_ERROR_NO_FILE_SENT = "No file sent in request.";

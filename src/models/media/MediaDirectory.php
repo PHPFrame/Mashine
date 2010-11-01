@@ -112,17 +112,6 @@ class MediaDirectory extends MediaNode implements IteratorAggregate
     }
 
     /**
-     * Get URL to delete node in backend.
-     *
-     * @return string
-     * @since  2.0
-     */
-    public function getDeleteURL()
-    {
-        return $this->getNodeURL()."&task=rmdir";
-    }
-
-    /**
      * Get URL to thumbnail.
      *
      * @return string
@@ -131,9 +120,10 @@ class MediaDirectory extends MediaNode implements IteratorAggregate
     public function getThumbURL()
     {
         $thumb_url = $this->_findThumb($this);
+        $config = $this->getConfig();
 
         if (!$thumb_url) {
-            $thumb_url = $this->getIbURL()."/assets/img/no_thumb.png";
+            $thumb_url = $config["site_url"]."assets/img/no_thumb.png";
         }
 
         return $thumb_url;

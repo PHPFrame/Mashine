@@ -38,28 +38,79 @@ class MediaController extends PHPFrame_ActionController
         parent::__construct($app, "manage");
     }
 
-    public function manage()
+    public function manage($node="")
     {
         //TODO: Have to check if media dir is writable and raise warning if not
 
         try {
-            $api_controller = new MediaApiController($this->app(), true);
-            $api_controller->format("php");
-            $api_controller->returnInternalPHP(true);
-            $node = $api_controller->get();
-
+            $node = $this->_fetchNode($node);
         } catch (Exception $e) {
             $this->raiseError($e->getMessage());
             return;
         }
 
-        $title = "Manage media";
-        $view = $this->view("admin/media/manage");
+        $title = MediaLang::MANAGE;
+        $view  = $this->view("admin/media/manage");
+
         $view->addData("title", $title);
         $view->addData("current_dir", $node);
 
         $this->response()->title($title);
         $this->response()->body($view);
+    }
+
+    public function mkdir($parent)
+    {
+        $node  = $this->_fetchNode($parent);
+        $title = MediaLang::NEW_DIR;
+        $view  = $this->view("admin/media/mkdir");
+
+        $view->addData("title", $title);
+        $view->addData("current_dir", $node);
+
+        $this->response()->title($title);
+        $this->response()->body($view);
+    }
+
+    public function upload($parent)
+    {
+        $node  = $this->_fetchNode($parent);
+        $title = MediaLang::UPLOAD_TITLE;
+        $view  = $this->view("admin/media/upload");
+
+        $view->addData("title", $title);
+        $view->addData("current_dir", $node);
+
+        $this->response()->title($title);
+        $this->response()->body($view);
+    }
+
+    public function generate_thumbs()
+    {
+        //...
+    }
+
+    public function resize()
+    {
+        //...
+    }
+
+    public function caption()
+    {
+        //...
+    }
+
+    public function unlink()
+    {
+        //...
+    }
+
+    private function _fetchNode($node)
+    {
+        $api_controller = new MediaApiController($this->app(), true);
+        $api_controller->format("php");
+        $api_controller->returnInternalPHP(true);
+        return $api_controller->get($node);
     }
 }
 

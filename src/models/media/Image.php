@@ -37,17 +37,6 @@ class Image extends MediaNode
     }
 
     /**
-     * Get URL to delete node in backend.
-     *
-     * @return string
-     * @since  2.0
-     */
-    public function getDeleteURL()
-    {
-        return $this->getNodeURL()."&task=unlink";
-    }
-
-    /**
      * Get URL to thumbnail.
      *
      * @return string
@@ -57,7 +46,7 @@ class Image extends MediaNode
     {
         $config = $this->getConfig();
         if (is_null($this->getThumbPath())) {
-            $thumb_url = $this->getIbURL()."/assets/img/no_thumb.png";
+            $thumb_url = $config["site_url"]."assets/img/no_thumb.png";
         } else {
             $thumb_url = $config["site_url"].$this->getUploadDir();
 
@@ -97,17 +86,6 @@ class Image extends MediaNode
     }
 
     /**
-     * Get URL to generate thumbnails.
-     *
-     * @return string
-     * @since  2.0
-     */
-    public function getGenerateThumbURL()
-    {
-        return $this->getNodeURL()."&task=generateThumbs";
-    }
-
-    /**
      * Get absolute path to caption.
      *
      * @return string
@@ -129,17 +107,6 @@ class Image extends MediaNode
     }
 
     /**
-     * Get URL to edit caption.
-     *
-     * @return string
-     * @since  2.0
-     */
-    public function getCaptionEditURL()
-    {
-        return $this->getNodeURL()."&task=caption";
-    }
-
-    /**
      * Get the image's caption.
      *
      * @return string
@@ -154,3 +121,4 @@ class Image extends MediaNode
         }
     }
 }
+
