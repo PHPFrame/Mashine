@@ -4,22 +4,22 @@ $replacement = '$1$2$3/TestCases.php';
 require_once preg_replace($pattern, $replacement, __FILE__);
 require_once preg_replace($pattern, '$1src$3$4$5', __FILE__);
 
-class ContentApiControllerTest extends MVCTestCase
+class MediaApiControllerTest extends MVCTestCase
 {
     public function setUp()
     {
         $app = $this->app(true);
         //$app->session()->setUser(new User);
-        $this->fixture(new MediaApiController($app));
+        //$this->fixture(new MediaApiController($app));
     }
 
-    public function test_get()
-    {
-        $this->fixture()->get(21);
-        $response = $this->app()->response();
-        var_dump($response);
-        exit;
-
+//    public function test_get()
+//    {
+//        $this->fixture()->get(21);
+//        $response = $this->app()->response();
+//        var_dump($response);
+//        return;
+//
 //        $this->assertEquals(200, $response->statusCode());
 //        $this->assertEquals("application/json", $response->header("Content-Type"));
 //
@@ -33,10 +33,10 @@ class ContentApiControllerTest extends MVCTestCase
 //        $this->assertArrayHasKey("type", $obj);
 //        $this->assertArrayHasKey("author", $obj);
 //        $this->assertArrayHasKey("excerpt", $obj);
-    }
-
-    public function test_getOne()
-    {
+//    }
+//
+//    public function test_getOne()
+//    {
 //        $this->fixture()->get(null, 1);
 //        $response = $this->app()->response();
 //
@@ -66,10 +66,10 @@ class ContentApiControllerTest extends MVCTestCase
 //        $this->assertArrayHasKey("perms", $obj);
 //
 //        $this->assertEquals(1, $obj["id"]);
-    }
-
-    public function test_post()
-    {
+//    }
+//
+//    public function test_post()
+//    {
 //        $request = $this->app()->request();
 //        $request->param("slug", "some-post");
 //        $request->param("title", "Some post");
@@ -110,6 +110,6 @@ class ContentApiControllerTest extends MVCTestCase
 //
 //        $ret = json_decode(trim($response->body()));
 //        $this->assertTrue($ret);
-    }
+//    }
 }
 
