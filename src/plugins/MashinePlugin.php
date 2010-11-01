@@ -9,7 +9,7 @@
  * @author    Lupo Montero <lupo@e-noise.com>
  * @copyright 2010 E-NOISE.COM LIMITED
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link      https://github.com/lupomontero/Mashine
+ * @link      http://github.com/E-NOISE/Mashine
  */
 
 /**
@@ -44,7 +44,7 @@ function __mashineAutoload($class_name)
  * @package  Mashine
  * @author   Lupo Montero <lupo@e-noise.com>
  * @license  http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link     https://github.com/lupomontero/Mashine
+ * @link     http://github.com/E-NOISE/Mashine
  * @since    1.0
  */
 class MashinePlugin extends AbstractPlugin
@@ -61,8 +61,8 @@ class MashinePlugin extends AbstractPlugin
      */
     public function __construct(PHPFrame_Application $app)
     {
-        // include($app->getInstallDir().DS."scripts/Upgrade-0.0.28-to-0.0.29.php");
-        // $upgrade_obj = new Upgrade_0_0_28_to_0_0_29($app);
+        // include($app->getInstallDir().DS."scripts/Upgrade-0.1.3-to-0.1.4.php");
+        // $upgrade_obj = new Upgrade_0_1_3_to_0_1_4($app);
         // var_dump($upgrade_obj->run());
         // exit;
 
