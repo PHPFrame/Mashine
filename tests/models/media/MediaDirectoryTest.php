@@ -130,7 +130,7 @@ class MediaDirectoryTest extends MVCTestCase
 
     public function test_getThumbURLNoThumb()
     {
-        $fixture = new MediaDirectory($this->_config, "aridiculouslylongnameforadirectoryinnit/aaaa");
+        $fixture = new MediaDirectory($this->_config, "aridiculouslylongnameforadirectoryinnit/dddd");
 
         $this->assertEquals(
             "http://localhost/mashine/assets/img/no_thumb.png",

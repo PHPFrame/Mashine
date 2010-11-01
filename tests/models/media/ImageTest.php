@@ -13,7 +13,6 @@ class ImageTest extends MVCTestCase
         $this->_config = $options->filterByPrefix("mediaplugin_");
         $this->_config["site_path"] = $this->app()->getInstallDir().DS."public";
         $this->_config["site_url"] = $this->app()->config()->get("base_url");
-
         $this->_fixture = new Image($this->_config, "Invierno.jpg");
     }
 
