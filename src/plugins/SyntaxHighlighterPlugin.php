@@ -50,16 +50,23 @@ class SyntaxHighlighterPlugin extends AbstractPlugin
 
     public function preApplyTheme()
     {
-        $base_url = $this->app()->config()->get("base_url");
         $document = $this->app()->response()->document();
-        $document->addStyleSheet($base_url."assets/css/syntaxhighlighter/shCore.css");
-        $document->addStyleSheet($base_url."assets/css/syntaxhighlighter/shThemeRDark.css");
+
+        if ($document instanceof PHPFrame_HTMLDocument) {
+            $css_url = $this->app()->config()->get("base_url")."assets/css/";
+            $document->addStyleSheet($css_url."syntaxhighlighter/shCore.css");
+            $document->addStyleSheet($css_url."syntaxhighlighter/shThemeRDark.css");
+        }
     }
 
     public function postApplyTheme()
     {
         $base_url = $this->app()->config()->get("base_url");
         $document = $this->app()->response()->document();
+
+        if (!$document instanceof PHPFrame_HTMLDocument) {
+            return;
+        }
 
         ob_start();
         ?>
