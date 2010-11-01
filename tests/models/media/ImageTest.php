@@ -3,7 +3,7 @@ $pattern     = "/(.*)(tests)([\/|\\\])(.*)Test(\.php)/";
 $replacement = '$1$2$3TestCases.php';
 require_once preg_replace($pattern, $replacement, __FILE__);
 
-class ImageBrowser_ImageTest extends MVCTestCase
+class ImageTest extends MVCTestCase
 {
     private $_fixture;
 
