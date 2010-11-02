@@ -129,6 +129,37 @@ class MediaDirectory extends MediaNode implements IteratorAggregate
         return $thumb_url;
     }
 
+    public function getRestfulRepresentation($max_depth=2, $curr_depth=1)
+    {
+        $ret = parent::getRestfulRepresentation();
+        $ret["children_count"] = 0;
+        $children = array();
+        $recurse = true;
+
+        if ($curr_depth >= $max_depth) {
+            $recurse = false;
+        }
+
+        foreach ($this as $child) {
+            $ret["children_count"]++;
+
+            if (!$recurse) {
+                continue;
+            }
+
+            $children[] = $child->getRestfulRepresentation(
+                $max_depth,
+                ($curr_depth + 1)
+            );
+        }
+
+        if ($recurse) {
+            $ret["children"] = $children;
+        }
+
+        return $ret;
+    }
+
     /**
      * Find thumbnails of child images recursively.
      *

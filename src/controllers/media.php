@@ -25,6 +25,8 @@
  */
 class MediaController extends PHPFrame_ActionController
 {
+    private $_api;
+
     /**
      * Constructor.
      *
@@ -59,14 +61,29 @@ class MediaController extends PHPFrame_ActionController
         $this->response()->body($view);
     }
 
-    public function mkdir($parent)
+    public function mkdir($parent, $name="")
     {
-        $node  = $this->_fetchNode($parent);
-        $title = MediaLang::NEW_DIR;
-        $view  = $this->view("admin/media/mkdir");
+        if ($name) {
+            try {
+                $ret = $this->_getApiController()->mkdir($parent, $name);
+                $this->notifySuccess(MediaLang::NEW_DIR_OK);
+                $this->setRedirect("admin/media?node=".$parent);
+
+            } catch (Exception $e) {
+                $this->raiseError($e->getMessage());
+            }
+
+            return;
+        }
+
+        $parent = $this->_fetchNode($parent);
+        $config = $parent->getConfig();
+        $title  = MediaLang::NEW_DIR;
+        $view   = $this->view("admin/media/mkdir");
 
         $view->addData("title", $title);
-        $view->addData("current_dir", $node);
+        $view->addData("parent", $parent);
+        $view->addData("upload_dir", $config["upload_dir"]);
 
         $this->response()->title($title);
         $this->response()->body($view);
@@ -100,17 +117,35 @@ class MediaController extends PHPFrame_ActionController
         //...
     }
 
-    public function unlink()
+    public function delete($node)
     {
-        //...
+        try {
+            $this->_getApiController()->delete($node);
+            $this->notifySuccess(MediaLang::DIR_DELETE_OK);
+
+        } catch (Exception $e) {
+            $this->raiseError($e->getMessage());
+        }
+
+        $base_url = $this->config()->get("base_url");
+        $parent = substr($node, 0, strrpos($node, "/"));
+        $this->setRedirect($base_url."admin/media?node=".$parent);
+    }
+
+    private function _getApiController()
+    {
+        if (!$this->_api) {
+            $this->_api = new MediaApiController($this->app(), true);
+            $this->_api->format("php");
+            $this->_api->returnInternalPHP(true);
+        }
+
+        return $this->_api;
     }
 
     private function _fetchNode($node)
     {
-        $api_controller = new MediaApiController($this->app(), true);
-        $api_controller->format("php");
-        $api_controller->returnInternalPHP(true);
-        return $api_controller->get($node);
+        return $this->_getApiController()->get($node);
     }
 }
 

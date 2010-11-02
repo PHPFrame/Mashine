@@ -285,5 +285,27 @@ abstract class MediaNode
 
         return $str;
     }
+
+    public function getRestfulRepresentation()
+    {
+        $config = $this->getConfig();
+        unset($config["site_path"]);
+        $ret = array(
+            "type" => get_class($this),
+            "filename" => $this->getFilename(),
+            "is_dir" => $this->isDir(),
+            "is_file" => $this->isFile(),
+            "is_writable" => $this->isWritable(),
+            "size" => $this->getSize(),
+            "mtime" => $this->getMTime(),
+            //"real_path" => $this->getRealPath(),
+            "config" => $config,
+            "relative_path" => $this->getRelativePath(),
+            "parent_relative_path" => $this->getParentRelativePath(),
+            "thumb_url" => $this->getThumbURL()
+        );
+
+        return $ret;
+    }
 }
 
