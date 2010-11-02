@@ -3,7 +3,7 @@
 </header>
 
 <div id="content-body">
-  <form name="new_dir_form" action="index.php" method="post">
+  <form action="index.php" method="post">
     <fieldset>
       <legend>New directory details</legend>
       <p>
@@ -24,4 +24,19 @@
     <input type="hidden" name="action" value="mkdir" />
   </form>
 </div><!-- #content-body -->
+
+<script>
+var submitNewDir = function () {
+  var form = document.new_dir_form;
+  var myRegxp = /^([\sa-zA-Z0-9_\-]+)$/;
+
+  if (myRegxp.test(form.name.value) == false) {
+    alert('<?php echo MediaLang::INVALID_DIR_NAME; ?>');
+  } else if (form.name.value == "") {
+    alert('<?php echo MediaLang::INVALID_DIR_NAME; ?>');
+  } else {
+    form.submit();
+  }
+};
+</script>
 

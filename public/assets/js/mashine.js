@@ -25,12 +25,10 @@
  * @since  1.0
  */
 var includeScript = function(src) {
-    var str = '<script type="text/javascript" src="' + src + '"></script>';
-    document.write(str);
-}
+    document.write('<script src="' + src + '"></script>');
+};
 
 includeScript('assets/js/jquery/jquery.strengthy-0.0.1.min.js');
 includeScript('assets/js/jquery/jquery.tipsy.js');
-includeScript('assets/js/en.core.js');
-includeScript('assets/js/en.mshn.js');
+includeScript('assets/js/mshn.core.js');
 
