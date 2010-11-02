@@ -63,46 +63,10 @@
         <version>1.0</version>
         <license>BSD New</license>
         <license_url>http://www.opensource.org/licenses/bsd-license.php</license_url>
-        <enabled />
+        <enabled>1</enabled>
         <id>7</id>
         <ctime>1252985443</ctime>
-        <mtime>1288558878</mtime>
-        <owner>1</owner>
-        <group>2</group>
-        <perms>664</perms>
-    </PHPFrame_PluginInfo>
-    <PHPFrame_PluginInfo>
-        <name>ContactFormPlugin</name>
-        <channel>http://dist.phpframe.org</channel>
-        <summary>Simple contact form.</summary>
-        <description>Simple contact form.</description>
-        <author>Lupo Montero</author>
-        <date>2010-05-15</date>
-        <version>1.0</version>
-        <license>BSD New</license>
-        <license_url>http://www.opensource.org/licenses/bsd-license.php</license_url>
-        <enabled>1</enabled>
-        <id>4</id>
-        <ctime>1252985443</ctime>
-        <mtime>1288560921</mtime>
-        <owner>1</owner>
-        <group>2</group>
-        <perms>664</perms>
-    </PHPFrame_PluginInfo>
-    <PHPFrame_PluginInfo>
-        <name>SyntaxHighlighterPlugin</name>
-        <channel>http://dist.phpframe.org</channel>
-        <summary>SyntaxHighlighter integration.</summary>
-        <description>Simple SyntaxHighlighter integration.</description>
-        <author>Lupo Montero</author>
-        <date>2010-10-31</date>
-        <version>1.0</version>
-        <license>BSD New</license>
-        <license_url>http://www.opensource.org/licenses/bsd-license.php</license_url>
-        <enabled>1</enabled>
-        <id>6</id>
-        <ctime>1252985443</ctime>
-        <mtime>1288570260</mtime>
+        <mtime>1288705517</mtime>
         <owner>1</owner>
         <group>2</group>
         <perms>664</perms>
@@ -117,10 +81,46 @@
         <version>1.0</version>
         <license>BSD New</license>
         <license_url>http://www.opensource.org/licenses/bsd-license.php</license_url>
-        <enabled>1</enabled>
+        <enabled />
         <id>2</id>
         <ctime>1252985443</ctime>
-        <mtime>1288570282</mtime>
+        <mtime>1288714458</mtime>
+        <owner>1</owner>
+        <group>2</group>
+        <perms>664</perms>
+    </PHPFrame_PluginInfo>
+    <PHPFrame_PluginInfo>
+        <name>SyntaxHighlighterPlugin</name>
+        <channel>http://dist.phpframe.org</channel>
+        <summary>SyntaxHighlighter integration.</summary>
+        <description>Simple SyntaxHighlighter integration.</description>
+        <author>Lupo Montero</author>
+        <date>2010-10-31</date>
+        <version>1.0</version>
+        <license>BSD New</license>
+        <license_url>http://www.opensource.org/licenses/bsd-license.php</license_url>
+        <enabled />
+        <id>6</id>
+        <ctime>1252985443</ctime>
+        <mtime>1288740641</mtime>
+        <owner>1</owner>
+        <group>2</group>
+        <perms>664</perms>
+    </PHPFrame_PluginInfo>
+    <PHPFrame_PluginInfo>
+        <name>ContactFormPlugin</name>
+        <channel>http://dist.phpframe.org</channel>
+        <summary>Simple contact form.</summary>
+        <description>Simple contact form.</description>
+        <author>Lupo Montero</author>
+        <date>2010-05-15</date>
+        <version>1.0</version>
+        <license>BSD New</license>
+        <license_url>http://www.opensource.org/licenses/bsd-license.php</license_url>
+        <enabled />
+        <id>4</id>
+        <ctime>1252985443</ctime>
+        <mtime>1288742240</mtime>
         <owner>1</owner>
         <group>2</group>
         <perms>664</perms>
