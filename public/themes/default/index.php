@@ -57,8 +57,6 @@ $this->addStyleSheet($base_url."themes/default/css/styles.css");
   </small>
 </footer>
 
-<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
-<script src="http://ajax.microsoft.com/ajax/jquery.validate/1.6/jquery.validate.pack.js"></script>
 <script>var base_url = '<?php echo $base_url; ?>';</script>
 <script src="<?php echo $base_url; ?>assets/js/mashine.js"></script>
 <?php if ($user->groupId() > 0 && $user->groupId() <= 2) : ?>
