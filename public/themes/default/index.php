@@ -16,12 +16,11 @@ $content   = $request->param("_content_active");
 // Add Javascript and CSS
 $this->addScript("http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js");
 $this->addScript($base_url."assets/js/modernizr-1.5.min.js");
-$this->addStyleSheet($base_url."assets/css/mashine.css");
 
+$this->addStyleSheet($base_url."assets/css/mashine.css");
 if ($user->groupId() > 0 && $user->groupId() <= 2) {
     $this->addStyleSheet($base_url."assets/css/mashine.user.css");
 }
-
 $this->addStyleSheet($base_url."themes/default/css/styles.css");
 ?>
 
