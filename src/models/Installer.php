@@ -432,6 +432,21 @@ class Installer
         $content->perms(440);
         $mapper->insert($content);
 
+        $content = new MVCContent();
+        $content->parentId($dashboard->id());
+        $content->title("Manage media");
+        $content->slug("admin/media");
+        $content->status(1);
+        $content->description(null);
+        $content->keywords(null);
+        $content->pubDate("1970-01-01 00:03:30");
+        $content->param("controller", "media");
+        $content->param("action", "manage");
+        $content->owner(1);
+        $content->group(1);
+        $content->perms(644);
+        $mapper->insert($content);
+
         $users_manage = new MVCContent();
         $users_manage->parentId($dashboard->id());
         $users_manage->title("Manage users");
