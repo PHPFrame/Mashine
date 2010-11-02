@@ -161,58 +161,18 @@
 </div><!-- #content-body -->
 
 <script>
-var submitNewDir = function () {
-  var form = document.new_dir_form;
-  var myRegxp = /^([\sa-zA-Z0-9_\-]+)$/;
-
-  if (myRegxp.test(form.name.value) == false) {
-    alert('<?php echo MediaLang::INVALID_DIR_NAME; ?>');
-  } else if (form.name.value == "") {
-    alert('<?php echo MediaLang::INVALID_DIR_NAME; ?>');
-  } else {
-    form.submit();
-  }
-};
-
-var submitUpload = function () {
-  var form = document.upload_form;
-
-  if (form.upload_file.value == "") {
-    alert('<?php echo MediaLang::UPLOAD_ERROR_NO_FILE_SELECTED; ?>');
-    return false;
-  } else {
-    form.submit();
-  }
-};
-
-jQuery(document).ready(function($) {
-  var server_info_ul = $('#media-server-info ul');
-  server_info_ul.hide();
-
-  $('#media-server-info h4 a').click(function(e) {
-    e.preventDefault();
-    server_info_ul.toggle('slow');
-  });
-
+jQuery(document).ready(function ($) {
   $('.media-node-buttons').hide();
 
-  var showNodeButtons = function(node) {
-    $(node).next('.media-node-buttons').show();
-  };
-
-  var hideNodeButtons = function(node) {
-    $(node).children('.media-node-buttons').hide();
-  };
-
   $(".media-node").bind({
-    mouseenter: function(){
-      showNodeButtons(this);
+    mouseenter: function () {
+      $(this).next('.media-node-buttons').show();
     }
   });
 
   $(".media-node-wrapper").bind({
-    mouseleave: function() {
-      hideNodeButtons(this);
+    mouseleave: function () {
+      $(this).children('.media-node-buttons').hide();
     }
   });
 });
