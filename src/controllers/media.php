@@ -91,12 +91,16 @@ class MediaController extends PHPFrame_ActionController
 
     public function upload($parent)
     {
-        $node  = $this->_fetchNode($parent);
-        $title = MediaLang::UPLOAD_TITLE;
-        $view  = $this->view("admin/media/upload");
+        //var_dump($this->request(), $_FILES);
+        //exit;
+        $parent = $this->_fetchNode($parent);
+        $config = $parent->getConfig();
+        $title  = MediaLang::UPLOAD_TITLE;
+        $view   = $this->view("admin/media/upload");
 
         $view->addData("title", $title);
-        $view->addData("current_dir", $node);
+        $view->addData("parent", $parent);
+        $view->addData("upload_dir", $config["upload_dir"]);
 
         $this->response()->title($title);
         $this->response()->body($view);

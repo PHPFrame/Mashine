@@ -20,4 +20,5 @@
 includeScript('assets/js/jquery/jquery.tinymce.js');
 
 // Include Mashine's admin scripts
-includeScript('assets/js/en.mshn.user.js');
+includeScript('assets/js/mshn.user.js');
+
