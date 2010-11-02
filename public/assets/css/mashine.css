@@ -66,6 +66,55 @@ label.inline {
     background-position: left center;
 }
 
+/* Media plugin */
+
+.media-dirs {
+    padding-bottom: 20px;
+}
+
+.media-dirs-item {
+  float: left;
+  margin: 0 1px -10px 0;
+}
+
+.media-dirs-item a {
+  display: block;
+}
+
+.media-dirs-item a img {
+  background: url("../img/dir-bg.png") no-repeat scroll right bottom transparent;
+  padding: 1px 14px 1px 1px;
+}
+
+.media-dirs-item-name {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #FFFFFF;
+  font-weight: bold;
+  height: 30px;
+  padding: 5px;
+  position: relative;
+  top: -30px;
+}
+
+.media-files {
+  clear: left;
+}
+
+.media-files-lightbox {
+  position: relative;
+  top: 10px;
+}
+
+.media-files-lightbox a {
+  border: 1px dotted #CCCCCC;
+  display: block;
+  float: left;
+  margin: 0 10px 10px 0;
+  padding :10px;
+  vertical-align: middle;
+}
+
+
 /* TinyMCE */
 
 textarea.tinymce {

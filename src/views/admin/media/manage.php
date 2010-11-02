@@ -45,7 +45,7 @@
 <?php endif; ?>
 
 <div id="media-breadcrumbs">
-  <?php echo MediaLang::PATH; ?>: <?php echo $current_dir->getBreadCrumbs()."\n"; ?>
+  <?php echo MediaLang::PATH; ?>: <?php echo $current_dir->getBreadCrumbs("admin/media")."\n"; ?>
 </div>
 
 <div id="media-nodes">

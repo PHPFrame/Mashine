@@ -267,9 +267,8 @@ abstract class MediaNode
      * @return string
      * @since  2.0
      */
-    public function getBreadCrumbs()
+    public function getBreadCrumbs($base_url)
     {
-        $base_url = "admin/media";
         $str = "<a href=\"".$base_url."\">".MediaLang::ROOT."</a>";
         $array = explode(DS, $this->getRelativePath());
 
