@@ -96,8 +96,7 @@
         <foreach target="do_minify_js" param="filename">
             <path>
                 <fileset dir="${assets.dir}/js" casesensitive="yes">
-                    <include name="jquery/jquery.strengthy-0.0.1.min.js"/>
-                    <include name="jquery/jquery.tipsy.js"/>
+                    <include name="jquery/jquery.bundle.min.js"/>
                     <include name="mshn.core.js"/>
                 </fileset>
             </path>
