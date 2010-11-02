@@ -84,9 +84,9 @@
 
       <?php if ($child->isWritable()): ?>
       <a
-        class="media-node-buttons-delete"
+        class="media-node-buttons-delete confirm"
+        title="<?php echo MediaLang::CONFIRM_DELETE." ".MediaLang::DIR." '".$child->getFilename()."'?"; ?>"
         href="media/delete?node=<?php echo $child->getRelativePath(); ?>"
-        onclick="return confirmDelete('dir', '<?php echo $child->getFilename(); ?>');"
       >
         <?php echo MediaLang::DELETE."\n"; ?>
       </a>
@@ -183,13 +183,6 @@ var submitUpload = function () {
   } else {
     form.submit();
   }
-};
-
-var confirmDelete = function (type, fname) {
-  var msg = '<?php echo MediaLang::CONFIRM_DELETE; ?>';
-  msg += type + ' ' + fname + '?';
-
-  return confirm(msg);
 };
 
 jQuery(document).ready(function($) {

@@ -120,5 +120,14 @@ class Image extends MediaNode
             return "";
         }
     }
+
+    public function getRestfulRepresentation($max_depth=2, $curr_depth=1)
+    {
+        $ret = parent::getRestfulRepresentation();
+
+        $ret["caption"] = $this->getCaption();
+
+        return $ret;
+    }
 }
 

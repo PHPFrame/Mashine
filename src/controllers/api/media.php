@@ -30,16 +30,14 @@ class MediaApiController extends PHPFrame_RESTfulController
     /**
      * Get media.
      *
-     * @param int $id        [Optional] if specified a single media item will
-     *                       be returned.
-     * @param int $limit     [Optional] Default value is 10.
-     * @param int $page      [Optional] Default value is 1.
+     * @param int $node  [Optional] Relative path to directory or media file
+     *                   (relative to the upload_dir).
      *
      * @return array|object Either a single media item object or an array
      *                      containing many media objects.
      * @since  1.0
      */
-    public function get($id="", $limit=10, $page=1)
+    public function get($node="", $limit=10, $page=1)
     {
         if (empty($limit)) {
             $limit = 10;
@@ -49,38 +47,62 @@ class MediaApiController extends PHPFrame_RESTfulController
             $page = 1;
         }
 
+        $ret = $this->_createNode($node);
 
-        $ret = $this->_createNode($id);
+        if (!$this->returnInternalPHP()) {
+            $ret = $ret->getRestfulRepresentation();
+        }
 
         return $this->handleReturnValue($ret);
     }
 
     /**
-     * Create/update content.
+     * Delete media.
      *
-     * @param int    $parent_id The content's parent id.
-     * @param string $type      The content type.
-     * @param int    $id        [Optional] The content id.
-     *
-     * @return object The content object after saving it.
-     * @since  1.0
-     */
-    public function post($parent_id, $type, $id=null)
-    {
-        //...
-    }
-
-    /**
-     * Delete content.
-     *
-     * @param int $id The content id.
+     * @param int $node The media item's relative path.
      *
      * @return void
      * @since  1.0
      */
-    public function delete($id)
+    public function delete($node)
     {
-        //...
+        $node = $this->_createNode($node);
+
+        if ($node->isDir()) {
+            $thumb_dir = $node->getRealPath().DS."thumb";
+            if (is_dir($thumb_dir) && !rmdir($thumb_dir)) {
+                throw new Exception(MediaLang::DIR_DELETE_ERROR);
+            }
+
+            if (!rmdir($node->getRealPath())) {
+                throw new Exception(MediaLang::DIR_DELETE_ERROR);
+            }
+
+        } else {
+            var_dump("I have to delete a file!");
+            exit;
+        }
+    }
+
+    public function mkdir($parent, $name)
+    {
+        $name         = PHPFrame_Filesystem::filterFilename($name, true);
+        $parent_node  = $this->_createNode($parent, "dir");
+        $new_dir_path = $parent_node->getRealPath().DS.$name;
+
+        if (is_dir($new_dir_path)) {
+            throw new Exception(MediaLang::NEW_DIR_ERROR_ALREADY_EXISTS);
+        } elseif (!@mkdir($new_dir_path)) {
+            throw new Exception(MediaLang::NEW_DIR_ERROR);
+        }
+
+        $ret = $this->_createNode($parent."/".$name, "dir");
+
+        if (!$this->returnInternalPHP()) {
+            $ret = $ret->getRestfulRepresentation();
+        }
+
+        return $this->handleReturnValue($ret);
     }
 
     /**
@@ -101,9 +123,10 @@ class MediaApiController extends PHPFrame_RESTfulController
             throw new InvalidArgumentException($msg);
         }
 
-        $options = $this->request()->param("_options");
+        $options    = $this->request()->param("_options");
         $upload_dir = $options["mediaplugin_upload_dir"];
-        $node_path = $this->app()->getInstallDir().DS."public".DS.$upload_dir;
+        $node_path  = $this->app()->getInstallDir().DS."public".DS.$upload_dir;
+        $node_path .= DS.$str;
 
         if (is_dir($node_path)) {
             $node_class = "MediaDirectory";
