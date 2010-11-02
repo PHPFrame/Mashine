@@ -57,6 +57,8 @@ class MediaPlugin extends AbstractPlugin
                 $this->options[$prefix.$k] = $v;
             }
         }
+
+        $this->shortCodes()->add("media", array($this, "handleMediaShortCode"));
     }
 
     /**
@@ -73,6 +75,130 @@ class MediaPlugin extends AbstractPlugin
         }
 
         $this->options[$this->getOptionsPrefix()."version"] = "1.0";
+    }
+
+    public function handleMediaShortCode($attr)
+    {
+        // Flag this requests as having handled a media shortcode
+        $this->app()->request()->param("_media", true);
+
+        $req_node = $this->app()->request()->param("node");
+        if ($req_node) {
+            $attr["path"] = $req_node;
+        }
+
+        $api_controller = new MediaApiController($this->app(), true);
+        $api_controller->format("php");
+        $api_controller->returnInternalPHP(true);
+        $node = $api_controller->get($attr["path"]);
+        $config = $node->getConfig();
+        $mode = array_key_exists("mode", $attr) ? $attr["mode"] : null;
+
+        if (!in_array($mode, array("classic","fullscreen","lightbox"))) {
+            $mode = $config["mode"];
+        }
+
+        $content = $this->app()->request()->param("_content_active");
+        if ($content instanceof Content) {
+            $slug = $content->slug();
+        } else {
+            $slug = null;
+        }
+
+        $breadcrumbs = $dirs = $files = "\n";
+
+        if ($req_node) {
+            $breadcrumbs .= $node->getBreadCrumbs($slug);
+        }
+
+        if ($node->isDir()) {
+            foreach ($node as $child) {
+                if ($child->isDir()) {
+                    $dirs .= $this->_renderDir($child, $slug);
+                } else {
+                    $files .= $this->_renderImage($child, $mode);
+                }
+            }
+        } else {
+            $files .= $this->_renderImage($child, $mode);
+        }
+
+        if (!empty($dirs)) {
+            $dirs  = "<div class=\"media-dirs\">\n".$dirs."\n";
+            $dirs .= "</div><!-- .media-dirs -->\n";
+        }
+
+        if (!empty($files)) {
+            $tmp = $files;
+            $files  = "<div class=\"media-files media-files-".$mode;
+            $files .= "\">\n".$tmp."\n</div><!-- .media-files -->\n";
+            $files .= "<script>\n";
+            $files .= "jQuery(document).ready(function ($) {\n";
+            $files .= "  var options = { debug: true };\n";
+            $files .= "  var galleriaTheme = '".$mode."';\n";
+            $files .= "  var themeUrl = 'assets/js/galleria/themes/' + galleriaTheme + '/galleria.';\n";
+            $files .= "  themeUrl += galleriaTheme + '.js';\n";
+            $files .= "  Galleria.loadTheme(themeUrl);\n";
+            $files .= "  if (galleriaTheme === 'lightbox') {\n";
+            $files .= "    options.keep_source = true;\n";
+            $files .= "  }\n";
+            $files .= "  $('.media-files').galleria(options);\n";
+            $files .= "});\n";
+            $files .= "</script>\n";
+        }
+
+        return "\n\n".$breadcrumbs."\n".$dirs."\n".$files."\n";
+    }
+
+    private function _renderDir($node, $slug=null)
+    {
+        $str  = "<div class=\"media-dirs-item\">\n";
+        $str .= "  <a href=\"".$slug."?node=".urlencode($node->getRelativePath())."\">\n";
+        $str .= "    <img src=\"".$node->getThumbURL()."\" alt=\"".$node->getFilename()."\" />\n";
+        $str .= "  </a>\n";
+        $str .= "  <span class=\"media-dirs-item-name\">".$node->getFilename(16)."</span>\n";
+        $str .= "</div><!-- .media-dirs-item -->\n";
+
+        return $str;
+    }
+
+    private function _renderImage($node, $mode)
+    {
+        $config = $node->getConfig();
+        $media_url = $config["site_url"].$config["upload_dir"]."/";
+
+        if (in_array($mode, array("classic", "fullscreen"))) {
+            $str  = "<img alt=\"".$node->getFilename()."\" src=\"";
+            $str .= $media_url.$node->getRelativePath()."\" title=\"";
+            $str .= $node->getCaption()."\" />\n";
+        } else {
+            $str  = "<a href=\"".$media_url.$node->getRelativePath();
+            $str .= "\" style=\"display: inline-block; height: ";
+            $str .= $config["thumb_height"]."px; overflow: hidden;\">\n";
+            $str .= "  <img alt=\"".$node->getCaption()."\" src=\"";
+            $str .= $node->getThumbURL()."\" />\n";
+            $str .= "</a>\n";
+        }
+
+        return $str;
+    }
+
+    public function postApplyTheme()
+    {
+        if (!$this->app()->request()->param("_media")) {
+            return;
+        }
+
+        $base_url = $this->app()->config()->get("base_url");
+        ob_start();
+        ?>
+
+<script src="<?php echo $base_url; ?>assets/js/galleria/galleria.js"></script>
+
+        <?php
+
+        $document = $this->app()->response()->document();
+        $document->appendBody(ob_get_clean());
     }
 
     public function displayOptionsForm()
@@ -107,8 +233,8 @@ class MediaPlugin extends AbstractPlugin
         id="options_<?php echo $prefix; ?>mode"
         value="<?php echo $this->options[$prefix."mode"]; ?>"
       >
-        <option>Lightbox</option>
-        <option>Slider</option>
+        <option value="lightbox">Lightbox</option>
+        <option value="classic">Slider</option>
       </select>
     </p>
     <p>
