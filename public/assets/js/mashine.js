@@ -28,7 +28,19 @@ var includeScript = function(src) {
     document.write('<script src="' + src + '"></script>');
 };
 
-includeScript('assets/js/jquery/jquery.strengthy-0.0.1.min.js');
-includeScript('assets/js/jquery/jquery.tipsy.js');
+/**
+ * Include jQuery plugins bundle. This bundle file contains the following
+ * plugins in the given order:
+ *
+ * - jQuery UI 1.8 (custom build incl. Autocomplete, Dialog and Datepicker)
+ * - jQuery strengthy 0.0.3
+ * - jQuery tipsy (not sure which version)
+ * - jQuery validate 1.6
+ */
+includeScript('assets/js/jquery/jquery.bundle.min.js');
+
+/**
+ * Include mashine's core js
+ */
 includeScript('assets/js/mshn.core.js');
 
