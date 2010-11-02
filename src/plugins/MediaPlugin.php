@@ -82,6 +82,10 @@ class MediaPlugin extends AbstractPlugin
         // Flag this requests as having handled a media shortcode
         $this->app()->request()->param("_media", true);
 
+        // Init shortcode attributes (arguments)
+        $path = array_key_exists("path", $attr) ? $attr["path"] : "";
+        $mode = array_key_exists("mode", $attr) ? $attr["mode"] : null;
+
         $req_node = $this->app()->request()->param("node");
         if ($req_node) {
             $attr["path"] = $req_node;
@@ -90,9 +94,8 @@ class MediaPlugin extends AbstractPlugin
         $api_controller = new MediaApiController($this->app(), true);
         $api_controller->format("php");
         $api_controller->returnInternalPHP(true);
-        $node = $api_controller->get($attr["path"]);
+        $node = $api_controller->get($path);
         $config = $node->getConfig();
-        $mode = array_key_exists("mode", $attr) ? $attr["mode"] : null;
 
         if (!in_array($mode, array("classic","fullscreen","lightbox"))) {
             $mode = $config["mode"];
