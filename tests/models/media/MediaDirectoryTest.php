@@ -142,7 +142,7 @@ class MediaDirectoryTest extends MVCTestCase
     {
         $this->assertEquals(
             "<a href=\"admin/media\">Root</a>",
-            $this->_fixture->getBreadCrumbs()
+            $this->_fixture->getBreadCrumbs("admin/media")
         );
     }
 
