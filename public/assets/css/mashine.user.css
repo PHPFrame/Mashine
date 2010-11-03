@@ -1,21 +1,21 @@
-div.dashboard-box-outer {
+.dashboard-box-outer {
     width: 49%;
     min-height: 200px;
     float: left;
 }
 
-div.dashboard-box-inner {
+.dashboard-box-inner {
     min-height: 190px;
     margin: 0 10px 0 0;
 }
 
-div.dashboard-box-inner h3 {}
+.dashboard-box-inner h3 {}
 
-div.dashboard-box-content {
+.dashboard-box-content {
     padding: 20px;
 }
 
-input#title {
+#title {
     font-size: 1.4em;
     width: 95%;
 }
@@ -128,6 +128,7 @@ input#title {
   overflow: hidden;
   padding: 5px;
   width: 240px;
+  position: relative;
 }
 
 .media-node {
@@ -138,7 +139,7 @@ input#title {
 }
 
 .media-dir-thumb, .media-img-thumb {
-  float:left;
+  /*float:left;*/
 }
 
 .media-dir-thumb img {
@@ -147,12 +148,19 @@ input#title {
 }
 
 .media-img-thumb img {
-  border:3px solid #F0F0F0;
+  border: 1px solid #CCC;
 }
 
 .media-node-info {
-  float: left;
-  margin: 0 0 0 10px;
+  position: absolute;
+  top: 5px;
+  right: 10px;
+}
+
+.media-node-info p,
+.media-node-info h3 {
+  background: rgba(255,255,255,0.8) url("../img/bg-pattern.png");
+  padding: 2px;
 }
 
 .media-node-info p {
@@ -168,14 +176,16 @@ input#title {
 .media-node-info-name a {
   line-height: 0.8em;
   font-size: 1em;
-  margin-left: -10px;
+  /*margin-left: -10px;*/
 }
 
 .media-node-buttons {
   font-size: 0.7em;
   font-weight: normal;
   height: 30px;
-  margin-top: -50px;
+  position: absolute;
+  bottom: 0;
+  right: 5px;
   text-align: right;
   text-transform: uppercase;
 }
