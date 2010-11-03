@@ -3,7 +3,10 @@
 
 RewriteEngine on
 #RewriteBase /
-RewriteRule !\.(ico|js|gif|jpg|png|css|swf|txt|htm|woff|ttf|eot|svg)$ index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule (.*) index.php
+#RewriteRule !\.(ico|js|gif|jpg|png|css|swf|txt|htm|woff|ttf|eot|svg)$ index.php
+
 
 # Enable GZIP
 <IfModule mod_deflate.c>
