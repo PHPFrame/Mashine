@@ -205,6 +205,28 @@
 
 /***** jQuery UI *****/
 
+.ui-dialog {
+  background-color: #FFF;
+  padding: 5px;
+  border: 1px solid #CCC;
+}
+
+.ui-icon-closethick {
+  position: absolute;
+  right: 24px;
+  top: 13px;
+  color: #FFF;
+}
+
+.ui-dialog-buttonset button {
+  font-size: 0.9em !important;
+  padding: 3px !important;
+  margin: 0 4px 0 0;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+
 /* Icons
 ----------------------------------*/
 
