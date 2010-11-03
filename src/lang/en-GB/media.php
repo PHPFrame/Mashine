@@ -7,6 +7,7 @@ class MediaLang
     const SAVE = "Save";
     const RESET = "Reset";
     const DELETE = "Delete";
+    const FILE = "File";
     const FILENAME = "File name";
     const DIR = "directory";
     const DIRNAME = "Directory name";
