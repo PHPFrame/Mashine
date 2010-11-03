@@ -135,9 +135,9 @@
 <?php endif; ?>
 <?php if ($child->isWritable()): ?>
       <a
-        class="media-node-buttons-delete"
+        class="media-node-buttons-delete confirm"
+        title="<?php echo MediaLang::CONFIRM_DELETE." ".MediaLang::FILE." '".$child->getFilename()."'?"; ?>"
         href="media/delete?node=<?php echo $child->getRelativePath(); ?>"
-        onclick="return confirmDelete('img', '<?php echo $child->getFilename(); ?>');"
       >
         <?php echo MediaLang::DELETE."\n"; ?>
       </a>

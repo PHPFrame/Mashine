@@ -113,7 +113,9 @@ EN.prototype.initToolTips = function (selector) {
   };
 
   jQuery(selector).tipsy(options).click(function (e) {
-    e.preventDefault();
+    if (jQuery(e).attr('href') === '#') {
+      e.preventDefault();
+    }
   });
 };
 
