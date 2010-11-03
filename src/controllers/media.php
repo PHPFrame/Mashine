@@ -91,8 +91,25 @@ class MediaController extends PHPFrame_ActionController
 
     public function upload($parent)
     {
-        //var_dump($this->request(), $_FILES);
-        //exit;
+        $files = $this->request()->files();
+        if (count($files) > 0 && array_key_exists("upload_file", $files)) {
+            $ret_url = "admin/media";
+            if ($parent) {
+                $ret_url .= "?node=".urlencode($parent);
+            }
+
+            try {
+                $node = $this->_getApiController()->upload($parent);
+                $this->notifySuccess(MediaLang::UPLOAD_OK);
+
+            } catch (Exception $e) {
+                $this->raiseError($e->getMessage());
+            }
+
+            $this->setRedirect($ret_url);
+            return;
+        }
+
         $parent = $this->_fetchNode($parent);
         $config = $parent->getConfig();
         $title  = MediaLang::UPLOAD_TITLE;
@@ -106,26 +123,11 @@ class MediaController extends PHPFrame_ActionController
         $this->response()->body($view);
     }
 
-    public function generate_thumbs()
-    {
-        //...
-    }
-
-    public function resize()
-    {
-        //...
-    }
-
-    public function caption()
-    {
-        //...
-    }
-
     public function delete($node)
     {
         try {
-            $this->_getApiController()->delete($node);
-            $this->notifySuccess(MediaLang::DIR_DELETE_OK);
+            $array = $this->_getApiController()->delete($node);
+            $this->notifySuccess($array["success"]);
 
         } catch (Exception $e) {
             $this->raiseError($e->getMessage());
@@ -134,6 +136,56 @@ class MediaController extends PHPFrame_ActionController
         $base_url = $this->config()->get("base_url");
         $parent = substr($node, 0, strrpos($node, "/"));
         $this->setRedirect($base_url."admin/media?node=".$parent);
+    }
+
+    public function rename()
+    {
+        //...
+    }
+
+    public function generate_thumbs($node)
+    {
+        try {
+            $node = $this->_getApiController()->generate_thumbs($node);
+            $this->notifySuccess(MediaLang::GENERATE_THUMB_OK);
+
+        } catch (Exception $e) {
+            $this->raiseError($e->getMessage());
+        }
+
+        $ret_url = $this->config()->get("base_url")."admin/media?node=";
+        if ($node->isDir()) {
+            $ret_url .= urlencode($node->getRelativePath());
+        } else {
+            $ret_url .= urlencode($node->getParentRelativePath());
+        }
+
+        $this->setRedirect($ret_url);
+    }
+
+    public function resize($node)
+    {
+        try {
+            $node = $this->_getApiController()->resize($node);
+            $this->notifySuccess(MediaLang::RESIZE_IMAGES_OK);
+
+        } catch (Exception $e) {
+            $this->raiseError($e->getMessage());
+        }
+
+        $ret_url = $this->config()->get("base_url")."admin/media?node=";
+        if ($node->isDir()) {
+            $ret_url .= urlencode($node->getRelativePath());
+        } else {
+            $ret_url .= urlencode($node->getParentRelativePath());
+        }
+
+        $this->setRedirect($ret_url);
+    }
+
+    public function caption()
+    {
+        //...
     }
 
     private function _getApiController()
