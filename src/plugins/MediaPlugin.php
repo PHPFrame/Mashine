@@ -88,7 +88,7 @@ class MediaPlugin extends AbstractPlugin
 
         $req_node = $this->app()->request()->param("node");
         if ($req_node) {
-            $attr["path"] = $req_node;
+            $path = $req_node;
         }
 
         $api_controller = new MediaApiController($this->app(), true);
