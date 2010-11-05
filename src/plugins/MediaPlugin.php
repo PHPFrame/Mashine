@@ -85,6 +85,11 @@ class MediaPlugin extends AbstractPlugin
         // Init shortcode attributes (arguments)
         $path = array_key_exists("path", $attr) ? $attr["path"] : "";
         $mode = array_key_exists("mode", $attr) ? $attr["mode"] : null;
+        $subdirs = array_key_exists("subdirs", $attr) ? $attr["subdirs"] : true;
+
+        if (in_array($subdirs, array("", "0", "false", "off", "no", 0))) {
+            $subdirs = false;
+        }
 
         $req_node = $this->app()->request()->param("node");
         if ($req_node) {
@@ -116,9 +121,9 @@ class MediaPlugin extends AbstractPlugin
 
         if ($node->isDir()) {
             foreach ($node as $child) {
-                if ($child->isDir()) {
+                if ($child->isDir() && $subdirs) {
                     $dirs .= $this->_renderDir($child, $slug);
-                } else {
+                } elseif ($child->isFile()) {
                     $files .= $this->_renderImage($child, $mode);
                 }
             }
@@ -126,9 +131,11 @@ class MediaPlugin extends AbstractPlugin
             $files .= $this->_renderImage($child, $mode);
         }
 
-        if (!empty($dirs)) {
+        if (trim($dirs) != "") {
             $dirs  = "<div class=\"media-dirs\">\n".$dirs."\n";
             $dirs .= "</div><!-- .media-dirs -->\n";
+        } else {
+            $dirs = "";
         }
 
         if (!empty($files)) {
