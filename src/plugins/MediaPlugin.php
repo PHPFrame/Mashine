@@ -79,9 +79,6 @@ class MediaPlugin extends AbstractPlugin
 
     public function handleMediaShortCode($attr)
     {
-        // Flag this requests as having handled a media shortcode
-        $this->app()->request()->param("_media", true);
-
         // Init shortcode attributes (arguments)
         $path = array_key_exists("path", $attr) ? $attr["path"] : "";
         $mode = array_key_exists("mode", $attr) ? $attr["mode"] : null;
@@ -102,9 +99,12 @@ class MediaPlugin extends AbstractPlugin
         $node = $api_controller->get($path);
         $config = $node->getConfig();
 
-        if (!in_array($mode, array("classic","fullscreen","lightbox"))) {
+        if (!in_array($mode, array("simple","classic","lightbox","fullscreen"))) {
             $mode = $config["mode"];
         }
+
+        // Flag this requests as having handled a media shortcode
+        $this->app()->request()->param("_media_mode", $mode);
 
         $content = $this->app()->request()->param("_content_active");
         if ($content instanceof Content) {
@@ -144,15 +144,21 @@ class MediaPlugin extends AbstractPlugin
             $files .= "\">\n".$tmp."\n</div><!-- .media-files -->\n";
             $files .= "<script>\n";
             $files .= "jQuery(document).ready(function ($) {\n";
-            $files .= "  var options = { debug: true };\n";
-            $files .= "  var galleriaTheme = '".$mode."';\n";
-            $files .= "  var themeUrl = 'assets/js/galleria/themes/' + galleriaTheme + '/galleria.';\n";
-            $files .= "  themeUrl += galleriaTheme + '.js';\n";
-            $files .= "  Galleria.loadTheme(themeUrl);\n";
-            $files .= "  if (galleriaTheme === 'lightbox') {\n";
-            $files .= "    options.keep_source = true;\n";
-            $files .= "  }\n";
-            $files .= "  $('.media-files').galleria(options);\n";
+
+            if (in_array($mode, array("classic","lightbox","fullscreen"))) {
+                $files .= "  var options = { debug: true };\n";
+                $files .= "  var galleriaTheme = '".$mode."';\n";
+                $files .= "  var themeUrl = 'assets/js/galleria/themes/' + galleriaTheme + '/galleria.';\n";
+                $files .= "  themeUrl += galleriaTheme + '.js';\n";
+                $files .= "  Galleria.loadTheme(themeUrl);\n";
+                $files .= "  if (galleriaTheme === 'lightbox') {\n";
+                $files .= "    options.keep_source = true;\n";
+                $files .= "  }\n";
+                $files .= "  $('.media-files').galleria(options);\n";
+            } else {
+                $files .= "  $('.media-files').media();\n";
+            }
+
             $files .= "});\n";
             $files .= "</script>\n";
         }
@@ -195,20 +201,22 @@ class MediaPlugin extends AbstractPlugin
 
     public function postApplyTheme()
     {
-        if (!$this->app()->request()->param("_media")) {
-            return;
+        $base_url = $this->app()->config()->get("base_url");
+        $media_mode = $this->app()->request()->param("_media_mode");
+
+        switch ($media_mode) {
+        case "lightbox" :
+        case "fullscreen" :
+        case "classic" :
+            $js_src = $base_url."assets/js/galleria/galleria.js";
+            break;
+        case "simple" :
+        default :
+            $js_src = $base_url."assets/js/jquery/jquery.media.js";
         }
 
-        $base_url = $this->app()->config()->get("base_url");
-        ob_start();
-        ?>
-
-<script src="<?php echo $base_url; ?>assets/js/galleria/galleria.js"></script>
-
-        <?php
-
         $document = $this->app()->response()->document();
-        $document->appendBody(ob_get_clean());
+        $document->appendBody("\n<script src=\"".$js_src."\"></script>\n");
     }
 
     public function displayOptionsForm()
