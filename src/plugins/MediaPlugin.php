@@ -188,10 +188,12 @@ class MediaPlugin extends AbstractPlugin
             $str .= $media_url.$node->getRelativePath()."\" title=\"";
             $str .= $node->getCaption()."\" />\n";
         } else {
-            $str  = "<a href=\"".$media_url.$node->getRelativePath();
-            $str .= "\" style=\"display: inline-block; height: ";
-            $str .= $config["thumb_height"]."px; overflow: hidden;\">\n";
-            $str .= "  <img alt=\"".$node->getCaption()."\" src=\"";
+            $str  = "<a href=\"".$media_url.$node->getRelativePath()."\"";
+            if ($mode == "lightbox") {
+                $str .= " style=\"display: inline-block; height: ";
+                $str .= $config["thumb_height"]."px; overflow: hidden;\"";
+            }
+            $str .= ">\n  <img alt=\"".$node->getCaption()."\" src=\"";
             $str .= $node->getThumbURL()."\" />\n";
             $str .= "</a>\n";
         }
@@ -201,6 +203,11 @@ class MediaPlugin extends AbstractPlugin
 
     public function postApplyTheme()
     {
+        $document = $this->app()->response()->document();
+        if (!$document instanceof PHPFrame_HTMLDocument) {
+            return;
+        }
+
         $base_url = $this->app()->config()->get("base_url");
         $media_mode = $this->app()->request()->param("_media_mode");
 
@@ -215,7 +222,6 @@ class MediaPlugin extends AbstractPlugin
             $js_src = $base_url."assets/js/jquery/jquery.media.js";
         }
 
-        $document = $this->app()->response()->document();
         $document->appendBody("\n<script src=\"".$js_src."\"></script>\n");
     }
 
@@ -370,4 +376,3 @@ class MediaPlugin extends AbstractPlugin
         return ob_get_clean();
     }
 }
-
