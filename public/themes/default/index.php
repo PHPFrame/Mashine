@@ -64,8 +64,6 @@ $this->addStyleSheet($base_url."themes/default/css/styles.css");
 <?php endif; ?>
 <script>
 jQuery(document).ready(function() {
-  //try { EN({ debug: false }); } catch(e) { alert(e); }
-
   EN.initToolTips('.tooltip');
   EN.confirm('.confirm');
   EN.validate('.validate');
