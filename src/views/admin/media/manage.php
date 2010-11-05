@@ -9,22 +9,22 @@
   <a href="admin/system#php-upload-directives">here</a>.
 </p><!-- #media-server-info -->
 
-<?php if ($current_dir->isWritable()): ?>
+<?php if ($node->isWritable()): ?>
 
 <ul id="media-toolbar">
   <li>
-    <a href="media/mkdir?parent=<?php echo $current_dir->getRelativePath(); ?>">
+    <a href="media/mkdir?parent=<?php echo $node->getRelativePath(); ?>">
       <span class="ui-icon ui-icon-plusthick"></span>New dir
     </a>
   </li>
   <li>
-    <a href="media/upload?parent=<?php echo $current_dir->getRelativePath(); ?>">
+    <a href="media/upload?parent=<?php echo $node->getRelativePath(); ?>">
       <span class="ui-icon ui-icon-document"></span>Upload
     </a>
   </li>
   <li>
     <a
-      href="media/generate_thumbs?node=<?php echo $current_dir->getRelativePath(); ?>"
+      href="media/generate_thumbs?node=<?php echo $node->getRelativePath(); ?>"
       class="tooltip"
       title="<?php echo MediaLang::GENERATE_DIR_THUMBS; ?>"
     >
@@ -33,7 +33,7 @@
   </li>
   <li>
     <a
-      href="media/resize?node=<?php echo $current_dir->getRelativePath(); ?>"
+      href="media/resize?node=<?php echo $node->getRelativePath(); ?>"
       class="tooltip"
       title="<?php echo MediaLang::PROCESS_FORCE_MAX_DIMENSIONS; ?>"
     >
@@ -45,11 +45,11 @@
 <?php endif; ?>
 
 <div id="media-breadcrumbs">
-  <?php echo MediaLang::PATH; ?>: <?php echo $current_dir->getBreadCrumbs("admin/media")."\n"; ?>
+  <?php echo MediaLang::PATH; ?>: <?php echo $node->getBreadCrumbs("admin/media")."\n"; ?>
 </div>
 
 <div id="media-nodes">
-<?php foreach ($current_dir as $child) : ?>
+<?php foreach ($node as $child) : ?>
 <?php if ($child instanceof MediaDirectory): ?>
 
   <div class="media-node-wrapper">
@@ -76,7 +76,7 @@
     </div><!-- media-node -->
 
     <div class="media-node-buttons">
-      <?php if ($current_dir->isWritable()): ?>
+      <?php if ($node->isWritable()): ?>
       <a href="media/rename?node=<?php echo $child->getRelativePath(); ?>">
         <?php echo MediaLang::RENAME."\n"; ?>
       </a>
@@ -125,7 +125,7 @@
     </div><!-- .media-node -->
 
     <div class="media-node-buttons">
-<?php if ($current_dir->isWritable()): ?>
+<?php if ($node->isWritable()): ?>
       <a href="media/caption?node=<?php echo $child->getRelativePath(); ?>">
          <?php echo MediaLang::EDIT_CAPTION."\n"; ?>
       </a>
@@ -177,4 +177,3 @@ jQuery(document).ready(function ($) {
   });
 });
 </script>
-

@@ -55,7 +55,7 @@ class MediaController extends PHPFrame_ActionController
         $view  = $this->view("admin/media/manage");
 
         $view->addData("title", $title);
-        $view->addData("current_dir", $node);
+        $view->addData("node", $node);
 
         $this->response()->title($title);
         $this->response()->body($view);
@@ -204,4 +204,3 @@ class MediaController extends PHPFrame_ActionController
         return $this->_getApiController()->get($node);
     }
 }
-
