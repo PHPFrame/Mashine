@@ -226,7 +226,7 @@ EN.prototype.renderPosts = function (posts) {
     str += '</p>';
 
     str += '<footer>';
-    str += '<p>Share:';
+    str += '<p>Share: ';
     str += '<a href="http://www.facebook.com/sharer.php?u=' + post.url + '&t=' + post.title + '">';
     str += 'Facebook</a> | ';
     str += '<a href="http://twitter.com/?status=' + post.title + ':%20' + post.url + '">';
