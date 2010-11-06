@@ -128,7 +128,7 @@ class MediaPlugin extends AbstractPlugin
                 }
             }
         } else {
-            $files .= $this->_renderImage($child, $mode);
+            $files .= $this->_renderImage($node, $mode);
         }
 
         if (trim($dirs) != "") {
