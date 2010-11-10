@@ -96,10 +96,8 @@
         <foreach target="do_minify_js" param="filename">
             <path>
                 <fileset dir="${assets.dir}/js" casesensitive="yes">
-                    <include name="jquery/jquery.strengthy-0.0.1.min.js"/>
-                    <include name="jquery/jquery.tipsy.js"/>
-                    <include name="en.core.js"/>
-                    <include name="en.mshn.js"/>
+                    <include name="jquery/jquery.bundle.min.js"/>
+                    <include name="mshn.core.js"/>
                 </fileset>
             </path>
 
@@ -110,7 +108,7 @@
             <path>
                 <fileset dir="${assets.dir}/js" casesensitive="yes">
                     <include name="**/*tinymce*.js"/>
-                    <include name="en.mshn.user.js"/>
+                    <include name="mshn.user.js"/>
                 </fileset>
             </path>
 
@@ -235,3 +233,4 @@
     <target name="build" depends="prepare, copy, minify_js, minify_css, minify_theme_css, tar, upload" />
 
 </project>
+

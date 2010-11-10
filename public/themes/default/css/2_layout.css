@@ -121,6 +121,24 @@ html, body {
     margin: auto;
 }
 
+#user-form fieldset,
+#user-contacts-form fieldset {
+  width: 42%;
+  float: left;
+  margin: 0 10px 10px 0;
+}
+
+.list-filter {
+  margin: 0 0 10px;
+  padding: 0;
+}
+
+.list-filter li {
+  display: inline-block;
+  margin: 0 5px 0 0;
+  padding: 0;
+}
+
 /* jQuery UI stuff */
 
 .ui-widget-overlay {
@@ -160,3 +178,4 @@ html, body {
 .ui-button {
     margin: 0 5px 0 0;
 }
+

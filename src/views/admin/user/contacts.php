@@ -6,7 +6,7 @@
 
 <form class="validate" id="user-contacts-form" action="index.php" method="post">
 
-<fieldset id="contact_details" style="width:50%; float:left;">
+<fieldset id="contact_details">
     <legend><?php echo UserLang::CONTACT_DETAILS; ?></legend>
 
     <p>
@@ -84,7 +84,7 @@
     </p>
 </fieldset>
 
-<fieldset id="mailing_address" style="width:50%; float:left;">
+<fieldset id="mailing_address">
     <legend><?php echo UserLang::MAILING_ADDRESS; ?></legend>
 
     <p>

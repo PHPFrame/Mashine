@@ -9,7 +9,7 @@
  * @author    Lupo Montero <lupo@e-noise.com>
  * @copyright 2010 E-NOISE.COM LIMITED
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link      https://github.com/lupomontero/Mashine
+ * @link      http://github.com/E-NOISE/Mashine
  */
 
 /**
@@ -19,7 +19,7 @@
  * @package  Mashine
  * @author   Lupo Montero <lupo@e-noise.com>
  * @license  http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link     https://github.com/lupomontero/Mashine
+ * @link     http://github.com/E-NOISE/Mashine
  * @since    1.0
  */
 class GoogleAnalyticsPlugin extends AbstractPlugin
@@ -71,35 +71,37 @@ class GoogleAnalyticsPlugin extends AbstractPlugin
 
     public function displayOptionsForm()
     {
+        $prefix = $this->getOptionsPrefix();
+
         ob_start();
         ?>
 
-        <form action="index.php" method="post">
-
-        <p>
-            <label>Web Property ID:</label>
-            <input
-                type="text"
-                name="options_<?php echo $this->getOptionsPrefix(); ?>web_property_id"
-                value="<?php echo $this->options[$this->getOptionsPrefix()."web_property_id"]; ?>"
-            /> (Something like: UA-XXXXX-X)
-        </p>
-
-        <p>
-            <input type="button" value="&larr; Back" onclick="window.history.back();" />
-            <input type="submit" value="Save &rarr;" />
-        </p>
-
-        <input type="hidden" name="controller" value="plugins" />
-        <input type="hidden" name="action" value="save_options" />
-
-        </form>
+<form class="validate" action="index.php" method="post">
+  <fieldset>
+    <legend>Google Analytics details</legend>
+    <p>
+      <label>Web Property ID:</label>
+      <input
+        class="tooltip required"
+        title="Something like: UA-XXXXX-X"
+        type="text"
+        name="options_<?php echo $prefix; ?>web_property_id"
+        value="<?php echo $this->options[$prefix."web_property_id"]; ?>"
+      />
+    </p>
+    <p>
+      <input type="button" value="&larr; Back" onclick="window.history.back();" />
+      <input type="submit" value="Save &rarr;" />
+    </p>
+  </fieldset>
+  <p>
+    <input type="hidden" name="controller" value="plugins" />
+    <input type="hidden" name="action" value="save_options" />
+  </p>
+</form>
 
         <?php
-        $str = ob_get_contents();
-        ob_end_clean();
-
-        return $str;
+        return ob_get_clean();
     }
 
     /**

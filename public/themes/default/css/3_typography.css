@@ -1,59 +1,59 @@
 html {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    font-family: Georgia;
-    font-size: 11px;
-    color: #333;
+  font-family: Georgia;
+  font-size: 11px;
+  color: #333;
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-weight: normal;
+  font-weight: normal;
 }
 
 h1 {
-    font-size: 2.4em;
-    line-height: 1.8em;
-    margin: 0 0 10px;
+  font-size: 2.4em;
+  line-height: 1.8em;
+  margin: 0 0 10px;
 }
 
 h2 {
-    font-size: 1.8em;
-    line-height: 2em;
+  font-size: 1.8em;
+  line-height: 2em;
 }
 
 h3 {
-    font-size: 1.6em;
-    line-height: 1.4em;
+  font-size: 1.6em;
+  line-height: 1.4em;
 }
 
 h4 {
-    font-size: 1.3em;
+  font-size: 1.3em;
 }
 
 h5 {
-    font-size: 1.1em;
+  font-size: 1.1em;
 }
 
 p, ul, pre {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 p, td {
-    line-height: 1.4em;
+  line-height: 1.4em;
 }
 
 a {
-    color: #333;
+  color: #333;
 }
 a:hover {
-    color: #666;
+  color: #666;
 }
 
 h2 a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 ul {
@@ -61,135 +61,166 @@ ul {
 }
 
 ul li ul {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 li {
-    padding: 2px;
-    margin: 0 0 0 16px;
-    list-style: circle;
+  padding: 2px;
+  margin: 0 0 0 16px;
+  list-style: circle;
 }
 
 strong {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 pre {
-    font-size: 0.8em;
+  font-size: 0.8em;
 }
 
 fieldset {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #CCC;
+  padding: 10px;
 }
 
 legend {
-    font-size: 1.6em;
-    line-height: 1.2em;
-    margin: 0 0 10px;
+  font-size: 1.6em;
+  line-height: 1.2em;
+  margin: 0 0 10px;
+  padding: 4px 10px;
+  border: 1px solid #CCC;
 }
 
 label {
-    color: #666;
-    font-size: 0.9em;
+  color: #666;
+  font-size: 0.9em;
 }
 
 input {
-    padding: 3px 2px;
-    background-color: #FFFFFF;
-    border: 1px solid #CCC;
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    border-radius: 2px;
+  padding: 3px 2px;
+  background-color: #FFFFFF;
+  border: 1px solid #CCC;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
 }
 
 textarea {
-    width: 95%;
-    padding: 3px 2px;
-    background-color: #FFFFFF;
-    border: 1px solid #CCC;
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    border-radius: 2px;
+  width: 95%;
+  padding: 3px 2px;
+  background-color: #FFFFFF;
+  border: 1px solid #CCC;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
 }
 
 select {
-    padding: 3px 2px;
-    background-color: #FFFFFF;
-    border: 1px solid #CCC;
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    border-radius: 2px;
+  padding: 3px 2px;
+  background-color: #FFFFFF;
+  border: 1px solid #CCC;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
 }
 
 button,
 input[type=submit],
 input[type=button] {
-    padding: 3px 2px;
-    text-transform: uppercase;
-    font-size: 0.9em;
-    background-color: #F0F0F0;
-    color: #333;
-    border: 1px solid #CCC;
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    border-radius: 2px;
-    cursor:pointer;
-    cursor:hand;
+  padding: 3px 2px;
+  text-transform: uppercase;
+  font-size: 0.9em;
+  background-color: #F0F0F0;
+  color: #333;
+  border: 1px solid #CCC;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  cursor:pointer;
+  cursor:hand;
 }
 button:hover,
 input[type=submit]:hover,
 input[type=button]:hover {
-    background-color: #CCC;
-    color: #FFFFFF;
-    border: 1px solid #999;
+  background-color: #CCC;
+  color: #FFFFFF;
+  border: 1px solid #999;
 }
 
 table {
-    width: 95%;
+  width: 95%;
+}
+
+tr:hover {
+  background: #F2F5A9 !important;
 }
 
 tbody tr:nth-child(even) {
-    background: #FFF
+  background: #FFF
 }
 tbody tr:nth-child(odd) {
-    background: #F0F0F0
+  background: #F0F0F0
 }
 
 th, td {
-    padding: 3px;
+  padding: 3px;
 }
 
 th {
-    background-color: #CCC;
+  background-color: #CCC;
+  text-align: left;
 }
 
 td {}
 
 #sitename a {
-    font-size: 2em;
-    text-decoration: none;
-    display: inline-block;
-    margin: 10px 0;
-    padding: 10px 0;
+  font-size: 2em;
+  text-decoration: none;
+  display: inline-block;
+  margin: 10px 0;
+  padding: 10px 0;
 }
 
 #content a {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 footer {
-    font-size: 0.8em;
+  font-size: 0.8em;
 }
 
 .mock-thumb {
-    width: 240px;
-    height: 180px;
-    border: 1px solid #999;
-    background-color: #CCC;
-    float: left;
-    margin: 0 10px 10px 0;
+  width: 240px;
+  height: 180px;
+  border: 1px solid #999;
+  background-color: #CCC;
+  float: left;
+  margin: 0 10px 10px 0;
 }
 
 .unpublished {
-    background: #F0F0F0;
+  background: #F0F0F0;
 }
+
+.error, .success {
+  padding: 10px;
+  background-image: url("../img/bg-pattern.png");
+}
+
+.error {
+  border: 1px solid #990000;
+  background-color: #C80000;
+  background-color: rgba(200, 0, 0, 0.1);  /* FF3+, Saf3+, Opera 10.10+, Chrome, IE9 */
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorStr='#19C80000',EndColorStr='#19C80000'); /* IE6,IE7 */
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#19C80000',EndColorStr='#19C80000')"; /* IE8 */
+}
+
+.success {
+  border: 1px solid #009900;
+  background-color: #00C800;
+  background-color: rgba(0, 200, 0, 0.1);  /* FF3+, Saf3+, Opera 10.10+, Chrome, IE9 */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#1900C800',EndColorStr='#1900C800'); /* IE6,IE7 */
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#1900C800',EndColorStr='#1900C800')"; /* IE8 */
+}
+

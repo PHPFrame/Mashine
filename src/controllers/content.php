@@ -4,12 +4,13 @@
  *
  * PHP version 5
  *
- * @category  PHPFrame_Applications
- * @package   Mashine
- * @author    Lupo Montero <lupo@e-noise.com>
- * @copyright 2010 E-NOISE.COM LIMITED
- * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link      https://github.com/lupomontero/Mashine
+ * @category   PHPFrame_Applications
+ * @package    Mashine
+ * @subpackage Controllers
+ * @author     Lupo Montero <lupo@e-noise.com>
+ * @copyright  2010 E-NOISE.COM LIMITED
+ * @license    http://www.opensource.org/licenses/bsd-license.php New BSD License
+ * @link       http://github.com/E-NOISE/Mashine
  */
 
 /**
@@ -19,7 +20,7 @@
  * @package  Mashine
  * @author   Lupo Montero <lupo@e-noise.com>
  * @license  http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link     https://github.com/lupomontero/Mashine
+ * @link     http://github.com/E-NOISE/Mashine
  * @since    1.0
  */
 class ContentController extends PHPFrame_ActionController
@@ -46,6 +47,7 @@ class ContentController extends PHPFrame_ActionController
     public function index()
     {
         $content  = $this->request()->param("_content_active");
+        $hooks    = $this->request()->param("_hooks");
         $base_url = $this->config()->get("base_url");
 
         if (!$content instanceof Content) {
@@ -170,6 +172,7 @@ class ContentController extends PHPFrame_ActionController
         $view->addData("user", $this->user());
         $view->addData("helper", $this->helper("cms"));
         $view->addData("base_url", $base_url);
+        $view->addData("hooks", $hooks);
 
         $this->response()->title($content->title());
         $this->response()->body($view);
@@ -336,9 +339,21 @@ class ContentController extends PHPFrame_ActionController
                 $content->owner($this->user()->id());
             }
 
-            $pub_date   = $this->request()->param("pub_date", date("Y-m-d"));
-            $pub_time_h = $this->request()->param("pub_time_h", date("H"));
-            $pub_time_m = $this->request()->param("pub_time_m", date("i"));
+            $pub_date = $this->request()->param("pub_date");
+            if (!$pub_date) {
+                $pub_date = date("Y-m-d");
+            }
+
+            $pub_time_h = $this->request()->param("pub_time_h");
+            if ($pub_time_h) {
+                $pub_time_h = date("H");
+            }
+
+            $pub_time_m = $this->request()->param("pub_time_m");
+            if ($pub_time_m) {
+                $pub_time_m = date("i");
+            }
+
             $params["pub_date"] = $pub_date." ".$pub_time_h.":".$pub_time_m.":00";
 
             if (!array_key_exists("robots_index", $params)) {

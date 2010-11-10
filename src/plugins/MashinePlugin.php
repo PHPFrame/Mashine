@@ -9,7 +9,7 @@
  * @author    Lupo Montero <lupo@e-noise.com>
  * @copyright 2010 E-NOISE.COM LIMITED
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link      https://github.com/lupomontero/Mashine
+ * @link      http://github.com/E-NOISE/Mashine
  */
 
 /**
@@ -44,7 +44,7 @@ function __mashineAutoload($class_name)
  * @package  Mashine
  * @author   Lupo Montero <lupo@e-noise.com>
  * @license  http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link     https://github.com/lupomontero/Mashine
+ * @link     http://github.com/E-NOISE/Mashine
  * @since    1.0
  */
 class MashinePlugin extends AbstractPlugin
@@ -61,8 +61,8 @@ class MashinePlugin extends AbstractPlugin
      */
     public function __construct(PHPFrame_Application $app)
     {
-        // include($app->getInstallDir().DS."scripts/Upgrade-0.0.28-to-0.0.29.php");
-        // $upgrade_obj = new Upgrade_0_0_28_to_0_0_29($app);
+        // include($app->getInstallDir().DS."scripts/Upgrade-0.1.3-to-0.1.4.php");
+        // $upgrade_obj = new Upgrade_0_1_3_to_0_1_4($app);
         // var_dump($upgrade_obj->run());
         // exit;
 
@@ -102,12 +102,17 @@ class MashinePlugin extends AbstractPlugin
             && $app->request()->controllerName() != "api"
         ) {
             $update_assistant = new UpdateAssistant($app);
+            $sysevents = $app->session()->getSysevents();
+
+            $msg  = "A new version of Mashine is available. <a href=\"";
+            $msg .= $app->config()->get("base_url")."admin/upgrade\">";
+            $msg .= "Click here</a> to upgrade automatically";
+
             try {
-                if (!$update_assistant->isUpToDate()) {
-                    $msg  = "A new version of Mashine is available. <a href=\"";
-                    $msg .= $app->config()->get("base_url")."admin/upgrade\">";
-                    $msg .= "Click here</a> to upgrade automatically";
-                    $app->session()->getSysevents()->append($msg);
+                if (!$update_assistant->isUpToDate()
+                    && !in_array(array($msg, 4), iterator_to_array($sysevents))
+                ) {
+                    $sysevents->append($msg);
                 }
             } catch (RuntimeException $e) {
                 // Be silent if an exception is thrown when checking for updates
@@ -123,69 +128,82 @@ class MashinePlugin extends AbstractPlugin
      */
     public function displayOptionsForm()
     {
+        $prefix = $this->getOptionsPrefix();
+        $helper = new UserHelper($this->app());
+
         ob_start();
         ?>
 
-        <form action="index.php" method="post">
+<form action="index.php" method="post">
 
-        <fieldset id="front-end-signup" class="">
-            <legend>Front-end signup</legend>
+<fieldset id="front-end-signup" class="">
+  <legend>Front-end signup</legend>
+    <p>
+      <label
+        class="inline"
+        for="options_<?php echo $prefix; ?>frontendsignup_enable"
+      >
+        Enable:
+      </label>
+      <input
+        type="radio"
+        name="options_<?php echo $prefix; ?>frontendsignup_enable"
+        value="1"
+        <?php if ($this->options[$prefix."frontendsignup_enable"]) : ?>
+          checked="checked"
+        <?php endif; ?>
+      /> Yes /
+      <input
+        type="radio"
+        name="options_<?php echo $prefix; ?>frontendsignup_enable"
+        value="0"
+        <?php if (!$this->options[$prefix."frontendsignup_enable"]) : ?>
+          checked="checked"
+        <?php endif; ?>
+      /> No
+    </p>
+    <p>
+      <label class="inline" for="options_<?php echo $prefix; ?>frontendsignup_show_billing">
+        Show billing details:
+      </label>
+      <input
+        type="radio"
+        name="options_<?php echo $prefix; ?>frontendsignup_show_billing"
+        value="1"
+        <?php if ($this->options[$prefix."frontendsignup_show_billing"]) : ?>
+          checked="checked"
+        <?php endif; ?>
+      /> Yes /
+      <input
+        type="radio"
+        name="options_<?php echo $prefix; ?>frontendsignup_show_billing"
+        value="0"
+        <?php if (!$this->options[$prefix."frontendsignup_show_billing"]) : ?>
+          checked="checked"
+        <?php endif; ?>
+      /> No
+    </p>
+    <p>
+      <label class="inline" for="options_<?php echo $prefix; ?>frontendsignup_def_group">
+        Default group for new users:
+      </label>
+      <?php
+      echo $helper->getGroupsSelect(
+        "options_".$prefix."frontendsignup_def_group",
+        $this->options[$prefix."frontendsignup_def_group"]
+      );
+      ?>
+    </p>
+  </fieldset>
 
-            <p>
-                <label
-                    class="inline"
-                    for="options_<?php echo $this->getOptionsPrefix(); ?>frontendsignup_enable"
-                >
-                    Enable:
-                </label>
-                <input
-                    type="radio"
-                    name="options_<?php echo $this->getOptionsPrefix(); ?>frontendsignup_enable"
-                    value="1"
-                    <?php if ($this->options[$this->getOptionsPrefix()."frontendsignup_enable"]) : ?>
-                        checked="checked"
-                    <?php endif; ?>
-                /> Yes /
-                <input
-                    type="radio"
-                    name="options_<?php echo $this->getOptionsPrefix(); ?>frontendsignup_enable"
-                    value="0"
-                    <?php if (!$this->options[$this->getOptionsPrefix()."frontendsignup_enable"]) : ?>
-                        checked="checked"
-                    <?php endif; ?>
-                /> No
-            </p>
+  <p>
+    <input type="button" value="&larr; Back" onclick="window.history.back();" />
+    <input type="submit" value="Save &rarr;" />
+  </p>
 
-            <p>
-                <label class="inline">Show billing details:</label>
-                <input
-                    type="radio"
-                    name="options_<?php echo $this->getOptionsPrefix(); ?>frontendsignup_show_billing"
-                    value="1"
-                    <?php if ($this->options[$this->getOptionsPrefix()."frontendsignup_show_billing"]) : ?>
-                        checked="checked"
-                    <?php endif; ?>
-                /> Yes /
-                <input
-                    type="radio"
-                    name="options_<?php echo $this->getOptionsPrefix(); ?>frontendsignup_show_billing"
-                    value="0"
-                    <?php if (!$this->options[$this->getOptionsPrefix()."frontendsignup_show_billing"]) : ?>
-                        checked="checked"
-                    <?php endif; ?>
-                /> No
-            </p>
-        </fieldset>
-
-        <p>
-            <input type="button" value="&larr; Back" onclick="window.history.back();" />
-            <input type="submit" value="Save &rarr;" />
-        </p>
-
-        <input type="hidden" name="controller" value="plugins" />
-        <input type="hidden" name="action" value="save_options" />
-
-        </form>
+  <input type="hidden" name="controller" value="plugins" />
+  <input type="hidden" name="action" value="save_options" />
+</form>
 
         <?php
         $str = ob_get_contents();
@@ -401,6 +419,10 @@ class MashinePlugin extends AbstractPlugin
             $query_string = $array[1];
         } else {
             $query_string = "";
+        }
+
+        if ($request->method() == "POST" && $request->param("slug")) {
+            $slug = $request->param("slug");
         }
 
         if (empty($slug) || $slug == "index.php") {

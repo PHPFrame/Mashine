@@ -339,3 +339,4 @@ class UsersApiControllerTest extends MVCTestCase
         $this->assertArrayHasKey("value", $row);
     }
 }
+

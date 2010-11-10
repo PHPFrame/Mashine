@@ -9,7 +9,7 @@
  * @author    Lupo Montero <lupo@e-noise.com>
  * @copyright 2010 E-NOISE.COM LIMITED
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link      https://github.com/lupomontero/Mashine
+ * @link      http://github.com/E-NOISE/Mashine
  */
 
 /**
@@ -19,7 +19,7 @@
  * @package  Mashine
  * @author   Lupo Montero <lupo@e-noise.com>
  * @license  http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link     https://github.com/lupomontero/Mashine
+ * @link     http://github.com/E-NOISE/Mashine
  * @since    1.0
  */
 class Installer
@@ -200,14 +200,6 @@ class Installer
         )");
 
         $this->_processSqlScript("iso_country_list.sql");
-        // $install_dir = $this->app()->getInstallDir();
-        // $sql_file    = $install_dir.DS."data".DS."iso_country_list.sql";
-        // $sql_file    = new SplFileObject($sql_file);
-        // foreach ($sql_file as $line) {
-        //     if ($line) {
-        //         $db->query($line);
-        //     }
-        // }
     }
 
     private function _processSqlScript($fname)
@@ -438,6 +430,21 @@ class Installer
         $content->owner(1);
         $content->group(1);
         $content->perms(440);
+        $mapper->insert($content);
+
+        $content = new MVCContent();
+        $content->parentId($dashboard->id());
+        $content->title("Manage media");
+        $content->slug("admin/media");
+        $content->status(1);
+        $content->description(null);
+        $content->keywords(null);
+        $content->pubDate("1970-01-01 00:03:30");
+        $content->param("controller", "media");
+        $content->param("action", "manage");
+        $content->owner(1);
+        $content->group(1);
+        $content->perms(644);
         $mapper->insert($content);
 
         $users_manage = new MVCContent();

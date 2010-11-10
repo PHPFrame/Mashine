@@ -9,7 +9,7 @@
  * @author    Lupo Montero <lupo@e-noise.com>
  * @copyright 2010 E-NOISE.COM LIMITED
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link      https://github.com/lupomontero/Mashine
+ * @link      http://github.com/E-NOISE/Mashine
  */
 
 /**
@@ -21,7 +21,7 @@
  * @package  Mashine
  * @author   Lupo Montero <lupo@e-noise.com>
  * @license  http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link     https://github.com/lupomontero/Mashine
+ * @link     http://github.com/E-NOISE/Mashine
  * @since    1.0
  */
 class HTMLSiteMap
@@ -74,6 +74,7 @@ class HTMLSiteMap
             }
         }
 
+        $slug = $this->_node->slug();
         $str = "";
 
         if (!$this->showRoot()) {
@@ -82,11 +83,11 @@ class HTMLSiteMap
             }
         } elseif ($this->showRootAsChild()) {
             $str .= "    <li>\n";
-            $str .= "        <a href=\"".$this->_node->slug()."\"";
+            $str .= "        <a href=\"".$slug."\" class=\"".$slug;
             if ($this->_node->active()) {
-                $str .= " class=\"active\"";
+                $str .= " active";
             }
-            $str .= ">".$this->_node->shortTitle()."</a>\n";
+            $str .= "\">".$this->_node->shortTitle()."</a>\n";
             $str .= "    </li>\n";
             foreach ($this->_node->getChildren() as $child) {
                 $str .= $this->_nodeToHTML($child);
@@ -248,13 +249,13 @@ class HTMLSiteMap
         }
 
         $str  = $indent."<li>\n";
-        $str .= $indent."    <a href=\"".$node_url."\"";
+        $str .= $indent."    <a href=\"".$node_url."\" class=\"".$node_url;
         if ($node->active()) {
-            $str .= " class=\"active\"";
+            $str .= " active";
         } elseif ($node->activeParent()) {
-            $str .= " class=\"parent\"";
+            $str .= " parent";
         }
-        $str .= ">".$node_title."</a>\n";
+        $str .= "\">".$node_title."</a>\n";
 
         if ($node->hasChildren()) {
             $depth++;

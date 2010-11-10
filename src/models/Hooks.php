@@ -9,7 +9,7 @@
  * @author    Lupo Montero <lupo@e-noise.com>
  * @copyright 2010 E-NOISE.COM LIMITED
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link      https://github.com/lupomontero/Mashine
+ * @link      http://github.com/E-NOISE/Mashine
  */
 
 /**
@@ -19,14 +19,16 @@
  * @package  Mashine
  * @author   Lupo Montero <lupo@e-noise.com>
  * @license  http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link     https://github.com/lupomontero/Mashine
+ * @link     http://github.com/E-NOISE/Mashine
  * @since    1.0
  */
 class Hooks
 {
     private $_actions = array(
         "dashboard_boxes",
-        "login_form"
+        "login_form",
+        "post_footer",
+        "posts_footer"
     );
     private $_callbacks;
 
@@ -78,11 +80,13 @@ class Hooks
      * to be run.
      *
      * @param string $action The action to trigger.
+     * @param array  $args   [Optional] Array containing arguments to be passed
+     *                       to callback.
      *
      * @return array An array containing the output for each of the callbacks.
      * @since  1.0
      */
-    public function doAction($action)
+    public function doAction($action, array $args=null)
     {
         $array = array();
 
@@ -96,14 +100,15 @@ class Hooks
         foreach ($array as $item) {
             $callback = $item[1];
             if (is_array($callback) && is_object($callback[0])) {
-                $output[] = $callback[0]->$callback[1]();
+                $output[] = $callback[0]->$callback[1]($args);
             } elseif (is_array($callback) && is_string($callback[0])) {
-                $output[] = $callback[0]."::".$callback[1]();
+                $output[] = $callback[0]."::".$callback[1]($args);
             } else {
-                $output[] = $callback();
+                $output[] = $callback($args);
             }
         }
 
         return $output;
     }
 }
+
