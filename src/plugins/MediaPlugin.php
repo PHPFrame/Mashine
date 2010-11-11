@@ -204,7 +204,8 @@ class MediaPlugin extends AbstractPlugin
     public function postApplyTheme()
     {
         $document = $this->app()->response()->document();
-        if (!$document instanceof PHPFrame_HTMLDocument) {
+        $ajax = $this->app()->request()->ajax();
+        if (!$document instanceof PHPFrame_HTMLDocument || $ajax) {
             return;
         }
 
