@@ -133,7 +133,12 @@ class MailChimpPlugin extends AbstractPlugin
       <input type="text" name="email" id="email" class="email required" />
     </p>
     <p>
-      <input type="submit" value="Subscribe" class="button" />
+      <input
+        id="mailchimp-subscribe-btn"
+        type="submit"
+        value="Subscribe"
+        class="button"
+      />
     </p>
   </fieldset>
   <input type="hidden" name="controller" value="mailchimpplugin" />
@@ -141,20 +146,27 @@ class MailChimpPlugin extends AbstractPlugin
   <input type="hidden" name="listid" value="<?php echo $attr["listid"]; ?>" />
 </form>
 
-<div id="mailchimp-ajax-response"></div>
-
 <script>
 jQuery(document).ready(function ($) {
-  var responseContainer = $('#mailchimp-ajax-response');
+  var subscribeBtn = $('#mailchimp-subscribe-btn');
+  var originalSubscribeLabel = subscribeBtn.val();
+
   EN.validate('#mailchimp-subscription-form', {
     submitHandler: function (e) {
       var form = $(e);
+
+      subscribeBtn.attr('disabled', true).val('Please wait...');
+
       $.ajax({
         url: 'index.php',
         data: form.serialize() + '&ajax=1',
         method: 'POST',
         success: function (data) {
-          responseContainer.html(data);
+          var className = (/^SUCCESS/.test(data)) ? 'success' : 'error';
+          subscribeBtn
+            .val(originalSubscribeLabel)
+            .removeAttr('disabled')
+            .after('<div class="' + className + '">' + data + '</div>');
         },
         error:function () {
           alert('An error occurred while subscribing to mailing list.');
