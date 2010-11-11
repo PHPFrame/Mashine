@@ -37,6 +37,7 @@
         <copy todir="${tmp.dir}" overwrite="true">
             <fileset dir="${basedir}">
                 <include name="data/" />
+                <include name="lib/" />
                 <include name="public/" />
                 <include name="scripts/" />
 
