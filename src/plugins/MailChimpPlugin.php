@@ -126,28 +126,26 @@ class MailChimpPlugin extends AbstractPlugin
         ?>
 
 <form id="mailchimp-subscription-form" action="index.php" method="post">
-<div class="indicate-required">* indicates required</div>
-<p>
-  <label for="email">Email address *</label>
-  <input type="text" name="email" id="email" class="email required" />
-</p>
-<p>
-  <span class="button_wrapper">
-    <input type="submit" value="Send" class="button" />
-  </span>
-</p>
-
-<input type="hidden" name="controller" value="mailchimpplugin" />
-<input type="hidden" name="action" value="subscribe" />
-<input type="hidden" name="listid" value="<?php echo $attr["listid"]; ?>" />
-
-<div id="ajax-response"></div>
-
+  <fieldset>
+    <div class="indicate-required">* indicates required</div>
+    <p>
+      <label for="email">Email address *</label>
+      <input type="text" name="email" id="email" class="email required" />
+    </p>
+    <p>
+      <input type="submit" value="Subscribe" class="button" />
+    </p>
+  </fieldset>
+  <input type="hidden" name="controller" value="mailchimpplugin" />
+  <input type="hidden" name="action" value="subscribe" />
+  <input type="hidden" name="listid" value="<?php echo $attr["listid"]; ?>" />
 </form>
+
+<div id="mailchimp-ajax-response"></div>
 
 <script>
 jQuery(document).ready(function ($) {
-  var responseContainer = $('#ajax-response');
+  var responseContainer = $('#mailchimp-ajax-response');
   EN.validate('#mailchimp-subscription-form', {
     submitHandler: function (e) {
       var form = $(e);
