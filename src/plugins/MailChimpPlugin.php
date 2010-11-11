@@ -163,13 +163,13 @@ jQuery(document).ready(function ($) {
         method: 'POST',
         success: function (data) {
           var className = (/^SUCCESS/.test(data)) ? 'success' : 'error';
-          subscribeBtn
-            .val(originalSubscribeLabel)
-            .removeAttr('disabled')
-            .after('<div class="' + className + '">' + data + '</div>');
+          subscribeBtn.after('<div class="' + className + '">' + data + '</div>');
         },
         error:function () {
           alert('An error occurred while subscribing to mailing list.');
+        },
+        complete: function () {
+          subscribeBtn.val(originalSubscribeLabel).removeAttr('disabled')
         }
       });
     }
