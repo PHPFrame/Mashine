@@ -17,6 +17,12 @@ class Upgrade_0_1_3_to_0_1_4
     {
         $db = $this->_app->db();
 
+        $sql = "SELECT id FROM #__content WHERE slug = 'admin/media'";
+        $id = $db->fetchColumn($sql);
+        if (filter_var($id, FILTER_VALIDATE_INT) > 0) {
+            return;
+        }
+
         $mapper = new ContentMapper($db, $this->_app->getTmpDir().DS."cms");
         $dashboard = $mapper->findOne("dashboard");
 
