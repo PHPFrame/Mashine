@@ -82,13 +82,13 @@ class HTMLSiteMap
                 $str .= $this->_nodeToHTML($child);
             }
         } elseif ($this->showRootAsChild()) {
-            $str .= "    <li>\n";
-            $str .= "        <a href=\"".$slug."\" class=\"".$slug;
+            $str .= "  <li>\n";
+            $str .= "    <a href=\"".$slug."\" class=\"".$slug;
             if ($this->_node->active()) {
                 $str .= " active";
             }
             $str .= "\">".$this->_node->shortTitle()."</a>\n";
-            $str .= "    </li>\n";
+            $str .= "  </li>\n";
             foreach ($this->_node->getChildren() as $child) {
                 $str .= $this->_nodeToHTML($child);
             }
@@ -229,7 +229,7 @@ class HTMLSiteMap
      * @return string
      * @since  1.0
      */
-    private function _nodeToHTML(Content $node, $depth=0, $indent="    ")
+    private function _nodeToHTML(Content $node, $depth=0, $indent="  ")
     {
         $depth_limit = $this->depth();
 
@@ -249,7 +249,7 @@ class HTMLSiteMap
         }
 
         $str  = $indent."<li>\n";
-        $str .= $indent."    <a href=\"".$node_url."\" class=\"".$node_url;
+        $str .= $indent."  <a href=\"".$node_url."\" class=\"".$node_url;
         if ($node->active()) {
             $str .= " active";
         } elseif ($node->activeParent()) {
@@ -261,11 +261,11 @@ class HTMLSiteMap
             $depth++;
             $children_str = "";
             foreach ($node->getChildren() as $child) {
-                $children_str .= $this->_nodeToHTML($child, $depth, $indent."        ");
+                $children_str .= $this->_nodeToHTML($child, $depth, $indent."    ");
             }
 
             if ($children_str) {
-                $str .= $indent."    <ul>\n".$children_str.$indent."    </ul>\n";
+                $str .= $indent."  <ul>\n".$children_str.$indent."  </ul>\n";
             }
         }
 
