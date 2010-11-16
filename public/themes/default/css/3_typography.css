@@ -202,25 +202,3 @@ footer {
 .unpublished {
   background: #F0F0F0;
 }
-
-.error, .success {
-  padding: 10px;
-  background-image: url("../img/bg-pattern.png");
-}
-
-.error {
-  border: 1px solid #990000;
-  background-color: #C80000;
-  background-color: rgba(200, 0, 0, 0.1);  /* FF3+, Saf3+, Opera 10.10+, Chrome, IE9 */
-  filter:  progid:DXImageTransform.Microsoft.gradient(startColorStr='#19C80000',EndColorStr='#19C80000'); /* IE6,IE7 */
-  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#19C80000',EndColorStr='#19C80000')"; /* IE8 */
-}
-
-.success {
-  border: 1px solid #009900;
-  background-color: #00C800;
-  background-color: rgba(0, 200, 0, 0.1);  /* FF3+, Saf3+, Opera 10.10+, Chrome, IE9 */
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#1900C800',EndColorStr='#1900C800'); /* IE6,IE7 */
-  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#1900C800',EndColorStr='#1900C800')"; /* IE8 */
-}
-

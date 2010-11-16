@@ -3,7 +3,7 @@
 <?php foreach ($events as $event) : ?>
   <div class="sysevents-item sysevents-<?php echo $event[1]; ?>">
     <div class="sysevents-item-header">
-      <a href="#" class="close_button" title="close this system event">&times;</a>
+      <a href="#" class="sysevents-item-close-btn" title="close">&times;</a>
     </div>
     <div class="sysevents-item-body">
       <?php echo $event[0]."\n"; ?>
