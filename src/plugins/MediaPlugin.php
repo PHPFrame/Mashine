@@ -209,14 +209,15 @@ class MediaPlugin extends AbstractPlugin
 
     public function postApplyTheme()
     {
+        $base_url = $this->app()->config()->get("base_url");
         $document = $this->app()->response()->document();
+        $is_html = $document instanceof PHPFrame_HTMLDocument;
         $ajax = $this->app()->request()->ajax();
-        if (!$document instanceof PHPFrame_HTMLDocument || $ajax) {
+        $media_mode = $this->app()->request()->param("_media_mode");
+
+        if (!$is_html || $ajax || !$media_mode) {
             return;
         }
-
-        $base_url = $this->app()->config()->get("base_url");
-        $media_mode = $this->app()->request()->param("_media_mode");
 
         switch ($media_mode) {
         case "lightbox" :
