@@ -1,36 +1,47 @@
-div.sysevents ul {
-    padding: 0;
-    margin: 0;
+.sysevents-wrapper {
+  margin: 0 0 15px;
 }
 
-div.sysevents li {
-    padding: 0;
-    margin: 0;
-    list-style:none outside none;
+.sysevents-item,
+.error,
+.success {
+  padding: 10px;
+  background-image: url("../img/bg-pattern.png");
+  position: relative;
 }
 
-div.sysevent {
-    border: 1px dotted #CCCCCC;
-    margin: 0 0 20px;
+.sysevents-item-close-btn {
+  position: absolute;
+  top: 0;
+  right: 2px;
 }
 
-.sysevents_1 {
-    background-color: #F6CECE;
+.sysevents-1,
+.error {
+  border: 1px solid #990000;
+  background-color: #C80000;
+  background-color: rgba(200, 0, 0, 0.1);  /* FF3+, Saf3+, Opera 10.10+, Chrome, IE9 */
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorStr='#19C80000',EndColorStr='#19C80000'); /* IE6,IE7 */
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#19C80000',EndColorStr='#19C80000')"; /* IE8 */
 }
 
-.sysevents_2 {
+.sysevents-2 {
     background-color: #F6E3CE;
 }
 
-.sysevents_3 {
+.sysevents-3 {
     background-color: #CEF6F5;
 }
 
-.sysevents_4 {
+.sysevents-4 {
     background-color: #F5F6CE;
 }
 
-.sysevents_5 {
-    background-color: #D0F5A9;
+.sysevents-5,
+.success {
+  border: 1px solid #009900;
+  background-color: #00C800;
+  background-color: rgba(0, 200, 0, 0.1);  /* FF3+, Saf3+, Opera 10.10+, Chrome, IE9 */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#1900C800',EndColorStr='#1900C800'); /* IE6,IE7 */
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#1900C800',EndColorStr='#1900C800')"; /* IE8 */
 }
-
