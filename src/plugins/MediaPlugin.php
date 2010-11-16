@@ -140,23 +140,29 @@ class MediaPlugin extends AbstractPlugin
 
         if (!empty($files)) {
             $tmp = $files;
-            $files  = "<div class=\"media-files media-files-".$mode;
+            $uid = uniqid();
+            $files  = "<div id=\"".$uid."\" class=\"media-files media-files-".$mode;
             $files .= "\">\n".$tmp."\n</div><!-- .media-files -->\n";
             $files .= "<script>\n";
             $files .= "jQuery(document).ready(function ($) {\n";
 
             if (in_array($mode, array("classic","lightbox","fullscreen"))) {
-                $files .= "  var options = { debug: true };\n";
+                $req = $this->app()->request();
+                $galleria_loaded = $req->param("_media_galleria_loaded");
+                $files .= "  var options = { debug: false };\n";
                 $files .= "  var galleriaTheme = '".$mode."';\n";
-                $files .= "  var themeUrl = 'assets/js/galleria/themes/' + galleriaTheme + '/galleria.';\n";
-                $files .= "  themeUrl += galleriaTheme + '.js';\n";
-                $files .= "  Galleria.loadTheme(themeUrl);\n";
+                if (!$galleria_loaded) {
+                    $files .= "  var themeUrl = 'assets/js/galleria/themes/' + galleriaTheme + '/galleria.';\n";
+                    $files .= "  themeUrl += galleriaTheme + '.js';\n";
+                    $files .= "  Galleria.loadTheme(themeUrl);\n";
+                    $req->param("_media_galleria_loaded", true);
+                }
                 $files .= "  if (galleriaTheme === 'lightbox') {\n";
                 $files .= "    options.keep_source = true;\n";
                 $files .= "  }\n";
-                $files .= "  $('.media-files').galleria(options);\n";
+                $files .= "  $('#".$uid."').galleria(options);\n";
             } else {
-                $files .= "  $('.media-files').media();\n";
+                $files .= "  $('#".$uid."').media();\n";
             }
 
             $files .= "});\n";
