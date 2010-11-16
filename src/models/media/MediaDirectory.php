@@ -104,10 +104,10 @@ class MediaDirectory extends MediaNode implements IteratorAggregate
         case "date_modified" :
             return strcasecmp($node1->getMTime(), $node2->getMTime());
         case "caption" :
-            return strcasecmp($node1->getCaption(), $node2->getCaption());
+            return strnatcasecmp($node1->getCaption(), $node2->getCaption());
         case "filename" :
         default :
-            return strcasecmp($node1->getFilename(), $node2->getFilename());
+            return strnatcasecmp($node1->getFilename(), $node2->getFilename());
         }
     }
 
