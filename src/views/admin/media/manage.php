@@ -56,7 +56,7 @@
 
     <div class="media-node">
       <div class="media-dir-thumb">
-        <a href="admin/media?node=<?php echo $child->getRelativePath(); ?>">
+        <a href="admin/media?node=<?php echo urlencode($child->getRelativePath()); ?>">
         <img
           src="<?php echo $child->getThumbURL(); ?>"
           alt="<?php echo $child->getFilename(); ?>"
@@ -66,7 +66,7 @@
 
       <div class="media-node-info">
         <h3 class="media-node-info-name">
-          <a href="admin/media?node=<?php echo $child->getRelativePath(); ?>">
+          <a href="admin/media?node=<?php echo urlencode($child->getRelativePath()); ?>">
             <?php echo $child->getFilename(12)."\n"; ?>
           </a>
         </h3>
