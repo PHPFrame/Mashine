@@ -1,6 +1,6 @@
 <header id="content-header">
-    <h1><?php echo $title; ?></h1>
-    <?php echo $content->editLink($user); ?>
+  <h1><?php echo $title; ?></h1>
+  <?php echo $content->editLink($user); ?>
 </header>
 
 <div id="content-body" class="sitemap">

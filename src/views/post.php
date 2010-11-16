@@ -11,4 +11,3 @@
 <?php $footer = $hooks->doAction("post_footer", array($content)); ?>
 <?php if (is_array($footer) && count($footer) > 0) echo implode("\n", $footer); ?>
 </footer>
-
