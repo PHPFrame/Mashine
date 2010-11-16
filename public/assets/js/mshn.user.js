@@ -182,4 +182,3 @@ jQuery(document).ready(function (jQuery) {
 
   EN.userAutocomplete('input#owner');
 });
-
