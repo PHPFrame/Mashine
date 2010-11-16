@@ -62,17 +62,3 @@ $this->addStyleSheet($base_url."themes/default/css/styles.css");
 <?php if ($user->groupId() > 0 && $user->groupId() <= 2) : ?>
 <script src="<?php echo $base_url; ?>assets/js/mashine.user.js"></script>
 <?php endif; ?>
-<script>
-jQuery(document).ready(function() {
-  EN.initToolTips('.tooltip');
-  EN.confirm('.confirm');
-  EN.validate('.validate');
-
-  // close sysevent boxes
-  jQuery('a.close_button').live('click', function(e) {
-    e.preventDefault();
-    jQuery(this).closest('.sysevent').fadeOut('1500');
-  });
-});
-</script>
-

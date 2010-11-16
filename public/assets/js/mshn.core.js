@@ -318,3 +318,15 @@ window.EN = new EN();
 
 })(window, jQuery);
 
+// Init UI on dom ready
+jQuery(document).ready(function() {
+  EN.initToolTips('.tooltip');
+  EN.confirm('.confirm');
+  EN.validate('.validate');
+
+  // close sysevent boxes
+  jQuery('.sysevents-item-close-btn').live('click', function(e) {
+    e.preventDefault();
+    jQuery(this).closest('.sysevents-item').fadeOut('1500');
+  });
+});
