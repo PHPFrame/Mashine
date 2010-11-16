@@ -97,15 +97,11 @@
 </form>
 </div>
 
-<br />
-
-<div>
-
+<?php if (count($login_plugins) > 0) : ?>
 <p>
   <?php echo implode("\n", $login_plugins)."\n"; ?>
 </p>
-
-</div>
+<?php endif; ?>
 
 <?php if (!$ajax) : ?>
 </div><!-- #content-body -->
