@@ -57,8 +57,6 @@ class ContactFormPlugin extends AbstractPlugin
             $subject = $request->param("subject");
             $body    = $request->param("body");
 
-            $body = "Email sent from ".$appname.".\n---\n\n".$body;
-
             if (empty($name) || empty($subject) || empty($body)) {
                 $msg = "Required field missing!";
                 throw new RuntimeException($msg);
@@ -78,6 +76,9 @@ class ContactFormPlugin extends AbstractPlugin
                 throw new RuntimeException($msg);
             }
 
+            $info  = "Email sent from ".$appname.".\n";
+            $info .= "Sender: ".$name." <".$email.">\n---\n\n";
+
             $to_address = $this->options[$this->getOptionsPrefix()."to_address"];
             $to_address = filter_var($to_address, FILTER_VALIDATE_EMAIL);
             if ($to_address === false) {
@@ -88,7 +89,7 @@ class ContactFormPlugin extends AbstractPlugin
             $to_name = $this->options[$this->getOptionsPrefix()."to_name"];
 
             $mailer->Subject = $subject;
-            $mailer->Body    = $body;
+            $mailer->Body    = $info.$body;
             $mailer->AddAddress($to_address, $to_name);
 
             $sysevents = $this->app()->session()->getSysevents();
