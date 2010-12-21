@@ -322,45 +322,6 @@ class UserController extends PHPFrame_ActionController
         }
     }
 
-    private function _sendConfirmationEmail(User $user, $password)
-    {
-        $mailer = $this->mailer();
-        if (!$mailer instanceof PHPFrame_Mailer) {
-            $msg  = "Mailer not initialised. Please check mail configuration ";
-            $msg .= "in etc/phpframe.ini";
-            throw new Exception($msg);
-        }
-
-        $email        = $user->email();
-        $name         = $email;
-        $confirm_url  = $this->config()->get("base_url")."user/confirm?email=";
-        $confirm_url .= urlencode($email)."&activation=".$user->activation();
-
-        if ($this->session()->isAuth() && $this->user()->groupId() < 3) {
-            $body = UserLang::NEW_USER_EMAIL_BODY;
-        } else {
-            $contact = $user->contact();
-            if ($contact instanceof Contact) {
-                $name = $user->contact()->firstName();
-            }
-            $body = UserLang::SIGNUP_EMAIL_BODY;
-        }
-
-        $mailer->Subject = UserLang::NEW_USER_EMAIL_SUBJECT;
-        $mailer->Body = sprintf(
-            $body,
-            $name,
-            $this->config()->get("app_name"),
-            $email,
-            $password,
-            $confirm_url
-        );
-        $mailer->AddAddress($email);
-        if (!$mailer->send()) {
-            $this->raiseWarning($mailer->ErrorInfo);
-        }
-    }
-
     /**
      * Confirm an email address.
      *
@@ -422,25 +383,40 @@ class UserController extends PHPFrame_ActionController
     /**
      * Request a password reset email to be sent to given address.
      *
-     * @param string $forgot_email
+     * @param string $forgot_email The user's email address.
+     * @param string $token        [Optional] Token previously sent by invoking
+     *                             this method only passing forgot_email.
      *
      * @return void
      * @since  1.0
      */
-    public function reset($forgot_email)
+    public function reset($forgot_email="", $token="")
     {
-        $this->setRedirect($_SERVER["HTTP_REFERER"]);
+        $base_url = $this->config()->get("base_url");
+        $crypt = $this->crypt();
+
+        if (array_key_exists("HTTP_REFERER", $_SERVER)) {
+            $this->setRedirect($_SERVER["HTTP_REFERER"]);
+        } else {
+            $this->setRedirect($base_url."user/login");
+        }
 
         $email = filter_var($forgot_email, FILTER_VALIDATE_EMAIL);
-
-        if ($email === false) {
+        if (!$email) {
             $msg = "Wrong email format.";
             $this->raiseError($msg);
             return;
         }
 
+        $mailer = $this->mailer();
+        if (!$mailer instanceof PHPFrame_Mailer) {
+            $this->raiseError("Mailer not enabled. Please check smtp config.");
+            return;
+        }
+
         try {
-            $user = $this->_getUsersMapper()->findByEmail($email);
+            $mapper = $this->_getUsersMapper();
+            $user = $mapper->findByEmail($email);
 
             if (!$user instanceof User) {
                 $msg  = "We couldn't find any registered users with that ";
@@ -449,17 +425,49 @@ class UserController extends PHPFrame_ActionController
                 return;
             }
 
+            $user_params = $user->params();
+
+            if ($token) {
+                $stored_token = @$user_params["reset_token"];
+                if ($token != $stored_token) {
+                    $msg = "Invalid token!";
+                    $this->raiseError($msg);
+                    return;
+                }
+
+                $new_pass  = $crypt->genRandomPassword(8);
+                $salt      = $crypt->genRandomPassword(32);
+                $encrypted = $crypt->encryptPassword($new_pass, $salt);
+                $user->password($encrypted.":".$salt);
+
+                unset($user_params["reset_token"]);
+                $user->params($user_params);
+
+                $mapper->insert($user);
+
+                $mailer->Subject = "New password";
+                $mailer->Body = "Your new password is: ".$new_pass;
+                $mailer->AddAddress($user->email());
+                if (!$mailer->send()) {
+                    $this->raiseError("Error sending email.");
+                    return;
+                }
+
+                $this->notifySuccess("New password sent to ".$email);
+                return;
+            }
+
+            // If no token has been passed we create one, store it and send it
+            $token = $crypt->genRandomPassword(32);
+            $user_params["reset_token"] = $token;
+            $user->params($user_params);
+            $mapper->insert($user);
+
             $body  = "Please click on the link below to verify that you ";
             $body .= "requested a new password and we will reset your ";
             $body .= "password and send it in another email.\n\n";
-            $body .= $this->config()->get("base_url")."user/reset?token=";
-            $body .= "SOME_TOKEN";
-
-            $mailer = $this->mailer();
-            if (!$mailer instanceof PHPFrame_Mailer) {
-                $this->raiseError("Error sending email.");
-                return;
-            }
+            $body .= $base_url."user/reset?forgot_email=".urlencode($email);
+            $body .= "&token=".urlencode($token);
 
             $mailer->Subject = "Password reset request";
             $mailer->Body = $body;
@@ -863,6 +871,45 @@ class UserController extends PHPFrame_ActionController
         }
 
         return $this->_contacts_mapper;
+    }
+
+    private function _sendConfirmationEmail(User $user, $password)
+    {
+        $mailer = $this->mailer();
+        if (!$mailer instanceof PHPFrame_Mailer) {
+            $msg  = "Mailer not initialised. Please check mail configuration ";
+            $msg .= "in etc/phpframe.ini";
+            throw new Exception($msg);
+        }
+
+        $email        = $user->email();
+        $name         = $email;
+        $confirm_url  = $this->config()->get("base_url")."user/confirm?email=";
+        $confirm_url .= urlencode($email)."&activation=".$user->activation();
+
+        if ($this->session()->isAuth() && $this->user()->groupId() < 3) {
+            $body = UserLang::NEW_USER_EMAIL_BODY;
+        } else {
+            $contact = $user->contact();
+            if ($contact instanceof Contact) {
+                $name = $user->contact()->firstName();
+            }
+            $body = UserLang::SIGNUP_EMAIL_BODY;
+        }
+
+        $mailer->Subject = UserLang::NEW_USER_EMAIL_SUBJECT;
+        $mailer->Body = sprintf(
+            $body,
+            $name,
+            $this->config()->get("app_name"),
+            $email,
+            $password,
+            $confirm_url
+        );
+        $mailer->AddAddress($email);
+        if (!$mailer->send()) {
+            $this->raiseWarning($mailer->ErrorInfo);
+        }
     }
 }
 

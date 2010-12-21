@@ -13,7 +13,7 @@
     <property name="tmp.dir" value="${build.dir}/tmp" />
     <property name="assets.dir" value="${tmp.dir}/public/assets" />
     <property name="theme.dir" value="${tmp.dir}/public/themes/default" />
-    <property name="release.version" value="0.1.3" />
+    <property name="release.version" value="0.1.4" />
 
     <!-- Prepare directories -->
     <target name="prepare">
@@ -37,6 +37,7 @@
         <copy todir="${tmp.dir}" overwrite="true">
             <fileset dir="${basedir}">
                 <include name="data/" />
+                <include name="lib/" />
                 <include name="public/" />
                 <include name="scripts/" />
 
@@ -64,6 +65,9 @@
                 <exclude name="public/assets/js/tiny_mce/themes/simple/" />
                 <exclude name="public/assets/js/tiny_mce/themes/advanced/editor_template_src.js" />
                 <exclude name="public/assets/js/tiny_mce/tiny_mce_src.js" />
+
+                <!-- Exclude dummy media files used for tests -->
+                <exclude name="public/media/**" />
             </fileset>
         </copy>
 

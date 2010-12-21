@@ -16,6 +16,7 @@ $app = new PHPFrame_Application(array("install_dir"=>$install_dir));
 $app->dispatch();
 
 $output_format = $app->response()->header("Content-Type");
-if ($output_format == "text/html") {
+$ajax = $app->request()->ajax();
+if ($output_format == "text/html" && !$ajax) {
     echo "\n<!-- Total execution time ".round((microtime(true) - $start), 3)." seconds -->";
 }
