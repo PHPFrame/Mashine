@@ -151,7 +151,7 @@ jQuery(document).ready(function () {
         return jQuery(e).hasClass('strengthy-valid');
     }, 'Invalid password.');
 
-    EN.validate('#signup-form', {
+    Mashine.validate('#signup-form', {
         rules: {
             email: {
                 required: true,

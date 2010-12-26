@@ -128,7 +128,7 @@ class ContactFormPlugin extends AbstractPlugin
             ?>
 <script>
 jQuery(document).ready(function () {
-  EN.validate('form#contact-form', {
+  Mashine.validate('form#contact-form', {
     submitHandler: function(form) {
       form = jQuery(form);
       var responseContainer = jQuery('#ajax-response');
