@@ -69,8 +69,18 @@ class UpdateAssistant
 
         $this->_checkFilePermissions();
 
-        $url           = $this->_app->config()->get("sources.preferred_mirror");
-        $url          .= "/apps/Mashine/latest-release/?get=download";
+        $pref_state = $this->_app->config()->get("sources.preferred_state");
+        $url  = $this->_app->config()->get("sources.preferred_mirror");
+        $url .= "/apps/Mashine/latest-";
+
+        if ($pref_state == "beta") {
+            $url .= "build";
+        } else {
+            $url .= "release";
+        }
+
+        $url .= "/?get=download";
+
         $download_tmp  = PHPFrame_Filesystem::getSystemTempDir();
         $download_tmp .= DS."Mashine".DS."download";
 
@@ -145,8 +155,17 @@ class UpdateAssistant
      */
     private function _fetchLatestReleaseVersion()
     {
+        $pref_state = $this->_app->config()->get("sources.preferred_state");
         $url  = $this->_app->config()->get("sources.preferred_mirror");
-        $url .= "/apps/Mashine/latest-release/?get=version";
+        $url .= "/apps/Mashine/latest-";
+
+        if ($pref_state == "beta") {
+            $url .= "build";
+        } else {
+            $url .= "release";
+        }
+
+        $url .= "/?get=version";
 
         $cache_dir = $this->_app->getTmpDir().DS."updates";
         PHPFrame_Filesystem::ensureWritableDir($cache_dir);
