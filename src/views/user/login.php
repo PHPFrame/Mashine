@@ -107,4 +107,4 @@
 </div><!-- #content-body -->
 <?php endif; ?>
 
-<script>jQuery(document).ready(function() { EN.initLoginForm() });</script>
+<script>jQuery(document).ready(function() { Mashine.initLoginForm() });</script>

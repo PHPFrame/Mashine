@@ -1,19 +1,6 @@
-/**
- * public/assets/js/en.mshn.user.js
- *
- * Javascript
- *
- * @category  PHPFrame_Applications
- * @package   Mashine
- * @author    Lupo Montero <lupo@e-noise.com>
- * @copyright 2010 E-NOISE.COM LIMITED
- * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link      http://github.com/E-NOISE/Mashine
- */
+(function (jQuery, Mashine) {
 
-(function (jQuery, EN) {
-
-EN.userAutocomplete = function (input) {
+Mashine.prototype.userAutocomplete = function (input) {
   var inputOriginal = jQuery(input);
   var inputAutocomplete = jQuery('#autocomplete-owner');
 
@@ -49,7 +36,7 @@ EN.userAutocomplete = function (input) {
   });
 };
 
-EN.initContentForm = function () {
+Mashine.prototype.initContentForm = function () {
   var slugInput = jQuery('#slug');
   var titleInput = jQuery('#title');
   var tinymceTextArea = jQuery('textarea.tinymce');
@@ -107,7 +94,7 @@ EN.initContentForm = function () {
     tinymceTextArea.tinymce().hide();
   });
 
-  EN.validate('#content_form', {
+  Mashine.validate('#content_form', {
     submitHandler: function (form) {
       // switch to visual mode before saving to avoid backslash issue
       if (tinymceTextArea.css('display') === 'inline') {
@@ -162,7 +149,7 @@ EN.initContentForm = function () {
   });
 };
 
-})(jQuery, EN);
+})(jQuery, Mashine);
 
 // Wrap script in document ready event
 jQuery(document).ready(function (jQuery) {
@@ -180,5 +167,5 @@ jQuery(document).ready(function (jQuery) {
     }
   });
 
-  EN.userAutocomplete('input#owner');
+  Mashine.userAutocomplete('input#owner');
 });

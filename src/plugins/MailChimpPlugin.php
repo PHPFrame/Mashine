@@ -151,7 +151,7 @@ jQuery(document).ready(function ($) {
   var subscribeBtn = $('#mailchimp-subscribe-btn');
   var originalSubscribeLabel = subscribeBtn.val();
 
-  EN.validate('#mailchimp-subscription-form', {
+  Mashine.validate('#mailchimp-subscription-form', {
     submitHandler: function (e) {
       var form = $(e);
 
