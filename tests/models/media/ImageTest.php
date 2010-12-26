@@ -43,17 +43,19 @@ class ImageTest extends MVCTestCase
 
     public function test_getThumbURL()
     {
+        $base_url = $this->app()->config()->get("base_url");
         $this->assertEquals(
-            "http://localhost/mashine/media/thumb/Invierno.jpg",
+            $base_url."media/thumb/Invierno.jpg",
             $this->_fixture->getThumbURL()
         );
     }
 
     public function test_getThumbURLNoThumb()
     {
+        $base_url = $this->app()->config()->get("base_url");
         $fixture = new Image($this->_config, "aridiculouslylongnameforadirectoryinnit/dddd/2007-01-20-018.jpg");
         $this->assertEquals(
-            "http://localhost/mashine/assets/img/no_thumb.png",
+            $base_url."assets/img/no_thumb.png",
             $fixture->getThumbURL()
         );
     }
