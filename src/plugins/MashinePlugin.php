@@ -61,8 +61,8 @@ class MashinePlugin extends AbstractPlugin
      */
     public function __construct(PHPFrame_Application $app)
     {
-        // include($app->getInstallDir().DS."scripts/Upgrade-0.1.3-to-0.1.4.php");
-        // $upgrade_obj = new Upgrade_0_1_3_to_0_1_4($app);
+        // include($app->getInstallDir().DS."scripts/Upgrade-0.1.4-to-0.1.5.php");
+        // $upgrade_obj = new Upgrade_0_1_4_to_0_1_5($app);
         // var_dump($upgrade_obj->run());
         // exit;
 
@@ -95,7 +95,7 @@ class MashinePlugin extends AbstractPlugin
             $registry->set('api_controllers', $api_controllers);
         }
 
-        // $this->options[$this->getOptionsPrefix()."version"] = "0.1.4";
+        // $this->options[$this->getOptionsPrefix()."version"] = "0.1.5";
 
         if ($app->session()->isAdmin()
             && !$app->request()->ajax()
@@ -294,7 +294,7 @@ class MashinePlugin extends AbstractPlugin
             $installer->installDB();
         }
 
-        $this->options[$this->getOptionsPrefix()."version"] = "0.1.4";
+        $this->options[$this->getOptionsPrefix()."version"] = "0.1.5";
     }
 
     /**
