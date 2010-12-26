@@ -1,6 +1,9 @@
 .DS_Store
 *.swp
 Mashine.tmproj
+build/coverage/
+build/dist/
+build/doc/
 build/logs/
 etc/phpframe.ini
 tmp/
