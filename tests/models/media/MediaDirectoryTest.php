@@ -122,8 +122,9 @@ class MediaDirectoryTest extends MVCTestCase
 
     public function test_getThumbURL()
     {
+        $base_url = $this->app()->config()->get("base_url");
         $this->assertEquals(
-            "http://localhost/mashine/media/thumb/animagewithaveryrverylongnameorwhat.jpg",
+            $base_url."media/thumb/animagewithaveryrverylongnameorwhat.jpg",
             $this->_fixture->getThumbURL()
         );
     }
@@ -132,8 +133,9 @@ class MediaDirectoryTest extends MVCTestCase
     {
         $fixture = new MediaDirectory($this->_config, "aridiculouslylongnameforadirectoryinnit/dddd");
 
+        $base_url = $this->app()->config()->get("base_url");
         $this->assertEquals(
-            "http://localhost/mashine/assets/img/no_thumb.png",
+            $base_url."assets/img/no_thumb.png",
             $fixture->getThumbURL()
         );
     }
