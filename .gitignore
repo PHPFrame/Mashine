@@ -1,6 +1,7 @@
 .DS_Store
 *.swp
 Mashine.tmproj
+build/logs/
 etc/phpframe.ini
 tmp/
 var/
