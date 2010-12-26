@@ -80,7 +80,7 @@ if (is_array($footer) && count($footer) > 0) {
 
 <script>
 jQuery(document).ready(function() {
-	EN.infiniteScrolling('#content-infinite-scrolling-trigger');
+	Mashine.infiniteScrolling('#content-infinite-scrolling-trigger');
 });
 </script>
 <?php endif; ?>

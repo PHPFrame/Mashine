@@ -7,26 +7,13 @@
  * This file gets replaced in the automated build. The newly created file will
  * contain a compressed script containing all the included files, so that form
  * the theme we only need to include this file.
- *
- * @category  PHPFrame_Applications
- * @package   Mashine
- * @author    Lupo Montero <lupo@e-noise.com>
- * @copyright 2010 E-NOISE.COM LIMITED
- * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link      http://github.com/E-NOISE/Mashine
  */
 
-/**
- * Include external Javascript file.
- *
- * @param string src A string with the URL to the external script.
- *
- * @return void
- * @since  1.0
- */
-var includeScript = function(src) {
-    document.write('<script src="' + src + '"></script>');
+var includeScript = function (src) {
+  document.write('<script src="' + src + '"></script>');
 };
+
+includeScript('assets/js/x.js');
 
 /**
  * Include jQuery plugins bundle. This bundle file contains the following
@@ -43,4 +30,3 @@ includeScript('assets/js/jquery/jquery.bundle.min.js');
  * Include mashine's core js
  */
 includeScript('assets/js/mshn.core.js');
-
