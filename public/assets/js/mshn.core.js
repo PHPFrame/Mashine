@@ -207,6 +207,9 @@ Mashine.prototype.renderPosts = function (posts) {
     str += '</p>';
 
     str += '<footer>';
+    if (post.comments) {
+      str += '<p><a href="' + post.slug + '#disqus_thread">Comments</a></p>';
+    }
     str += '<p>Share: ';
     str += '<a href="http://www.facebook.com/sharer.php?u=' + post.url + '&t=' + post.title + '">';
     str += 'Facebook</a> | ';
@@ -223,10 +226,10 @@ Mashine.prototype.renderPosts = function (posts) {
   return str;
 };
 
-Mashine.prototype.infiniteScrolling = function (triggerSelector, renderer) {
+Mashine.prototype.infiniteScrolling = function (trigger, renderer) {
   var
     self = this,
-    trigger = $(triggerSelector),
+    trigger = $(trigger),
     loading = false,
     end = false;
 
