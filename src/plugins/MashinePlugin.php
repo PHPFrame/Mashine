@@ -378,8 +378,11 @@ class MashinePlugin extends AbstractPlugin
             exit(0);
         }
 
-        $this->_rewriteLinksInResponse();
-        $this->_replaceShortTags();
+        $html = $response->body();
+        $html = $this->_rewriteLinksInResponse($html);
+        $html = $this->_replaceShortTags($html);
+        //$html = $this->_ieConditionalStyles($html);
+        $response->body($html, false);
     }
 
     /**
@@ -538,10 +541,17 @@ class MashinePlugin extends AbstractPlugin
         }
     }
 
-    private function _rewriteLinksInResponse()
+    /**
+     * Rewrite URLs in response.
+     *
+     * @param string $html The body of the HTML document as a string.
+     *
+     * @return string
+     */
+    private function _rewriteLinksInResponse($html)
     {
         // Get response body
-        $body     = $this->app()->response()->document()->body();
+        //$body     = $this->app()->response()->document()->body();
         $base_url = $this->app()->config()->get("base_url");
 
         // Build sub patterns
@@ -563,44 +573,46 @@ class MashinePlugin extends AbstractPlugin
         $replacements[] = '"'.$base_url.'${1}"';
 
         // Replace the patterns in response body
-        $body = preg_replace($patterns, $replacements, $body);
-
+        $html = preg_replace($patterns, $replacements, $html);
+        return $html;
         // Set the processed body back in the response
-        $this->app()->response()->document()->body($body);
+        //$this->app()->response()->document()->body($body);
     }
 
     /**
      * Replace short tags.
      *
+     * @param string $html The body of the HTML document as a string.
+     *
      * @return void
      * @since  1.0
      */
-    private function _replaceShortTags()
+    private function _replaceShortTags($html)
     {
         $request           = $this->app()->request();
-        $response          = $this->app()->response();
-        $body              = $response->body();
         $short_code_parser = new ShortCodeParser();
         $keywords          = $this->shortCodes()->getKeywords();
         $regex             = "/\[(".implode("|", $keywords).")(\s+.*)?\]/";
 
-        if (preg_match_all($regex, $body, $matches)) {
+        if (preg_match_all($regex, $html, $matches)) {
             foreach ($matches[0] as $short_code) {
-                $array = $short_code_parser->parse($short_code);
-
+                $array   = $short_code_parser->parse($short_code);
                 $replace = $this->shortCodes()->call($array[0], $array[1]);
-
                 $pattern = '/'.preg_quote($short_code, '/').'/';
-                $body = preg_replace($pattern, $replace, $body);
+                $html    = preg_replace($pattern, $replace, $html);
             }
         }
 
-        if ($request->controllerName() == "content" && $request->action() == "form") {
-            $body = preg_replace("/\[@@(.*)@@\]/", "[$1]", $body);
+        if ($request->controllerName() == "content"
+            && $request->action() == "form"
+        ) {
+            $html = preg_replace("/\[@@(.*)@@\]/", "[$1]", $html);
         }
 
+        return $html;
+
         // Set processed response back in response
-        $response->body($body, false);
+        //$response->body($body, false);
     }
 
     /**
