@@ -1,10 +1,10 @@
-/*
+/*!
  * jQuery validation plug-in 1.7
  *
  * http://bassistance.de/jquery-plugins/jquery-plugin-validation/
  * http://docs.jquery.com/Plugins/Validation
  *
- * Copyright (c) 2006 - 2008 JÃ¶rn Zaefferer
+ * Copyright (c) 2006 - 2008 Joern Zaefferer
  *
  * $Id: jquery.validate.js 6403 2009-06-17 14:27:16Z joern.zaefferer $
  *
