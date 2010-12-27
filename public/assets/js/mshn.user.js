@@ -1,6 +1,6 @@
 (function (jQuery, Mashine) {
 
-Mashine.prototype.userAutocomplete = function (input) {
+Mashine.userAutocomplete = function (input) {
   var inputOriginal = jQuery(input);
   var inputAutocomplete = jQuery('#autocomplete-owner');
 
@@ -36,7 +36,7 @@ Mashine.prototype.userAutocomplete = function (input) {
   });
 };
 
-Mashine.prototype.initContentForm = function () {
+Mashine.initContentForm = function () {
   var slugInput = jQuery('#slug');
   var titleInput = jQuery('#title');
   var tinymceTextArea = jQuery('textarea.tinymce');
