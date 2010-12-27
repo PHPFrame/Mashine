@@ -1,6 +1,4 @@
 /**
- * public/assets/js/mashine.js
- *
  * This file's only role is to include all other scripts that need to be
  * available to all users throughout the whole site.
  *
@@ -13,20 +11,9 @@ var includeScript = function (src) {
   document.write('<script src="' + src + '"></script>');
 };
 
+includeScript('assets/js/jquery/jquery-ui-1.8.6.custom.min.js');
+includeScript('assets/js/jquery/jquery.strengthy.min.js');
+includeScript('assets/js/jquery/jquery.tipsy.js');
+includeScript('assets/js/jquery/jquery.validate.js');
 includeScript('assets/js/x.js');
-
-/**
- * Include jQuery plugins bundle. This bundle file contains the following
- * plugins in the given order:
- *
- * - jQuery UI 1.8 (custom build incl. Autocomplete, Dialog and Datepicker)
- * - jQuery strengthy 0.0.3
- * - jQuery tipsy (not sure which version)
- * - jQuery validate 1.6
- */
-includeScript('assets/js/jquery/jquery.bundle.min.js');
-
-/**
- * Include mashine's core js
- */
 includeScript('assets/js/mshn.core.js');
