@@ -18,7 +18,7 @@
   <property name="tmp.dir" value="${build.dir}/tmp" />
   <property name="assets.dir" value="${tmp.dir}/public/assets" />
   <property name="theme.dir" value="${tmp.dir}/public/themes/default" />
-  <property name="release.version" value="0.1.5-beta" />
+  <property name="release.version" value="0.1.5" />
 
   <!-- Prepare directories -->
   <target name="prepare">
