@@ -1,3 +1,12 @@
+/*!
+ * Mashine Javascript object (users extension).
+ *
+ * Copyright 2010, Lupo Montero
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ */
+
+/*jslint eqeqeq: true */
+
 (function (jQuery, Mashine) {
 
 Mashine.userAutocomplete = function (input) {
