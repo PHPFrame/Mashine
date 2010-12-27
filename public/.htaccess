@@ -2,11 +2,16 @@
 # http://github.com/paulirish/html5-boilerplate
 
 RewriteEngine on
+
+# Uncomment directive below if needed
 #RewriteBase /
+
+# Rules for versioned static files
+RewriteRule ^(.*)--v.*\.(js|css)$ $1.$2 [L]
+
+# Bootstrap
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule (.*) index.php
-#RewriteRule !\.(ico|js|gif|jpg|png|css|swf|txt|htm|woff|ttf|eot|svg)$ index.php
-
 
 # Enable GZIP
 <IfModule mod_deflate.c>
