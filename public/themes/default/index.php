@@ -9,19 +9,22 @@ $session   = $app->session();
 $sysevents = $session->getSysevents();
 $renderer  = $app->response()->renderer();
 $app_name  = $app->config()->get("app_name");
+$app_ver   = $app->config()->get("version");
 $base_url  = $app->config()->get("base_url");
 $request   = $app->request();
 $content   = $request->param("_content_active");
+$options   = $request->param("_options");
+$mshn_ver  = $options["mashineplugin_version"];
 
 // Add Javascript and CSS
 $this->addScript("http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js");
 $this->addScript($base_url."assets/js/modernizr-1.6.min.js");
 
-$this->addStyleSheet($base_url."assets/css/mashine.css");
+$this->addStyleSheet($base_url."assets/css/mashine--v".$mshn_ver.".css");
 if ($user->groupId() > 0 && $user->groupId() <= 2) {
-    $this->addStyleSheet($base_url."assets/css/mashine.user.css");
+    $this->addStyleSheet($base_url."assets/css/mashine.user--v".$mshn_ver.".css");
 }
-$this->addStyleSheet($base_url."themes/default/css/styles.css");
+$this->addStyleSheet($base_url."themes/default/css/styles--v".$app_ver.".css");
 ?>
 
 <div id="wrapper">
@@ -58,7 +61,7 @@ $this->addStyleSheet($base_url."themes/default/css/styles.css");
 </footer>
 
 <script>var base_url = '<?php echo $base_url; ?>';</script>
-<script src="<?php echo $base_url; ?>assets/js/mashine.js"></script>
+<script src="<?php echo $base_url."assets/js/mashine--v".$mshn_ver.".js"; ?>"></script>
 <?php if ($user->groupId() > 0 && $user->groupId() <= 2) : ?>
-<script src="<?php echo $base_url; ?>assets/js/mashine.user.js"></script>
+<script src="<?php echo $base_url."assets/js/mashine.user--v".$mshn_ver.".js"; ?>"></script>
 <?php endif; ?>
