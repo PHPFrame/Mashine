@@ -429,6 +429,11 @@ class MashinePlugin extends AbstractPlugin
             $slug = "home";
         }
 
+        // Remove trailing slash from slug if present
+        if ($slug[(strlen($slug)-1)] == "/") {
+            $slug = substr($slug, 0, (strlen($slug)-1));
+        }
+
         $request->param("slug", $slug);
 
         // Do not build tree if API call
