@@ -1,15 +1,15 @@
-/**
- * The EN (E-NOISE) Javascript object
+/*!
+ * Mashine Javascript object.
  *
- * @author  Lupo Montero <lupo@e-noise.com>
- * @version 0.0.1
+ * Copyright 2010, Lupo Montero
+ * Dual licensed under the MIT or GPL Version 2 licenses.
  */
 
 /*jslint eqeqeq: true */
 
-(function (window, jQuery) {
+(function (window, $) {
 
-var EN = function (options) {
+var Mashine = function (options) {
   // Enforce that new instance is created if invoked without 'new' keyword
   // John Resig: http://ejohn.org/apps/learn/
   if (!(this instanceof arguments.callee)) {
@@ -19,61 +19,39 @@ var EN = function (options) {
   //console.log(options);
 };
 
-EN.prototype.parseString = function (str) {
+Mashine.prototype.validate = function (selector, options) {
   var
-    pairs = str.split('&'),
-    params = {},
-    le = pairs.length,
-    i,
-    current;
-
-  for (i=0; i<le; i++) {
-    current = pairs[i].split('=');
-    params[current[0]] = current[1];
-  }
-
-  return params;
-};
-
-EN.prototype.validate = function (selector, options) {
-  var objs = jQuery(selector);
-  var opts = {
-    highlight: function (e, errorClass) {
-      jQuery(e).addClass('validate-error');
-    },
-    unhighlight: function (e, errorClass) {
-      jQuery(e).removeClass('validate-error').css('color', '#222');
-    },
-    errorPlacement: function (error, element) {
-      if (jQuery(element).hasClass('strongpass')) {
-        element.after(error);
+    objs = $(selector),
+    opts = {
+      highlight: function (e, errorClass) {
+        $(e).addClass('validate-error');
+      },
+      unhighlight: function (e, errorClass) {
+        $(e).removeClass('validate-error').css('color', '#222');
+      },
+      errorPlacement: function (error, element) {
+        if ($(element).hasClass('strongpass')) {
+          element.after(error);
+        }
       }
-    }
-  };
+    };
 
   if (objs.length < 1) {
     return false;
   }
 
-  if (typeof options === 'object') {
-    for (var key in options) {
-      if (options.hasOwnProperty(key)) {
-        opts[key] = options[key];
-      }
-    }
-  }
-
+  opts = $.extend(opts, options || {});
   objs.validate(opts);
 };
 
 var confirmDiv;
 var confirmActiveTrigger;
 
-EN.prototype.confirm = function (selector) {
+Mashine.prototype.confirm = function (selector) {
   // Add HTML element to show the confirmation dialog
   if (typeof confirmDiv === 'undefined') {
-    jQuery("body").append('<div id="confirm-dialog" title="Delete entry"></div>');
-    confirmDiv = jQuery("#confirm-dialog");
+    $("body").append('<div id="confirm-dialog" title="Delete entry"></div>');
+    confirmDiv = $("#confirm-dialog");
 
     // Add dialog behaviour to the confirm box
     confirmDiv.dialog({
@@ -88,53 +66,55 @@ EN.prototype.confirm = function (selector) {
       },
       buttons: {
         'Ok': function () {
-          jQuery(this).dialog('close');
+          $(this).dialog('close');
           window.location = confirmActiveTrigger.attr('href');
         },
         'Cancel': function () {
-          jQuery(this).dialog('close');
+          $(this).dialog('close');
         }
       }
     });
   }
 
-  jQuery(selector).click(function (e) {
+  $(selector).click(function (e) {
     e.preventDefault();
-    confirmActiveTrigger = jQuery(this);
+    confirmActiveTrigger = $(this);
     confirmDiv.html(confirmActiveTrigger.attr("title")).dialog('open');
   });
 };
 
-EN.prototype.initToolTips = function (selector) {
+Mashine.prototype.initToolTips = function (selector) {
   var options = {
     gravity: 'w',
     html: true,
     opacity: 0.8
   };
 
-  jQuery(selector).tipsy(options).click(function (e) {
-    if (jQuery(e).attr('href') === '#') {
+  $(selector).tipsy(options).click(function (e) {
+    if ($(e).attr('href') === '#') {
       e.preventDefault();
     }
   });
 };
 
-EN.prototype.initLoginForm = function () {
-  var that = this;
-  var loginButton = jQuery('#login-button');
-  var ajaxResponse = jQuery('#login-ajax-response');
-  var forgotPassContainer = jQuery('#forgotpass');
+Mashine.prototype.initLoginForm = function () {
+  var
+    self = this,
+    loginButton = $('#login-button'),
+    ajaxResponse = $('#login-ajax-response'),
+    forgotPassContainer = $('#forgotpass');
 
-  that.validate('#login-form', {
+  self.validate('#login-form', {
     submitHandler: function (e) {
-      var form = jQuery(e);
-      var loginButtonOriginalVal = loginButton.val();
+      var
+        form = $(e),
+        loginButtonOriginalVal = loginButton.val();
 
       ajaxResponse.html(' ');
       loginButton.attr('disabled', true);
       loginButton.val('Logging in...');
 
-      that.mashineApi({
+      self.mashineApi({
         url: 'api/session/login',
         data: form.serialize(),
         success: function (data) {
@@ -145,7 +125,7 @@ EN.prototype.initLoginForm = function () {
             return false;
           }
         },
-        complete: function (XMLHttpRequest, textStatus) {
+        complete: function (xhr, textStatus) {
           loginButton.attr('disabled', false);
           loginButton.val(loginButtonOriginalVal);
         }
@@ -153,16 +133,16 @@ EN.prototype.initLoginForm = function () {
     }
   });
 
-  that.validate('#forgotpass-form');
+  self.validate('#forgotpass-form');
   forgotPassContainer.hide();
 
-  jQuery('a#forgotpass-link').bind('click', function (e) {
+  $('a#forgotpass-link').bind('click', function (e) {
     e.preventDefault();
     forgotPassContainer.toggle('slow');
   });
 };
 
-EN.prototype.mashineApi = function (options) {
+Mashine.prototype.mashineApi = function (options) {
   var opts = {
     url: 'api/usage',
     type: 'POST',
@@ -181,24 +161,25 @@ EN.prototype.mashineApi = function (options) {
 
   if (typeof options === 'object') {
     if (typeof options.data === 'string') {
-      options.data = this.parseString(options.data);
+      options.data = options.data.parse();
     }
 
-    if (typeof options.data === 'object' && typeof options.data.suppress_response_codes === 'undefined') {
+    if (typeof options.data === 'object' &&
+        typeof options.data.suppress_response_codes === 'undefined') {
       options.data.suppress_response_codes = 1;
     }
 
-    jQuery.extend(opts, options);
+    $.extend(opts, options);
   }
 
-  jQuery.ajax(opts);
+  $.ajax(opts);
 };
 
-EN.prototype.renderPosts = function (posts) {
-  var str = '';
+Mashine.prototype.renderPosts = function (posts) {
+  var str = '', i, post;
 
-  for (var i=0; i<posts.length; i++) {
-    var post = posts[i];
+  for (i=0; i<posts.length; i++) {
+    post = posts[i];
 
     str += '<article';
     if (+post.status === 0) {
@@ -226,6 +207,9 @@ EN.prototype.renderPosts = function (posts) {
     str += '</p>';
 
     str += '<footer>';
+    if (post.comments) {
+      str += '<p><a href="' + post.slug + '#disqus_thread">Comments</a></p>';
+    }
     str += '<p>Share: ';
     str += '<a href="http://www.facebook.com/sharer.php?u=' + post.url + '&t=' + post.title + '">';
     str += 'Facebook</a> | ';
@@ -242,30 +226,33 @@ EN.prototype.renderPosts = function (posts) {
   return str;
 };
 
-EN.prototype.infiniteScrolling = function (triggerSelector, renderer) {
-  var that = this;
-  var trigger = jQuery(triggerSelector);
-  var loading = false;
-  var end     = false;
+Mashine.prototype.infiniteScrolling = function (trigger, renderer) {
+  var
+    self = this,
+    trigger = $(trigger),
+    loading = false,
+    end = false;
 
   if (typeof renderer !== 'function') {
-    renderer = that.renderPosts;
+    renderer = self.renderPosts;
   }
 
-  jQuery(window).scroll(function () {
-    if (jQuery(window).scrollTop() === jQuery(document).height() - jQuery(window).height()) {
+  $(window).scroll(function () {
+    if ($(window).scrollTop() === $(document).height() - $(window).height()) {
       trigger.click();
     }
   });
 
   trigger.click(function (e) {
-    var el = jQuery(this);
-    var elOriginalHtml = el.html();
-    var classArray = el.attr('class').split('-');
-    var href = el.attr('href');
-    var hrefArray = href.split('?');
-    var hrefParams = hrefArray[1].split('&');
-    var data = { parent_id: classArray[1] };
+    var
+      el = $(this),
+      elOriginalHtml = el.html(),
+      classArray = el.attr('class').split('-'),
+      href = el.attr('href'),
+      hrefArray = href.split('?'),
+      hrefParams = hrefArray[1].split('&'),
+      data = { parent_id: classArray[1] },
+      i, pair;
 
     e.preventDefault();
 
@@ -275,17 +262,22 @@ EN.prototype.infiniteScrolling = function (triggerSelector, renderer) {
 
     loading = true;
 
-    for (var i=0; i<hrefParams.length; i++) {
-      var pair = hrefParams[i].split("=");
+    for (i=0; i<hrefParams.length; i++) {
+      pair = hrefParams[i].split("=");
       data[pair[0]] = pair[1];
     }
 
     el.html('Loading...');
 
-    that.mashineApi({
+    self.mashineApi({
       url: 'api/content',
       data: data,
       success: function (data) {
+        var
+          matches = href.match(/page=(\d+)/),
+          nextPage = parseInt(matches[1], 10) + 1,
+          nextHref = href.replace(/page=\d+/, 'page=' + nextPage);
+
         if (typeof data.error !== 'undefined') {
           alert(data.error.message);
           return;
@@ -298,14 +290,10 @@ EN.prototype.infiniteScrolling = function (triggerSelector, renderer) {
           return false;
         }
 
-        var matches = href.match(/page=(\d+)/);
-        var nextPage = parseInt(matches[1], 10) + 1;
-        var nextHref = href.replace(/page=\d+/, 'page=' + nextPage);
-
         el.attr('href', nextHref);
         el.html(elOriginalHtml);
 
-        jQuery('#content-body').append(renderer(data));
+        $('#content-body').append(renderer(data));
       },
       complete: function () {
           loading = false;
@@ -314,19 +302,19 @@ EN.prototype.infiniteScrolling = function (triggerSelector, renderer) {
   });
 };
 
-window.EN = new EN();
+window.Mashine = new Mashine();
 
 })(window, jQuery);
 
 // Init UI on dom ready
-jQuery(document).ready(function() {
-  EN.initToolTips('.tooltip');
-  EN.confirm('.confirm');
-  EN.validate('.validate');
+jQuery(document).ready(function($) {
+  Mashine.initToolTips('.tooltip');
+  Mashine.confirm('.confirm');
+  Mashine.validate('.validate');
 
   // close sysevent boxes
-  jQuery('.sysevents-item-close-btn').live('click', function(e) {
+  $('.sysevents-item-close-btn').live('click', function(e) {
     e.preventDefault();
-    jQuery(this).closest('.sysevents-item').fadeOut('1500');
+    $(this).closest('.sysevents-item').fadeOut('1500');
   });
 });

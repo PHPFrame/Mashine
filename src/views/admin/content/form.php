@@ -322,5 +322,5 @@ if ($content instanceof FeedContent
 
 </div><!-- #content-body -->
 
-<script>jQuery(document).ready(function() { EN.initContentForm(); });</script>
+<script>jQuery(document).ready(function() { Mashine.initContentForm(); });</script>
 

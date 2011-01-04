@@ -88,10 +88,20 @@ class ContentApiController extends PHPFrame_RESTfulController
                 $ret = $collection;
             } else {
                 $ret = array();
+                $options = $this->request()->param("_options");
+                if ($this->app()->plugins()->isEnabled("SocialPlugin")
+                    && $options["socialplugin_disqus_enable"]
+                ) {
+                    $comments = true;
+                } else {
+                    $comments = false;
+                }
+
                 foreach ($collection as $obj) {
                     $array = array(
                         "id" => $obj->id(),
                         "url" => $this->config()->get("base_url").$obj->slug(),
+                        "slug" => $obj->slug(),
                         "title" => $obj->title(),
                         "pub_date" => date("Y-m-d\TH:i", strtotime($obj->pubDate())),
                         "pub_date_human" => date("l jS F Y", strtotime($obj->pubDate())),
@@ -102,6 +112,10 @@ class ContentApiController extends PHPFrame_RESTfulController
 
                     if (method_exists($obj, "excerpt")) {
                         $array["excerpt"] = $obj->excerpt();
+                    }
+
+                    if ($comments) {
+                      $array["comments"] = true;
                     }
 
                     $ret[] = $array;

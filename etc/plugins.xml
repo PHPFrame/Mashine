@@ -6,7 +6,7 @@
         <description />
         <author>Lupo Montero</author>
         <date>2010-05-03</date>
-        <version>0.1.4</version>
+        <version>0.1.5</version>
         <license>BSD New</license>
         <license_url>http://www.opensource.org/licenses/bsd-license.php</license_url>
         <enabled>1</enabled>
@@ -90,24 +90,6 @@
         <perms>664</perms>
     </PHPFrame_PluginInfo>
     <PHPFrame_PluginInfo>
-        <name>ContactFormPlugin</name>
-        <channel>http://dist.phpframe.org</channel>
-        <summary>Simple contact form.</summary>
-        <description>Simple contact form.</description>
-        <author>Lupo Montero</author>
-        <date>2010-05-15</date>
-        <version>1.0</version>
-        <license>BSD New</license>
-        <license_url>http://www.opensource.org/licenses/bsd-license.php</license_url>
-        <enabled />
-        <id>4</id>
-        <ctime>1252985443</ctime>
-        <mtime>1288742240</mtime>
-        <owner>1</owner>
-        <group>2</group>
-        <perms>664</perms>
-    </PHPFrame_PluginInfo>
-    <PHPFrame_PluginInfo>
         <name>MailChimpPlugin</name>
         <channel>http://dist.phpframe.org</channel>
         <summary>Mailchimp integration.</summary>
@@ -121,6 +103,24 @@
         <id>5</id>
         <ctime>1252985443</ctime>
         <mtime>1289509024</mtime>
+        <owner>1</owner>
+        <group>2</group>
+        <perms>664</perms>
+    </PHPFrame_PluginInfo>
+    <PHPFrame_PluginInfo>
+        <name>ContactFormPlugin</name>
+        <channel>http://dist.phpframe.org</channel>
+        <summary>Simple contact form.</summary>
+        <description>Simple contact form.</description>
+        <author>Lupo Montero</author>
+        <date>2010-05-15</date>
+        <version>1.0</version>
+        <license>BSD New</license>
+        <license_url>http://www.opensource.org/licenses/bsd-license.php</license_url>
+        <enabled>1</enabled>
+        <id>4</id>
+        <ctime>1252985443</ctime>
+        <mtime>1291030895</mtime>
         <owner>1</owner>
         <group>2</group>
         <perms>664</perms>
