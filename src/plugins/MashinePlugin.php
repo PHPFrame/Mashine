@@ -381,8 +381,9 @@ class MashinePlugin extends AbstractPlugin
         $html = $response->body();
         $html = $this->_rewriteLinksInResponse($html);
         $html = $this->_replaceShortTags($html);
-        //$html = $this->_ieConditionalStyles($html);
         $response->body($html, false);
+
+        $this->_addBodyClassAttr();
     }
 
     /**
@@ -573,10 +574,7 @@ class MashinePlugin extends AbstractPlugin
         $replacements[] = '"'.$base_url.'${1}"';
 
         // Replace the patterns in response body
-        $html = preg_replace($patterns, $replacements, $html);
-        return $html;
-        // Set the processed body back in the response
-        //$this->app()->response()->document()->body($body);
+        return preg_replace($patterns, $replacements, $html);
     }
 
     /**
@@ -610,9 +608,51 @@ class MashinePlugin extends AbstractPlugin
         }
 
         return $html;
+    }
 
-        // Set processed response back in response
-        //$response->body($body, false);
+    /**
+     * Add HTML body classes based on content.
+     *
+     * @return void
+     */
+    private function _addBodyClassAttr()
+    {
+        $request  = $this->app()->request();
+        $doc = $this->app()->response()->document();
+        $content = $request->param("_content_active");
+
+        if ((!$doc instanceof PHPFrame_HTMLDocument)) {
+            return;
+        }
+
+        $body_class = $request->controllerName()."-".$request->action();
+
+        if ($content instanceof Content) {
+            $body_class .= " content-type-";
+
+            switch (get_class($content)) {
+            case "FeedContent" :
+                $body_class .= "feed";
+                break;
+            case "MVCContent" :
+                $body_class .= "mvc";
+                break;
+            case "PageContent" :
+                $body_class .= "page";
+                break;
+            case "PostContent" :
+                $body_class .= "post";
+                break;
+            case "PostsCollectionContent" :
+                $body_class .= "blog";
+                break;
+            }
+
+            $body_class .= " content-item-".$content->id();
+        }
+
+        $body_node = $doc->dom()->getElementsByTagName("body")->item(0);
+        $doc->addNodeAttr($body_node, "class", $body_class);
     }
 
     /**
