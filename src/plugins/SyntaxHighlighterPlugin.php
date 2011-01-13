@@ -51,12 +51,15 @@ class SyntaxHighlighterPlugin extends AbstractPlugin
     public function preApplyTheme()
     {
         $document = $this->app()->response()->document();
-
-        if ($document instanceof PHPFrame_HTMLDocument) {
-            $css_url = $this->app()->config()->get("base_url")."assets/css/";
-            $document->addStyleSheet($css_url."syntaxhighlighter/shCore.css");
-            $document->addStyleSheet($css_url."syntaxhighlighter/shThemeRDark.css");
+        if (!$document instanceof PHPFrame_HTMLDocument
+            || $this->app()->request()->ajax()
+        ) {
+            return;
         }
+
+        $css_url = $this->app()->config()->get("base_url")."assets/css/";
+        $document->addStyleSheet($css_url."syntaxhighlighter/shCore.css");
+        $document->addStyleSheet($css_url."syntaxhighlighter/shThemeRDark.css");
     }
 
     public function postApplyTheme()
@@ -64,7 +67,9 @@ class SyntaxHighlighterPlugin extends AbstractPlugin
         $base_url = $this->app()->config()->get("base_url");
         $document = $this->app()->response()->document();
 
-        if (!$document instanceof PHPFrame_HTMLDocument) {
+        if (!$document instanceof PHPFrame_HTMLDocument
+            || $this->app()->request()->ajax()
+        ) {
             return;
         }
 
