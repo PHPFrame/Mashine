@@ -598,7 +598,7 @@ var disqus_shortname = '<?php echo $shortname; ?>';
                 }
 
                 if ($fb) {
-                    $description = preg_replace("/^".preg_quote($title)."<br\/><br\/>(<br\/>)?/", "", $description);
+                    $description = preg_replace("@^".preg_quote($title)."<br\/><br\/>(<br\/>)?@", "", $description);
                     $link = "http://www.facebook.com".$link;
                 }
 
@@ -688,4 +688,3 @@ var disqus_shortname = '<?php echo $shortname; ?>';
         return $tweet;
     }
 }
-
