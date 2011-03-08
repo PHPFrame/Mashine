@@ -128,6 +128,7 @@ class ContentController extends PHPFrame_ActionController
             $format = $this->request()->param("format", null);
             if ($format == "rss") {
                 $rss = new PHPFrame_RSSDocument();
+                $rss->title($content->title());
                 $rss->link($base_url.$content->slug());
                 $rss->description($content->body());
 
