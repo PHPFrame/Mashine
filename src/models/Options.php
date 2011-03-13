@@ -45,6 +45,10 @@ class Options
 
         $sql = "SELECT name, value FROM #__options WHERE autoload = 1";
         foreach ($db->fetchAssocList($sql) as $row) {
+            if (preg_match("/^a:\d+:\{.*\}$/", $row["value"])) {
+                $row["value"] = unserialize($row["value"]);
+            }
+
             $this->_data[$row["name"]] = $row["value"];
         }
     }
@@ -107,6 +111,10 @@ class Options
         }
 
         $params = array(":name"=>$offset, ":value"=>$value);
+
+        if (is_array($value)) {
+            $params[":value"] = serialize($value);
+        }
 
         $this->_db->query($sql, $params);
 
