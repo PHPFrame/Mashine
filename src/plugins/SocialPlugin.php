@@ -43,7 +43,17 @@ class SocialPlugin extends AbstractPlugin
 
         $this->hooks()->addCallBack(
             "post_footer",
+            array($this, "getShareLinks")
+        );
+
+        $this->hooks()->addCallBack(
+            "post_footer",
             array($this, "getDisqusComments")
+        );
+
+        $this->hooks()->addCallBack(
+            "posts_footer",
+            array($this, "getShareLinks")
         );
 
         $this->hooks()->addCallBack(
@@ -52,6 +62,25 @@ class SocialPlugin extends AbstractPlugin
         );
 
         $this->shortCodes()->add("social", array($this, "handleSocialShortCode"));
+    }
+
+    public function getShareLinks(array $args)
+    {
+        $base_url = $this->app()->config()->get("base_url");
+        $post = $args[0];
+        $str  = "<p>Share: ";
+        $str .= "<a href=\"http://www.facebook.com/sharer.php?u=";
+        $str .= urlencode($base_url.$post->slug())."&t=";
+        $str .= urlencode($post->title())."\">Facebook</a> | ";
+        $str .= "<a href=\"http://twitter.com/?status=";
+        $str .= urlencode($post->title()).":%20";
+        $str .= urlencode($base_url.$post->slug())."\">Twitter</a> | ";
+        $str .= "<a href=\"http://www.delicious.com/save?jump=yes&url=";
+        $str .= urlencode($base_url.$post->slug())."&title=";
+        $str .= urlencode($post->title())."\">Del.icio.us</a>";
+        $str .= "</p>";
+
+        return $str;
     }
 
     /**
@@ -611,6 +640,9 @@ var disqus_shortname = '<?php echo $shortname; ?>';
                 }
 
                 if ($show_description) {
+                    // remove js from onmousedown handler. fb adds this and IE
+                    // goes bananas...
+                    $description = preg_replace("/onmousedown=[\"'].+?;[\"']/i", "", $description);
                     $str .= "<p>".$description."</p>\n";
                 }
 
