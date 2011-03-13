@@ -377,7 +377,9 @@ var facebook_connect = function () {
                 $document->addScript($script);
             }
 
-            if ($this->options[$this->getOptionsPrefix()."disqus_enable"]) {
+            if (($content instanceof PostContent || $content instanceof PostsCollectionContent)
+                && $this->options[$this->getOptionsPrefix()."disqus_enable"]
+            ) {
                 $shortname = $this->options[$this->getOptionsPrefix()."disqus_shortname"];
                 ob_start();
                 ?>
