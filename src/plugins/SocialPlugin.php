@@ -36,51 +36,14 @@ class SocialPlugin extends AbstractPlugin
     {
         parent::__construct($app);
 
-        $this->hooks()->addCallBack(
-            "login_form",
-            array($this, "getLoginForm")
-        );
-
-        $this->hooks()->addCallBack(
-            "post_footer",
-            array($this, "getShareLinks")
-        );
-
-        $this->hooks()->addCallBack(
-            "post_footer",
-            array($this, "getDisqusComments")
-        );
-
-        $this->hooks()->addCallBack(
-            "posts_footer",
-            array($this, "getShareLinks")
-        );
-
-        $this->hooks()->addCallBack(
-            "posts_footer",
-            array($this, "getDisqusCommentCount")
-        );
+        $hooks = $this->hooks();
+        $hooks->addCallBack("login_form", array($this, "getLoginForm"));
+        $hooks->addCallBack("post_footer", array($this, "getShareLinks"));
+        $hooks->addCallBack("post_footer", array($this, "getDisqusComments"));
+        $hooks->addCallBack("posts_footer", array($this, "getShareLinks"));
+        $hooks->addCallBack("posts_footer", array($this, "getDisqusCommentCount"));
 
         $this->shortCodes()->add("social", array($this, "handleSocialShortCode"));
-    }
-
-    public function getShareLinks(array $args)
-    {
-        $base_url = $this->app()->config()->get("base_url");
-        $post = $args[0];
-        $str  = "<p>Share: ";
-        $str .= "<a href=\"http://www.facebook.com/sharer.php?u=";
-        $str .= urlencode($base_url.$post->slug())."&t=";
-        $str .= urlencode($post->title())."\">Facebook</a> | ";
-        $str .= "<a href=\"http://twitter.com/?status=";
-        $str .= urlencode($post->title()).":%20";
-        $str .= urlencode($base_url.$post->slug())."\">Twitter</a> | ";
-        $str .= "<a href=\"http://www.delicious.com/save?jump=yes&url=";
-        $str .= urlencode($base_url.$post->slug())."&title=";
-        $str .= urlencode($post->title())."\">Del.icio.us</a>";
-        $str .= "</p>";
-
-        return $str;
     }
 
     /**
@@ -262,6 +225,25 @@ var facebook_connect = function () {
             $str .= "    <img src=\"assets/img/Sign-in-with-Twitter-lighter.png\" ";
             $str .= "alt=\"Log in with Twitter\" />";
         }
+
+        return $str;
+    }
+
+    public function getShareLinks(array $args)
+    {
+        $base_url = $this->app()->config()->get("base_url");
+        $post = $args[0];
+        $str  = "<p>Share: ";
+        $str .= "<a href=\"http://www.facebook.com/sharer.php?u=";
+        $str .= urlencode($base_url.$post->slug())."&t=";
+        $str .= urlencode($post->title())."\">Facebook</a> | ";
+        $str .= "<a href=\"http://twitter.com/?status=";
+        $str .= urlencode($post->title()).":%20";
+        $str .= urlencode($base_url.$post->slug())."\">Twitter</a> | ";
+        $str .= "<a href=\"http://www.delicious.com/save?jump=yes&url=";
+        $str .= urlencode($base_url.$post->slug())."&title=";
+        $str .= urlencode($post->title())."\">Del.icio.us</a>";
+        $str .= "</p>";
 
         return $str;
     }
