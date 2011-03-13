@@ -233,16 +233,16 @@ var facebook_connect = function () {
     {
         $base_url = $this->app()->config()->get("base_url");
         $post = $args[0];
+        $title = urlencode($post->title());
+        $permalink = urlencode($base_url.$post->slug());
+
         $str  = "<p>Share: ";
         $str .= "<a href=\"http://www.facebook.com/sharer.php?u=";
-        $str .= urlencode($base_url.$post->slug())."&t=";
-        $str .= urlencode($post->title())."\">Facebook</a> | ";
+        $str .= $permalink."&t=".$title."\">Facebook</a> | ";
         $str .= "<a href=\"http://twitter.com/?status=";
-        $str .= urlencode($post->title()).":%20";
-        $str .= urlencode($base_url.$post->slug())."\">Twitter</a> | ";
+        $str .= $title.":%20".$permalink."\">Twitter</a> | ";
         $str .= "<a href=\"http://www.delicious.com/save?jump=yes&url=";
-        $str .= urlencode($base_url.$post->slug())."&title=";
-        $str .= urlencode($post->title())."\">Del.icio.us</a>";
+        $str .= $permalink."&title=".$title."\">Del.icio.us</a>";
         $str .= "</p>";
 
         return $str;
