@@ -75,7 +75,7 @@ strong {
 }
 
 pre {
-  font-size: 0.8em;
+  font-size: 1em;
 }
 
 fieldset {
@@ -201,4 +201,8 @@ footer {
 
 .unpublished {
   background: #F0F0F0;
+}
+
+.syntaxhighlighter {
+  padding: 10px;
 }
