@@ -17,8 +17,8 @@ $options   = $request->param("_options");
 $mshn_ver  = $options["mashineplugin_version"];
 
 // Add Javascript and CSS
-$this->addScript("http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js");
-$this->addScript($base_url."assets/js/modernizr-1.6.min.js");
+$this->addScript("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js");
+$this->addScript($base_url."assets/js/modernizr-2.0-beta.min.js");
 
 $this->addStyleSheet($base_url."assets/css/mashine--v".$mshn_ver.".css");
 if ($user->groupId() > 0 && $user->groupId() <= 2) {
