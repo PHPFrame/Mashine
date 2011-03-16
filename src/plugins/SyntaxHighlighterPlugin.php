@@ -44,6 +44,7 @@ class SyntaxHighlighterPlugin extends AbstractPlugin
             "css"    => "shBrushCss.js",
             "diff"   => "shBrushDiff.js",
             "erlang" => "shBrushErlang.js",
+            "html"   => "shBrushXml.js",
             "js"     => "shBrushJScript.js",
             "php"    => "shBrushPhp.js",
             "plain"  => "shBrushPlain.js",
