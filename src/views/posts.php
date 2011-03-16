@@ -19,7 +19,7 @@
   </a>
 </h2>
 <p class="post-info">
-  Posted by <a href="#"><?php echo $post->author(); ?></a>
+  Posted by <?php echo $post->author(); ?>
   on <time datetime="<?php echo date("Y-m-d\TH:i", strtotime($post->pubDate())); ?>" pubdate><?php echo date("l jS F Y", strtotime($post->pubDate())); ?></time>
 </p>
 </header>
