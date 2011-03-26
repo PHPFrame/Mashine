@@ -68,7 +68,10 @@ class SyntaxHighlighterPlugin extends AbstractPlugin
      */
     public function install()
     {
-        $this->options[$this->getOptionsPrefix()."version"] = "1.0";
+        $prefix = $this->getOptionsPrefix();
+        $this->options[$prefix."version"] = "1.0";
+        $this->options[$prefix."langs"] = array();
+        $this->options[$prefix."theme"] = "Default";
     }
 
     public function preApplyTheme()
@@ -131,6 +134,12 @@ foreach ($this->_langs as $lang=>$script) {
     {
         $prefix  = $this->getOptionsPrefix();
         $options = $this->options->filterByPrefix($prefix);
+        if (!array_key_exists("langs", $options) || !is_array($options["langs"])) {
+            $options["langs"] = array();
+        }
+        if (!array_key_exists("theme", $options) || !is_array($options["theme"])) {
+            $options["theme"] = "Default";
+        }
 
         ob_start();
         ?>
@@ -187,4 +196,3 @@ This plugin uses
         return ob_get_clean();
     }
 }
-
