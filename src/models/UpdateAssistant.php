@@ -69,32 +69,24 @@ class UpdateAssistant
 
         $this->_checkFilePermissions();
 
-        $pref_state = $this->_app->config()->get("sources.preferred_state");
-        $url  = $this->_app->config()->get("sources.preferred_mirror");
-        $url .= "/apps/Mashine/latest-";
+        $new_version = $this->_fetchLatestReleaseVersion();
+        $old_version = $this->_options["mashineplugin_version"];
+        $url = $this->_getDistUrl();
 
-        if ($pref_state == "beta") {
-            $url .= "build";
-        } else {
-            $url .= "release";
-        }
+        // get md5 checksum
+        $request = new PHPFrame_HTTPRequest($url."/?get=hash");
+        $response = $request->send();
+        $checksum = $response->getBody();
 
-        $url .= "/?get=download";
-
-        $download_tmp  = PHPFrame_Filesystem::getSystemTempDir();
-        $download_tmp .= DS."Mashine".DS."download";
-
-        // Make sure we can write in download directory
-        PHPFrame_Filesystem::ensureWritableDir($download_tmp);
+        $install_dir = $this->_app->getInstallDir();
+        $tmp_dir = $install_dir.DS."tmp";
 
         $messages = array();
-        $messages[] = "Downloading ".$url." to ".$download_tmp;
+        $messages[] = "Downloading ".$url."/?get=download to ".$tmp_dir;
 
-        // Create the http request
-        $request  = new PHPFrame_HTTPRequest($url);
-
+        $request = new PHPFrame_HTTPRequest($url."/?get=download");
         ob_start();
-        $response = $request->download($download_tmp);
+        $response = $request->download($tmp_dir);
         ob_end_clean();
 
         // If response is not OK we throw exception
@@ -110,16 +102,30 @@ class UpdateAssistant
             $response->getHeader("content-disposition")
         );
 
-        $messages[] = "Package downloaded to ".$download_tmp.DS.$file_name;
+        // verify checksum
+        if ($checksum != md5_file($tmp_dir.DS.$file_name)) {
+            throw new RuntimeException("Invalid md5 checksum.");
+        }
 
-        // Extract archive in install dir
-        $archive = new Archive_Tar($download_tmp.DS.$file_name, "gz");
-        $archive->extract($this->_app->getInstallDir());
+        $messages[] = "Package downloaded to ".$tmp_dir.DS.$file_name;
+
+        // Extract archive in tmp dir
+        $extract_dir = $tmp_dir.DS."Mashine-".$new_version;
+        PHPFrame_Filesystem::ensureWritableDir($extract_dir);
+        $archive = new Archive_Tar($tmp_dir.DS.$file_name, "gz");
+        $archive->extract($extract_dir);
+
+        // remove plugins xml file to avoid averwriting
+        unlink($extract_dir.DS."etc".DS."plugins.xml");
+
+        // copy files
+        PHPFrame_Filesystem::cp($extract_dir.DS, $install_dir.DS, true);
+
+        // delete tmp files
+        PHPFrame_Filesystem::rm($extract_dir, true);
+        PHPFrame_Filesystem::rm($tmp_dir.DS.$file_name);
 
         $messages[] = "Package extracted to ".$this->_app->getInstallDir();
-
-        $new_version = $this->_fetchLatestReleaseVersion();
-        $old_version = $this->_options["mashineplugin_version"];
 
         // Run post upgrade script if any
         $upgrade_script  = $this->_app->getInstallDir().DS."scripts".DS;
@@ -136,8 +142,14 @@ class UpdateAssistant
             $messages[] = "Upgrade script '".$upgrade_script."' run successfully";
         }
 
-        // Update CMS verion in db file
+        // Update CMS version in db and xml file
         $this->_options["mashineplugin_version"] = $new_version;
+
+        $plugins = $this->_app->plugins();
+        $mashine_plugin = $plugins->getInfo("MashinePlugin");
+        $mashine_plugin->version($new_version);
+        $plugins->mapper()->insert($mashine_plugin);
+
         $messages[] = "Mashine version updated to ".$new_version;
 
         // Clear the app registry after the upgrade to make sure it is
@@ -147,13 +159,7 @@ class UpdateAssistant
         return $messages;
     }
 
-    /**
-     * Check latest release version from preferred mirror.
-     *
-     * @return string
-     * @since  1.0
-     */
-    private function _fetchLatestReleaseVersion()
+    private function _getDistUrl()
     {
         $pref_state = $this->_app->config()->get("sources.preferred_state");
         $url  = $this->_app->config()->get("sources.preferred_mirror");
@@ -165,18 +171,28 @@ class UpdateAssistant
             $url .= "release";
         }
 
-        $url .= "/?get=version";
+        return $url;
+    }
 
+    /**
+     * Check latest release version from preferred mirror.
+     *
+     * @return string
+     * @since  1.0
+     */
+    private function _fetchLatestReleaseVersion()
+    {
         $cache_dir = $this->_app->getTmpDir().DS."updates";
         PHPFrame_Filesystem::ensureWritableDir($cache_dir);
 
+        $url = $this->_getDistUrl()."/?get=version";
         $http_request = new PHPFrame_HTTPRequest($url);
         $http_request->cacheDir($cache_dir);
         $http_request->cacheTime(600);
         $http_response = $http_request->send();
 
         if ($http_response->getStatus() != 200) {
-            $msg = "An error occurred when getting latest Mashine release number.";
+            $msg = "An error occurred getting latest Mashine version.";
             throw new RuntimeException($msg);
         }
 
