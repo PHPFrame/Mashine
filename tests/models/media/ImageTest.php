@@ -28,12 +28,12 @@ class ImageTest extends MVCTestCase
 
     public function test_getSize()
     {
-        $this->assertType("int", $this->_fixture->getSize());
+        $this->assertInternalType("int", $this->_fixture->getSize());
     }
 
     public function test_getMTime()
     {
-        $this->assertType("int", $this->_fixture->getMTime());
+        $this->assertInternalType("int", $this->_fixture->getMTime());
     }
 
     public function test_getImageURL()

@@ -22,7 +22,7 @@ class NotificationsApiControllerTest extends MVCTestCase
         $this->assertEquals("application/json", $response->header("Content-Type"));
 
         $obj = get_object_vars(json_decode(trim($response->body())));
-        $this->assertType("array", $obj);
+        $this->assertInternalType("array", $obj);
         $this->assertArrayHasKey("title", $obj);
         $this->assertArrayHasKey("body", $obj);
         $this->assertArrayHasKey("type", $obj);

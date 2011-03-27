@@ -21,9 +21,9 @@ class ContactsApiControllerTest extends MVCTestCase
     public function test_getPHP()
     {
         $ret = $this->fixture()->get();
-        $this->assertType("PHPFrame_PersistentObjectCollection", $ret);
+        $this->assertInstanceOf("PHPFrame_PersistentObjectCollection", $ret);
         foreach ($ret as $obj) {
-            $this->assertType("Contact", $obj);
+            $this->assertInstanceOf("Contact", $obj);
         }
     }
 
@@ -42,8 +42,8 @@ class ContactsApiControllerTest extends MVCTestCase
 
         $ret_array = json_decode(trim($response->body()));
         $contact = get_object_vars($ret_array[0]);
-        $this->assertType("array", $ret_array);
-        $this->assertType("array", $contact);
+        $this->assertInternalType("array", $ret_array);
+        $this->assertInternalType("array", $contact);
         $this->assertArrayHasKey("org_name", $contact);
         $this->assertArrayHasKey("first_name", $contact);
         $this->assertArrayHasKey("last_name", $contact);
@@ -69,7 +69,7 @@ class ContactsApiControllerTest extends MVCTestCase
     {
         $contact = $this->fixture()->get(1);
 
-        $this->assertType("Contact", $contact);
+        $this->assertInstanceOf("Contact", $contact);
         $this->assertEquals(1, $contact->id());
     }
 
@@ -87,7 +87,7 @@ class ContactsApiControllerTest extends MVCTestCase
         $this->assertEquals("application/json", $response->header("Content-Type"));
 
         $contact = get_object_vars(json_decode(trim($response->body())));
-        $this->assertType("array", $contact);
+        $this->assertInternalType("array", $contact);
         $this->assertArrayHasKey("org_name", $contact);
         $this->assertArrayHasKey("first_name", $contact);
         $this->assertArrayHasKey("last_name", $contact);
@@ -141,7 +141,7 @@ class ContactsApiControllerTest extends MVCTestCase
             null
         );
 
-        $this->assertType("Contact", $contact);
+        $this->assertInstanceOf("Contact", $contact);
         $this->assertEquals(2, $contact->group());
         $this->assertEquals("GB", $contact->country());
         $this->assertEquals("Firstname Last name", $contact->fullName());
@@ -177,7 +177,7 @@ class ContactsApiControllerTest extends MVCTestCase
         $this->assertEquals("application/json", $response->header("Content-Type"));
 
         $contact = get_object_vars(json_decode(trim($response->body())));
-        $this->assertType("array", $contact);
+        $this->assertInternalType("array", $contact);
         $this->assertArrayHasKey("org_name", $contact);
         $this->assertArrayHasKey("first_name", $contact);
         $this->assertArrayHasKey("last_name", $contact);
