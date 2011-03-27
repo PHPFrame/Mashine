@@ -22,7 +22,7 @@ class SessionApiControllerTest extends MVCTestCase
         $this->assertEquals("application/json", $response->header("Content-Type"));
 
         $ret_array = get_object_vars(json_decode(trim($response->body())));
-        $this->assertType("array", $ret_array);
+        $this->assertInternalType("array", $ret_array);
         $this->assertArrayHasKey("ret_url", $ret_array);
         $this->assertArrayHasKey("auth", $ret_array);
         $this->assertArrayHasKey("user_id", $ret_array);
@@ -40,7 +40,7 @@ class SessionApiControllerTest extends MVCTestCase
         $this->assertEquals("application/json", $response->header("Content-Type"));
 
         $ret_array = get_object_vars(json_decode(trim($response->body())));
-        $this->assertType("array", $ret_array);
+        $this->assertInternalType("array", $ret_array);
         $this->assertArrayHasKey("ret_url", $ret_array);
         $this->assertArrayHasKey("auth", $ret_array);
         $this->assertArrayHasKey("user_id", $ret_array);
@@ -91,7 +91,7 @@ class SessionApiControllerTest extends MVCTestCase
         $this->assertEquals("application/json", $response->header("Content-Type"));
 
         $ret_array = get_object_vars(json_decode(trim($response->body())));
-        $this->assertType("array", $ret_array);
+        $this->assertInternalType("array", $ret_array);
         $this->assertArrayHasKey("ret_url", $ret_array);
         $this->assertArrayHasKey("auth", $ret_array);
         $this->assertArrayHasKey("user_id", $ret_array);

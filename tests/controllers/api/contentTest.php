@@ -23,8 +23,8 @@ class ContentApiControllerTest extends MVCTestCase
 
         $ret_array = json_decode(trim($response->body()));
         $obj = get_object_vars($ret_array[0]);
-        $this->assertType("array", $ret_array);
-        $this->assertType("array", $obj);
+        $this->assertInternalType("array", $ret_array);
+        $this->assertInternalType("array", $obj);
         $this->assertArrayHasKey("url", $obj);
         $this->assertArrayHasKey("title", $obj);
         $this->assertArrayHasKey("pub_date", $obj);
@@ -42,7 +42,7 @@ class ContentApiControllerTest extends MVCTestCase
         $this->assertEquals("application/json", $response->header("Content-Type"));
 
         $obj = get_object_vars(json_decode(trim($response->body())));
-        $this->assertType("array", $obj);
+        $this->assertInternalType("array", $obj);
         $this->assertArrayHasKey("parent_id", $obj);
         $this->assertArrayHasKey("slug", $obj);
         $this->assertArrayHasKey("title", $obj);
@@ -79,7 +79,7 @@ class ContentApiControllerTest extends MVCTestCase
         $this->assertEquals("application/json", $response->header("Content-Type"));
 
         $obj = get_object_vars(json_decode(trim($response->body())));
-        $this->assertType("array", $obj);
+        $this->assertInternalType("array", $obj);
         $this->assertArrayHasKey("parent_id", $obj);
         $this->assertArrayHasKey("slug", $obj);
         $this->assertArrayHasKey("title", $obj);
