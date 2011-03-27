@@ -105,6 +105,7 @@
       output="${assets.dir}/js/mashine.js"
     >
       <arg line="jquery/jquery-ui-1.8.6.custom.min.js" />
+      <arg line="jquery/jquery.evently.js jquery/jquery.mustache.js" />
       <arg line="jquery/jquery.strengthy.min.js jquery/jquery.tipsy.js" />
       <arg line="jquery/jquery.validate.js x.js mshn.core.js" />
     </exec>
