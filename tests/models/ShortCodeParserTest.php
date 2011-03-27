@@ -48,11 +48,11 @@ class ShortCodeParserTest extends PHPUnit_Framework_TestCase
 
         foreach ($array as $item) {
             $ret = $this->_parser->parse($item[0]);
-            $this->assertType("array", $ret);
+            $this->assertInternalType("array", $ret);
             $this->assertTrue(count($ret) == 2);
-            $this->assertType("string", $ret[0]);
+            $this->assertInternalType("string", $ret[0]);
             $this->assertEquals($item[1], $ret[0]);
-            $this->assertType("array", $ret[1]);
+            $this->assertInternalType("array", $ret[1]);
             $this->assertTrue(count($ret[1]) == 0);
         }
     }
@@ -85,11 +85,11 @@ class ShortCodeParserTest extends PHPUnit_Framework_TestCase
 
         foreach ($array as $item) {
             $ret = $this->_parser->parse($item);
-            $this->assertType("array", $ret);
+            $this->assertInternalType("array", $ret);
             $this->assertTrue(count($ret) == 2);
-            $this->assertType("string", $ret[0]);
+            $this->assertInternalType("string", $ret[0]);
             $this->assertEquals("content", $ret[0]);
-            $this->assertType("array", $ret[1]);
+            $this->assertInternalType("array", $ret[1]);
             $this->assertArrayHasKey("id", $ret[1]);
             $this->assertEquals("10", $ret[1]["id"]);
         }
@@ -141,7 +141,7 @@ class ShortCodeParserTest extends PHPUnit_Framework_TestCase
 
         foreach ($array as $item) {
             $ret = $this->_parser->parse($item[0]);
-            $this->assertType("array", $ret);
+            $this->assertInternalType("array", $ret);
             $this->assertTrue(count($ret) == 2);
             $this->assertEquals($item[1], $ret);
         }

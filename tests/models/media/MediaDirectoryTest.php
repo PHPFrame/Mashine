@@ -65,14 +65,14 @@ class MediaDirectoryTest extends MVCTestCase
     {
         $size = $this->_fixture->getSize();
 
-        $this->assertType("int", $size);
+        $this->assertInternalType("int", $size);
         $this->assertTrue(($size > 0));
     }
 
     public function test_getSizeHumanReadable()
     {
         $size = $this->_fixture->getSize(true);
-        $this->assertType("string", $size);
+        $this->assertInternalType("string", $size);
         $this->assertRegExp("/\d+ (Bytes|Kb)/", $size);
     }
 
@@ -80,7 +80,7 @@ class MediaDirectoryTest extends MVCTestCase
     {
         $mtime = $this->_fixture->getMTime();
 
-        $this->assertType("int", $mtime);
+        $this->assertInternalType("int", $mtime);
         $this->assertTrue(($mtime > 0));
     }
 
@@ -88,7 +88,7 @@ class MediaDirectoryTest extends MVCTestCase
     {
         $mtime = $this->_fixture->getMTime(true);
 
-        $this->assertType("string", $mtime);
+        $this->assertInternalType("string", $mtime);
     }
 
     public function test_getRealPath()
@@ -150,7 +150,7 @@ class MediaDirectoryTest extends MVCTestCase
 
     public function test_getIterator()
     {
-        $this->assertType("array", iterator_to_array($this->_fixture));
+        $this->assertInternalType("array", iterator_to_array($this->_fixture));
     }
 }
 
