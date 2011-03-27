@@ -21,9 +21,9 @@ class UsersApiControllerTest extends MVCTestCase
     public function test_getPHP()
     {
         $ret = $this->fixture()->get();
-        $this->assertType("PHPFrame_PersistentObjectCollection", $ret);
+        $this->assertInstanceOf("PHPFrame_PersistentObjectCollection", $ret);
         foreach ($ret as $obj) {
-            $this->assertType("User", $obj);
+            $this->assertInstanceOf("User", $obj);
         }
     }
 
@@ -42,8 +42,8 @@ class UsersApiControllerTest extends MVCTestCase
 
         $ret_array = json_decode(trim($response->body()));
         $user = get_object_vars($ret_array[0]);
-        $this->assertType("array", $ret_array);
-        $this->assertType("array", $user);
+        $this->assertInternalType("array", $ret_array);
+        $this->assertInternalType("array", $user);
         $this->assertArrayHasKey("status", $user);
         $this->assertArrayHasKey("notifications", $user);
         $this->assertArrayHasKey("activation", $user);
@@ -62,7 +62,7 @@ class UsersApiControllerTest extends MVCTestCase
     {
         $user = $this->fixture()->get(1);
 
-        $this->assertType("User", $user);
+        $this->assertInstanceOf("User", $user);
         $this->assertEquals(1, $user->id());
     }
 
@@ -80,7 +80,7 @@ class UsersApiControllerTest extends MVCTestCase
         $this->assertEquals("application/json", $response->header("Content-Type"));
 
         $user = get_object_vars(json_decode(trim($response->body())));
-        $this->assertType("array", $user);
+        $this->assertInternalType("array", $user);
         $this->assertArrayHasKey("status", $user);
         $this->assertArrayHasKey("notifications", $user);
         $this->assertArrayHasKey("activation", $user);
@@ -112,7 +112,7 @@ class UsersApiControllerTest extends MVCTestCase
     {
         $user = $this->fixture()->post(null, null, "tests@phpframe.org", "Passw0rd");
 
-        $this->assertType("User", $user);
+        $this->assertInstanceOf("User", $user);
         $this->assertEquals(3, $user->groupId());
 
         $ret = $this->fixture()->delete($user->id());
@@ -132,7 +132,7 @@ class UsersApiControllerTest extends MVCTestCase
         $this->assertEquals("application/json", $response->header("Content-Type"));
 
         $user = get_object_vars(json_decode(trim($response->body())));
-        $this->assertType("array", $user);
+        $this->assertInternalType("array", $user);
         $this->assertArrayHasKey("status", $user);
         $this->assertArrayHasKey("notifications", $user);
         $this->assertArrayHasKey("activation", $user);
@@ -162,11 +162,11 @@ class UsersApiControllerTest extends MVCTestCase
     {
         $user = $this->fixture()->post(null, 2, "tests@phpframe.org");
 
-        $this->assertType("User", $user);
+        $this->assertInstanceOf("User", $user);
         $this->assertEquals(2, $user->groupId());
 
         $params = $user->params();
-        $this->assertType("array", $params);
+        $this->assertInternalType("array", $params);
         $this->assertArrayHasKey("secondary_groups", $params);
         $this->assertEquals(3, $params["secondary_groups"]);
 
@@ -187,7 +187,7 @@ class UsersApiControllerTest extends MVCTestCase
         $this->assertEquals("application/json", $response->header("Content-Type"));
 
         $user = get_object_vars(json_decode(trim($response->body())));
-        $this->assertType("array", $user);
+        $this->assertInternalType("array", $user);
         $this->assertArrayHasKey("status", $user);
         $this->assertArrayHasKey("notifications", $user);
         $this->assertArrayHasKey("activation", $user);
@@ -203,7 +203,7 @@ class UsersApiControllerTest extends MVCTestCase
 
         $this->assertEquals(2, $user["group_id"]);
         $params = unserialize($user["params"]);
-        $this->assertType("array", $params);
+        $this->assertInternalType("array", $params);
         $this->assertArrayHasKey("secondary_groups", $params);
         $this->assertEquals(3, $params["secondary_groups"]);
 
@@ -221,11 +221,11 @@ class UsersApiControllerTest extends MVCTestCase
     {
         $user = $this->fixture()->post(null, 4, "tests@phpframe.org");
 
-        $this->assertType("User", $user);
+        $this->assertInstanceOf("User", $user);
         $this->assertEquals(4, $user->groupId());
 
         $params = $user->params();
-        $this->assertType("array", $params);
+        $this->assertInternalType("array", $params);
         $this->assertArrayHasKey("secondary_groups", $params);
         $this->assertEquals(3, $params["secondary_groups"]);
 
@@ -246,7 +246,7 @@ class UsersApiControllerTest extends MVCTestCase
         $this->assertEquals("application/json", $response->header("Content-Type"));
 
         $user = get_object_vars(json_decode(trim($response->body())));
-        $this->assertType("array", $user);
+        $this->assertInternalType("array", $user);
         $this->assertArrayHasKey("status", $user);
         $this->assertArrayHasKey("notifications", $user);
         $this->assertArrayHasKey("activation", $user);
@@ -262,7 +262,7 @@ class UsersApiControllerTest extends MVCTestCase
 
         $this->assertEquals(4, $user["group_id"]);
         $params = unserialize($user["params"]);
-        $this->assertType("array", $params);
+        $this->assertInternalType("array", $params);
         $this->assertArrayHasKey("secondary_groups", $params);
         $this->assertEquals(3, $params["secondary_groups"]);
 
@@ -310,10 +310,10 @@ class UsersApiControllerTest extends MVCTestCase
     {
         $ret = $this->fixture()->search("root");
 
-        $this->assertType("array", $ret);
+        $this->assertInternalType("array", $ret);
 
         $row = $ret[0];
-        $this->assertType("array", $row);
+        $this->assertInternalType("array", $row);
         $this->assertArrayHasKey("label", $row);
         $this->assertArrayHasKey("value", $row);
     }
@@ -331,10 +331,10 @@ class UsersApiControllerTest extends MVCTestCase
         $this->assertEquals("application/json", $response->header("Content-Type"));
 
         $ret = json_decode(trim($response->body()));
-        $this->assertType("array", $ret);
+        $this->assertInternalType("array", $ret);
 
         $row = get_object_vars($ret[0]);
-        $this->assertType("array", $row);
+        $this->assertInternalType("array", $row);
         $this->assertArrayHasKey("label", $row);
         $this->assertArrayHasKey("value", $row);
     }
