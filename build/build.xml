@@ -95,6 +95,7 @@
         <!-- Exclude dummy backup files used for tests -->
         <exclude name="lib/BackupServer/src/var/**" />
         <exclude name="lib/BackupServer/.git*" />
+        <exclude name="lib/BackupServer/.git/**" />
         <!-- Exclude other files -->
         <exclude name="*.swp" />
         <exclude name=".DS_Store" />
