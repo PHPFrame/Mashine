@@ -1,50 +1,206 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Mashine" default="build" basedir="../">
 
-    <property name="logs.dir" value="${basedir}/build/logs"/>
-    <property name="coverage.dir" value="${basedir}/build/coverage"/>
+  <property name="build.dir" value="${basedir}/build" />
+  <property name="logs.dir" value="${build.dir}/logs" />
+  <property name="coverage.dir" value="${build.dir}/coverage" />
+  <property name="doc.dir" value="${build.dir}/doc" />
+  <property name="dist.dir" value="${build.dir}/dist" />
+  <property name="tmp.dir" value="${build.dir}/tmp" />
+  <property name="assets.dir" value="${tmp.dir}/public/assets" />
+  <property name="theme.dir" value="${tmp.dir}/public/themes/default" />
+  <propertyfile file="version">
+    <entry key="release.version" type="string" value="0.1.7-beta"/>
+    <entry key="build.date" type="date" value="now"/>
+    <entry key="build.num" default="0" type="int" operation="+" value="1"/>
+  </propertyfile>
+  <property file="version" />
 
-    <target name="prepare">
-        <delete
-            dir="${logs.dir}"
-            includeemptydirs="true"
-            verbose="true"
-            failonerror="false"
-        />
-        <delete
-            dir="${coverage.dir}"
-            includeemptydirs="true"
-            verbose="true"
-            failonerror="false"
-        />
-        <delete
-            dir="${basedir}/build/tmp"
-            includeemptydirs="true"
-            verbose="true"
-            failonerror="false"
-        />
+  <target name="clean">
+    <delete dir="${logs.dir}" includeemptydirs="true" failonerror="false" />
+    <delete dir="${coverage.dir}" includeemptydirs="true" failonerror="false" />
+    <delete dir="${doc.dir}" includeemptydirs="true" failonerror="true" />
+    <delete dir="${dist.dir}" includeemptydirs="true" failonerror="true" />
+    <delete dir="${tmp.dir}" includeemptydirs="true" failonerror="true" />
+  </target>
 
-        <mkdir dir="${logs.dir}"/>
-        <mkdir dir="${coverage.dir}"/>
-    </target>
+  <target name="prepare" depends="clean">
+    <mkdir dir="${logs.dir}"/>
+    <mkdir dir="${coverage.dir}"/>
+    <mkdir dir="${doc.dir}"/>
+    <mkdir dir="${dist.dir}"/>
+    <mkdir dir="${tmp.dir}"/>
+  </target>
 
-    <target name="phpunit" depends="prepare">
-        <exec executable="phpunit" dir="${basedir}" failonerror="on">
-            <arg line="--log-junit ${logs.dir}/phpunit.xml
-                       --coverage-clover ${logs.dir}/phpunit.coverage.xml
-                       --coverage-html ${coverage.dir}
-                       tests/" />
-        </exec>
-    </target>
+  <target name="test" depends="prepare">
+    <exec executable="phpunit" dir="${basedir}" failonerror="on">
+      <arg line="--log-junit ${logs.dir}/phpunit.xml" />
+      <arg line="--coverage-clover ${logs.dir}/phpunit.coverage.xml" />
+      <arg line="--coverage-html ${coverage.dir}" />
+      <arg line="tests/" />
+    </exec>
+    <exec executable="phpcs" dir="${basedir}" output="${logs.dir}/checkstyle.xml">
+      <arg line="--report=checkstyle --standard=PEAR" />
+      <arg line="src/controllers/ src/models/ src/plugins/" />
+    </exec>
+  </target>
 
-    <target name="phpcs" depends="phpunit">
-        <exec executable="phpcs"
-              dir="${basedir}"
-              output="${logs.dir}/checkstyle.xml">
-            <arg line="--report=checkstyle --standard=PEAR src/controllers/ src/models/ src/plugins/" />
-        </exec>
-    </target>
+  <target name="doc" depends="test">
+    <delete dir="${doc.dir}/tmp" includeemptydirs="true" failonerror="true" />
+    <mkdir dir="${doc.dir}/tmp" />
+    <copy todir="${doc.dir}/tmp">
+      <fileset dir="${basedir}">
+        <include name="src/controllers/**" />
+      </fileset>
+    </copy>
+    <exec executable="phpdoc" dir="${basedir}" output="${logs.dir}/phpdoc.log">
+      <arg line="-d ${doc.dir}/tmp -t ${doc.dir} -ric README.md -s on" />
+      <arg line="-dn none -ct type -ue on -o HTML:Smarty:PHP" />
+      <arg line="-ti 'Mashine API Documentation'" />
+    </exec>
+  </target>
 
-    <target name="build" depends="prepare, phpunit, phpcs" />
+  <target name="copy" depends="prepare">
+    <copy todir="${tmp.dir}" overwrite="true">
+      <fileset dir="${basedir}" followsymlinks="false">
+        <include name="data/" />
+        <include name="lib/" />
+        <include name="public/" />
+        <include name="scripts/" />
+        <!-- Exclude TinyMCE plugins that we are not using -->
+        <exclude name="public/assets/js/tiny_mce/plugins/a**/" />
+        <exclude name="public/assets/js/tiny_mce/plugins/b**/" />
+        <exclude name="public/assets/js/tiny_mce/plugins/c**/" />
+        <exclude name="public/assets/js/tiny_mce/plugins/d**/" />
+        <exclude name="public/assets/js/tiny_mce/plugins/e**/" />
+        <exclude name="public/assets/js/tiny_mce/plugins/fullpage/" />
+        <exclude name="public/assets/js/tiny_mce/plugins/i**/" />
+        <exclude name="public/assets/js/tiny_mce/plugins/l**/" />
+        <exclude name="public/assets/js/tiny_mce/plugins/m**/" />
+        <exclude name="public/assets/js/tiny_mce/plugins/n**/" />
+        <exclude name="public/assets/js/tiny_mce/plugins/p**/" />
+        <exclude name="public/assets/js/tiny_mce/plugins/sa**/" />
+        <exclude name="public/assets/js/tiny_mce/plugins/sp**/" />
+        <exclude name="public/assets/js/tiny_mce/plugins/st**/" />
+        <exclude name="public/assets/js/tiny_mce/plugins/t**/" />
+        <exclude name="public/assets/js/tiny_mce/plugins/v**/" />
+        <exclude name="public/assets/js/tiny_mce/plugins/w**/" />
+        <exclude name="public/assets/js/tiny_mce/plugins/x**/" />
+        <!-- Exclude TinyMCE uncompressed sources and simple theme -->
+        <exclude name="public/assets/js/tiny_mce/themes/simple/" />
+        <exclude name="public/assets/js/tiny_mce/themes/advanced/editor_template_src.js" />
+        <exclude name="public/assets/js/tiny_mce/tiny_mce_src.js" />
+        <!-- Exclude dummy media files used for tests -->
+        <exclude name="public/media/**" />
+        <!-- Exclude dummy backup files used for tests -->
+        <exclude name="lib/BackupServer/src/var/**" />
+      </fileset>
+    </copy>
+    <!--
+    Copy the files that need token replacement separately because if
+    we apply filterchain to all files binary files get corrupted.
+    -->
+    <copy todir="${tmp.dir}" overwrite="true">
+      <!-- Replace tokens -->
+      <filterchain>
+        <replacetokens begintoken="@" endtoken="@">
+          <token key="RELEASE_VERSION" value="${release.version}" />
+        </replacetokens>
+      </filterchain>
+      <fileset dir="${basedir}">
+        <include name="etc/" />
+        <include name="src/" />
+        <exclude name="etc/phpframe.ini" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="minify_js" depends="copy">
+    <delete file="${assets.dir}/js/mashine.js" failonerror="true" />
+    <delete file="${assets.dir}/js/mashine.user.js" failonerror="true" />
+    <!-- Concatenate scripts -->
+    <exec
+      executable="cat"
+      dir="${assets.dir}/js"
+      failonerror="true"
+      output="${assets.dir}/js/mashine.js"
+    >
+      <arg line="jquery/jquery-ui-1.8.6.custom.min.js" />
+      <arg line="jquery/jquery.evently.js jquery/jquery.mustache.js" />
+      <arg line="jquery/jquery.strengthy.min.js jquery/jquery.tipsy.js" />
+      <arg line="jquery/jquery.validate.js x.js mshn.core.js" />
+    </exec>
+    <!-- Minify using YUI compressor and overwrite file -->
+    <exec
+      executable="java"
+      dir="${build.dir}"
+      failonerror="true"
+      output="${assets.dir}/js/mashine.js"
+    >
+      <arg line="-jar yuicompressor-2.4.2.jar ${assets.dir}/js/mashine.js" />
+      <arg line="--charset utf-8 --type js" />
+    </exec>
+    <!-- Concatenate user scripts (when logged in) -->
+    <exec
+      executable="cat"
+      dir="${assets.dir}/js"
+      failonerror="true"
+      output="${assets.dir}/js/mashine.user.js"
+    >
+      <arg line="jquery/jquery.tinymce.min.js mshn.user.js" />
+    </exec>
+    <!-- Minify using YUI compressor and overwrite file -->
+    <exec
+      executable="java"
+      dir="${build.dir}"
+      failonerror="true"
+      output="${assets.dir}/js/mashine.user.js"
+    >
+      <arg line="-jar yuicompressor-2.4.2.jar ${assets.dir}/js/mashine.user.js" />
+      <arg line="--charset utf-8 --type js" />
+    </exec>
+  </target>
+
+  <target name="minify_css" depends="copy">
+    <exec
+      executable="java"
+      dir="${build.dir}"
+      failonerror="true"
+      output="${assets.dir}/css/mashine.css"
+    >
+      <arg line="-jar yuicompressor-2.4.2.jar ${assets.dir}/css/mashine.css" />
+      <arg line="--charset utf-8 --type css" />
+    </exec>
+    <exec
+      executable="java"
+      dir="${build.dir}"
+      failonerror="true"
+      output="${assets.dir}/css/mashine.user.css"
+    >
+      <arg line="-jar yuicompressor-2.4.2.jar ${assets.dir}/css/mashine.user.css" />
+      <arg line="--charset utf-8 --type css" />
+    </exec>
+  </target>
+
+  <target name="build" depends="test,minify_js,minify_css">
+    <tar
+      basedir="${tmp.dir}"
+      destfile="${dist.dir}/${ant.project.name}-${release.version}-build.${build.num}.tgz"
+      compression="gzip"
+      excludes="etc/phpframe.ini"
+    />
+  </target>
+
+  <target name="publish" depends="build">
+    <exec
+      executable="scp"
+      dir="${dist.dir}"
+      failonerror="true"
+      output="${logs.dir}/scp.log"
+    >
+      <arg line="-P 2222 ${ant.project.name}-${release.version}-build.${build.num}.tgz" />
+      <arg line="phpframe@e-noise.com:~/dist/apps/Mashine/" />
+    </exec>
+  </target>
 
 </project>
