@@ -4,7 +4,7 @@
 [general]
 
 app_name =
-version =
+version = 1.0
 base_url =
 theme = default
 default_lang = en-GB
@@ -34,7 +34,7 @@ preferred_state = stable
 
 enable = on
 driver = MySQL
-host =
+host = localhost
 user =
 pass =
 name =
