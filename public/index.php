@@ -10,6 +10,11 @@ if (!class_exists("PHPFrame")) {
     require_once $install_dir.$ds."lib".$ds."PHPFrame".$ds."PHPFrame.php";
 }
 
+if (!is_file($install_dir.DS."etc".DS."phpframe.ini")) {
+  require $install_dir.DS."scripts".DS."install.php";
+  exit;
+}
+
 // Create new instance of "Application"
 $app = new PHPFrame_Application(array("install_dir"=>$install_dir));
 
