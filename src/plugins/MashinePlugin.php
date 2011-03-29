@@ -289,11 +289,6 @@ class MashinePlugin extends AbstractPlugin
      */
     public function install()
     {
-        if (!$this->app()->db()->hasTable("#__content")) {
-            $installer = new Installer($this->app());
-            $installer->installDB();
-        }
-
         $this->options[$this->getOptionsPrefix()."version"] = "0.1.7-beta";
     }
 
