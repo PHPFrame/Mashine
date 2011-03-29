@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Mashine" default="build" basedir="../">
+
+  <property name="build.dir" value="${basedir}/build" />
+
+  <target name="prompt_for_db_root_credentials">
+    <input
+      message="Please enter db-host:"
+      addproperty="db.host"
+      defaultvalue="localhost"
+    />
+    <input
+      message="Please enter db-user with privileges to create new user and db:"
+      addproperty="db.user"
+      defaultvalue="root"
+    />
+    <input
+      message="Please enter password for db-user above:"
+      addproperty="db.pass"
+    />
+  </target>
+
+  <target name="install" depends="prompt_for_db_root_credentials">
+    <input
+      message="Please enter your app's name (no spaces or special chars):"
+      addproperty="app.name"
+    />
+    <input
+      message="Please enter your app's base_url:"
+      addproperty="app.base_url"
+      defaultvalue="http://localhost/"
+    />
+
+    <exec executable="pwgen" dir="${basedir}" outputproperty="app.pass">
+      <arg line="16" />
+    </exec>
+    <exec executable="pwgen" dir="${basedir}" outputproperty="app.secret">
+      <arg line="32" />
+    </exec>
+
+    <exec executable="mysql" dir="${basedir}">
+      <arg line="-h ${db.host} -u ${db.user} -p${db.pass}" />
+      <arg line="-e 'CREATE DATABASE ${app.name} DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+GRANT ALL PRIVILEGES ON ${app.name}.* TO ${app.name}@localhost IDENTIFIED BY &quot;${app.pass}&quot;;
+FLUSH PRIVILEGES;'" />
+    </exec>
+
+    <copy
+      file="${basedir}/etc/phpframe.ini-dist"
+      tofile="${basedir}/etc/phpframe.ini"
+      overwrite="true"
+    />
+    <replaceregexp file="${basedir}/etc/phpframe.ini"
+       match="(\napp_name =)"
+       replace="\1 ${app.name}"
+       byline="false"
+    />
+    <replaceregexp file="${basedir}/etc/phpframe.ini"
+       match="(\nbase_url =)"
+       replace='\1 "${app.base_url}"'
+       byline="false"
+    />
+    <replaceregexp file="${basedir}/etc/phpframe.ini"
+       match="(\nsecret =)"
+       replace="\1 ${app.secret}"
+       byline="false"
+    />
+    <replaceregexp file="${basedir}/etc/phpframe.ini"
+       match="(\nuser =)"
+       replace="\1 ${app.name}"
+       byline="false"
+    />
+    <replaceregexp file="${basedir}/etc/phpframe.ini"
+       match="(\npass =)"
+       replace="\1 ${app.pass}"
+       byline="false"
+    />
+    <replaceregexp file="${basedir}/etc/phpframe.ini"
+       match="(\nname =)"
+       replace="\1 ${app.name}"
+       byline="false"
+    />
+
+    <mkdir dir="${basedir}/tmp"/>
+    <mkdir dir="${basedir}/var"/>
+  </target>
+
+  <target name="uninstall" depends="prompt_for_db_root_credentials">
+    <input
+      message="Please enter your app's name (no spaces or special chars):"
+      addproperty="app.name"
+    />
+
+    <exec executable="mysql" dir="${basedir}">
+      <arg line="-h ${db.host} -u ${db.user} -p${db.pass}" />
+      <arg line="-e 'DROP USER &quot;${app.name}&quot;@&quot;localhost&quot;;
+DROP DATABASE IF EXISTS `${app.name}`;'" />
+    </exec>
+
+    <delete dir="${basedir}/tmp" includeemptydirs="true" failonerror="false" />
+    <delete dir="${basedir}/var" includeemptydirs="true" failonerror="false" />
+  </target>
+
+  <target name="reinstall" depends="uninstall,install" />
+</project>
