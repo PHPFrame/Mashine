@@ -11,8 +11,8 @@ if (!class_exists("PHPFrame")) {
 }
 
 if (!is_file($install_dir.DS."etc".DS."phpframe.ini")) {
-  require $install_dir.DS."scripts".DS."install.php";
-  exit;
+    require $install_dir.DS."scripts".DS."install.php";
+    exit;
 }
 
 // Create new instance of "Application"
