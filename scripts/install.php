@@ -8,6 +8,7 @@ function install()
 {
   $install_dir   = str_replace("/scripts", "", dirname(__FILE__));
   $ini_file      = $install_dir.DS."etc".DS."phpframe.ini";
+  $plugins_file  = $install_dir.DS."etc".DS."plugins.xml";
   $app_name      = @$_POST["app_name"];
   $base_url      = @$_POST["base_url"];
   $admin_email   = @$_POST["admin_email"];
@@ -75,6 +76,10 @@ function install()
   }
 
   if (!copy($ini_file."-dist", $ini_file)) {
+    //...
+  }
+
+  if (!copy($plugins_file."-dist", $plugins_file)) {
     //...
   }
 
