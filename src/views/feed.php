@@ -22,7 +22,7 @@
   </a>
 </h2>
 <p class="post-info">
-  Posted by <a href="#"><?php echo $item["author"]; ?></a>
+  Posted by <?php echo $item["author"]; ?>
   on <time datetime="<?php echo date("Y-m-d\TH:i", strtotime($item["pub_date"])); ?>" pubdate><?php echo date("l jS F Y", strtotime($item["pub_date"])); ?><time>
 </p>
 </header>
