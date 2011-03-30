@@ -1,6 +1,12 @@
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  install();
+  header("Content-Type: application/json");
+  try {
+    install();
+    echo json_encode(array("ok"=>true));
+  } catch (Exception $e) {
+    echo json_encode(array("error"=>$e->getMessage()));
+  }
   exit;
 }
 
@@ -38,7 +44,7 @@ function install()
   }
 
   $cmd  = "/usr/local/bin/mysql -u ".$db_user." -p".$db_pass." ".$db_name;
-  $cmd .= " < ".$install_dir."/data/install.sql";
+  $cmd .= " < ".$install_dir."/scripts/install.sql";
   exec($cmd, $out, $ret_val);
 
   if ($ret_val > 0) {
@@ -67,7 +73,7 @@ function install()
 
   if ($dummy_content) {
     $cmd  = "/usr/local/bin/mysql -u ".$db_user." -p".$db_pass." ".$db_name;
-    $cmd .= " < ".$install_dir."/data/dummy.sql";
+    $cmd .= " < ".$install_dir."/scripts/dummy.sql";
     exec($cmd, $out, $ret_val);
 
     if ($ret_val > 0) {
@@ -99,7 +105,8 @@ function install()
   PHPFrame_Filesystem::ensureWritableDir($install_dir.DS."var");
 }
 
-$base_url = (string) new PHPFrame_URI();
+$uri = new PHPFrame_URI();
+$base_url = $uri->getBase();
 ?>
 <html>
 <head>
@@ -188,12 +195,22 @@ jQuery(document).ready(function ($) {
 $('#install-form').validate({
   errorElement: 'div',
   submitHandler: function (form) {
+    var btn = $('input[type=submit]');
+
+    btn.val('Installing...');
     $.ajax({
       url: '<?php echo $base_url; ?>',
       type: 'POST',
       data: $(form).serialize(),
       success: function (data) {
-        console.log(data);
+        if (!data.ok) {
+          alert(data.error);
+        } else {
+          window.location = '<?php echo $base_url; ?>';
+        }
+      },
+      complete: function () {
+        btn.val('Install');
       }
     });
   }
