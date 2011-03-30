@@ -12,6 +12,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 function install()
 {
+  function execCmd($cmd)
+  {
+    exec($cmd, $out, $ret_val);
+
+    if ($ret_val > 0) {
+      throw new Exception("Command ".$cmd." failed. Output: ".implode("\n", $out));
+    }
+  }
+
   $install_dir   = str_replace("/scripts", "", dirname(__FILE__));
   $ini_file      = $install_dir.DS."etc".DS."phpframe.ini";
   $plugins_file  = $install_dir.DS."etc".DS."plugins.xml";
@@ -45,11 +54,7 @@ function install()
 
   $cmd  = "/usr/local/bin/mysql -u ".$db_user." -p".$db_pass." ".$db_name;
   $cmd .= " < ".$install_dir."/scripts/install.sql";
-  exec($cmd, $out, $ret_val);
-
-  if ($ret_val > 0) {
-    //...
-  }
+  execCmd($cmd);
 
   require_once $install_dir.DS."src".DS."models".DS."user".DS."User.php";
   require_once $install_dir.DS."src".DS."models".DS."user".DS."UsersMapper.php";
@@ -74,11 +79,7 @@ function install()
   if ($dummy_content) {
     $cmd  = "/usr/local/bin/mysql -u ".$db_user." -p".$db_pass." ".$db_name;
     $cmd .= " < ".$install_dir."/scripts/dummy.sql";
-    exec($cmd, $out, $ret_val);
-
-    if ($ret_val > 0) {
-      //...
-    }
+    execCmd($cmd);
   }
 
   if (!copy($ini_file."-dist", $ini_file)) {
@@ -103,6 +104,30 @@ function install()
 
   PHPFrame_Filesystem::ensureWritableDir($install_dir.DS."tmp");
   PHPFrame_Filesystem::ensureWritableDir($install_dir.DS."var");
+
+  // set up eb backup
+  $eb_path = $install_dir.DS."lib".DS."BackupServer";
+  $eb_pass = md5(uniqid(rand()));
+  $cmd  = "htpasswd -bc ".$eb_path.DS.".htpasswd";
+  $cmd .= " eb ".$eb_pass;
+  execCmd($cmd);
+
+  $eb_htaccess = file_get_contents($eb_path.DS."src".DS.".htaccess");
+  $eb_htaccess = str_replace("#Auth", "Auth", $eb_htaccess);
+  $eb_htaccess = str_replace("#Require", "Require", $eb_htaccess);
+  $eb_htaccess = str_replace("/path/to/.htpasswd", $eb_path.DS.".htpasswd", $eb_htaccess);
+  file_put_contents($eb_path.DS."src".DS.".htaccess", $eb_htaccess);
+
+  $sql  = "INSERT INTO `options` (`name`, `value`, `autoload`) ";
+  $sql .= "VALUES ('mashineplugin_backup_pass', '".$eb_pass."', 1)";
+  $db->query($sql);
+
+  if (is_link($install_dir.DS."public".DS."eb")) {
+    unlink($install_dir.DS."public".DS."eb");
+  }
+
+  $cmd = "cd ".$install_dir.DS."public && ln -s ../lib/BackupServer/src ./eb";
+  execCmd($cmd);
 }
 
 $uri = new PHPFrame_URI();

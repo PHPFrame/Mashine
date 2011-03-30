@@ -84,7 +84,14 @@ class SystemController extends PHPFrame_ActionController
      */
     public function backup()
     {
+        $options = $this->request()->param("_options");
+        if (!$options["mashineplugin_backup_pass"]) {
+          
+        }
+
         $view = $this->view("admin/system/backup");
+        $view->addData("backup_pass", $options["mashineplugin_backup_pass"]);
+
         $this->response()->title("Backup");
         $this->response()->body($view);
     }
