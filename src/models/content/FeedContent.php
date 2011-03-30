@@ -93,7 +93,12 @@ class FeedContent extends Content
             $feed_url   = $this->param("feed_url");
             $cache_time = $this->param("cache_time");
 
-            $http_request = new PHPFrame_HTTPRequest($feed_url);
+            $http_config = array();
+            if (preg_match("/^https/", $feed_url)) {
+                $http_config["ssl_verify_peer"] = false;
+            }
+
+            $http_request = new PHPFrame_HTTPRequest($feed_url, "GET", $http_config);
 
             if ($cache_time > 0) {
                 $http_request->cacheTime($cache_time);
