@@ -160,7 +160,7 @@ w.createEbClient = function (selector, user, pass) {
 
 
 jQuery(document).ready(function () {
-  var ebClient = createEbClient('#eb-client', 'eb', 'W1ckedFl4n');
+  var ebClient = createEbClient('#eb-client', 'eb', '<?php echo $backup_pass; ?>');
   //console.log(ebClient);
 });
 </script>
