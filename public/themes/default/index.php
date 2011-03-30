@@ -27,8 +27,6 @@ if ($user->groupId() > 0 && $user->groupId() <= 2) {
 $this->addStyleSheet($base_url."themes/default/css/styles--v".$app_ver.".css");
 ?>
 
-<div id="wrapper">
-
 <header>
 <h1 id="sitename"><a href="index.php"><?php echo $app_name; ?></a></h1>
 <nav id="topmenu">
@@ -51,8 +49,7 @@ $this->addStyleSheet($base_url."themes/default/css/styles--v".$app_ver.".css");
     );
 ?>
 
-<div id="push"></div>
-</div><!-- #wrapper -->
+<div style="clear:left;"></div>
 
 <footer id="footer">
   <small id="copyright">
