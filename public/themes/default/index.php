@@ -28,7 +28,7 @@ $this->addStyleSheet($base_url."themes/default/css/styles--v".$app_ver.".css");
 ?>
 
 <header>
-<h1 id="sitename"><a href="index.php"><?php echo $app_name; ?></a></h1>
+<h1 id="sitename"><a href="<?php echo $base_url; ?>"><?php echo $app_name; ?></a></h1>
 <nav id="topmenu">
 <?php echo $renderer->renderPartial("menu", array("session"=>$session)); ?>
 </nav><!-- #topmenu -->
