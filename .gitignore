@@ -6,5 +6,6 @@ build/dist/
 build/doc/
 build/logs/
 etc/phpframe.ini
+etc/plugins.xml
 tmp/
 var/
