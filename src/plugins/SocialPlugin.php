@@ -36,20 +36,12 @@ class SocialPlugin extends AbstractPlugin
     {
         parent::__construct($app);
 
-        $this->hooks()->addCallBack(
-            "login_form",
-            array($this, "getLoginForm")
-        );
-
-        $this->hooks()->addCallBack(
-            "post_footer",
-            array($this, "getDisqusComments")
-        );
-
-        $this->hooks()->addCallBack(
-            "posts_footer",
-            array($this, "getDisqusCommentCount")
-        );
+        $hooks = $this->hooks();
+        $hooks->addCallBack("login_form", array($this, "getLoginForm"));
+        $hooks->addCallBack("post_footer", array($this, "getShareLinks"));
+        $hooks->addCallBack("post_footer", array($this, "getDisqusComments"));
+        $hooks->addCallBack("posts_footer", array($this, "getShareLinks"));
+        $hooks->addCallBack("posts_footer", array($this, "getDisqusCommentCount"));
 
         $this->shortCodes()->add("social", array($this, "handleSocialShortCode"));
     }
@@ -237,6 +229,25 @@ var facebook_connect = function () {
         return $str;
     }
 
+    public function getShareLinks(array $args)
+    {
+        $base_url = $this->app()->config()->get("base_url");
+        $post = $args[0];
+        $title = urlencode($post->title());
+        $permalink = urlencode($base_url.$post->slug());
+
+        $str  = "<p>Share: ";
+        $str .= "<a href=\"http://www.facebook.com/sharer.php?u=";
+        $str .= $permalink."&t=".$title."\">Facebook</a> | ";
+        $str .= "<a href=\"http://twitter.com/?status=";
+        $str .= $title.":%20".$permalink."\">Twitter</a> | ";
+        $str .= "<a href=\"http://www.delicious.com/save?jump=yes&url=";
+        $str .= $permalink."&title=".$title."\">Del.icio.us</a>";
+        $str .= "</p>";
+
+        return $str;
+    }
+
     public function getDisqusComments(array $args)
     {
         $str = "";
@@ -366,7 +377,9 @@ var facebook_connect = function () {
                 $document->addScript($script);
             }
 
-            if ($this->options[$this->getOptionsPrefix()."disqus_enable"]) {
+            if (($content instanceof PostContent || $content instanceof PostsCollectionContent)
+                && $this->options[$this->getOptionsPrefix()."disqus_enable"]
+            ) {
                 $shortname = $this->options[$this->getOptionsPrefix()."disqus_shortname"];
                 ob_start();
                 ?>
@@ -611,6 +624,9 @@ var disqus_shortname = '<?php echo $shortname; ?>';
                 }
 
                 if ($show_description) {
+                    // remove js from onmousedown handler. fb adds this and IE
+                    // goes bananas...
+                    $description = preg_replace("/onmousedown=[\"'].+?;[\"']/i", "", $description);
                     $str .= "<p>".$description."</p>\n";
                 }
 

@@ -74,7 +74,7 @@ abstract class PersistentObjectTestCase extends MVCTestCase
         $fixture->owner(999);
         $array   = iterator_to_array($fixture);
 
-        $this->assertType("array", $array);
+        $this->assertInternalType("array", $array);
         $this->assertArrayHasKey("id", $array);
         $this->assertArrayHasKey("ctime", $array);
         $this->assertArrayHasKey("mtime", $array);
@@ -110,12 +110,12 @@ abstract class MapperTestCase extends MVCTestCase
 
         // Test find() method
         $collection = $this->fixture()->find();
-        $this->assertType("PHPFrame_PersistentObjectCollection", $collection);
+        $this->assertInstanceOf("PHPFrame_PersistentObjectCollection", $collection);
         $this->assertTrue(count($collection) > 0);
 
         // Test findOne() method
         $obj = $this->fixture()->findOne($obj->id());
-        $this->assertType("PHPFrame_PersistentObject", $obj);
+        $this->assertInstanceOf("PHPFrame_PersistentObject", $obj);
 
         // Test delete() method
         $this->fixture()->delete($obj->id());

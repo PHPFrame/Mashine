@@ -12,6 +12,8 @@ var includeScript = function (src) {
 };
 
 includeScript('assets/js/jquery/jquery-ui-1.8.6.custom.min.js');
+includeScript('assets/js/jquery/jquery.evently.js');
+includeScript('assets/js/jquery/jquery.mustache.js');
 includeScript('assets/js/jquery/jquery.strengthy.min.js');
 includeScript('assets/js/jquery/jquery.tipsy.js');
 includeScript('assets/js/jquery/jquery.validate.js');

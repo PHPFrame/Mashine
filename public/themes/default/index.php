@@ -17,8 +17,8 @@ $options   = $request->param("_options");
 $mshn_ver  = $options["mashineplugin_version"];
 
 // Add Javascript and CSS
-$this->addScript("http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js");
-$this->addScript($base_url."assets/js/modernizr-1.6.min.js");
+$this->addScript("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js");
+$this->addScript($base_url."assets/js/modernizr-2.0-beta.min.js");
 
 $this->addStyleSheet($base_url."assets/css/mashine--v".$mshn_ver.".css");
 if ($user->groupId() > 0 && $user->groupId() <= 2) {
@@ -27,10 +27,8 @@ if ($user->groupId() > 0 && $user->groupId() <= 2) {
 $this->addStyleSheet($base_url."themes/default/css/styles--v".$app_ver.".css");
 ?>
 
-<div id="wrapper">
-
 <header>
-<h1 id="sitename"><a href="index.php"><?php echo $app_name; ?></a></h1>
+<h1 id="sitename"><a href="<?php echo $base_url; ?>"><?php echo $app_name; ?></a></h1>
 <nav id="topmenu">
 <?php echo $renderer->renderPartial("menu", array("session"=>$session)); ?>
 </nav><!-- #topmenu -->
@@ -51,8 +49,7 @@ $this->addStyleSheet($base_url."themes/default/css/styles--v".$app_ver.".css");
     );
 ?>
 
-<div id="push"></div>
-</div><!-- #wrapper -->
+<div style="clear:left;"></div>
 
 <footer id="footer">
   <small id="copyright">

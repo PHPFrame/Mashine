@@ -127,7 +127,9 @@ class ContentController extends PHPFrame_ActionController
 
             $format = $this->request()->param("format", null);
             if ($format == "rss") {
+                $app_name = $this->config()->get("app_name");
                 $rss = new PHPFrame_RSSDocument();
+                $rss->title($app_name." | ".$content->title());
                 $rss->link($base_url.$content->slug());
                 $rss->description($content->body());
 
@@ -135,7 +137,7 @@ class ContentController extends PHPFrame_ActionController
                     $rss->addItem(
                         $post->title(),
                         $base_url.$post->slug(),
-                        $post->excerpt(),
+                        $post->body(),
                         $post->pubDate(),
                         $post->author()
                     );

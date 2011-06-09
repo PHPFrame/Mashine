@@ -25,11 +25,12 @@
 class Options
     implements IteratorAggregate, ArrayAccess, Countable, Serializable
 {
-    private $_db;
-    private $_data = array();
+    private $_db, $_data = array();
 
     /**
      * Constructor.
+     *
+     * @param PHPFrame_Database $db Instance of the app's database.
      *
      * @return void
      * @since  1.0
@@ -44,20 +45,43 @@ class Options
 
         $sql = "SELECT name, value FROM #__options WHERE autoload = 1";
         foreach ($db->fetchAssocList($sql) as $row) {
+            if (preg_match("/^a:\d+:\{.*\}$/", $row["value"])) {
+                $row["value"] = unserialize($row["value"]);
+            }
+
             $this->_data[$row["name"]] = $row["value"];
         }
     }
 
+    /**
+     * Implements the IteratorAggregate interface.
+     *
+     * @return ArrayObject
+     */
     public function getIterator()
     {
         return new ArrayObject($this->_data);
     }
 
+    /**
+     * Check whether an offset/key exists. Implements the ArrayAccess interface.
+     *
+     * @param string $offset The key or offset name.
+     *
+     * @return bool
+     */
     public function offsetExists($offset)
     {
         return array_key_exists($offset, $this->_data);
     }
 
+    /**
+     * Get value stored at given offset. Implements the ArrayAccess interface.
+     *
+     * @param string $offset The key or offset name.
+     *
+     * @return mixed
+     */
     public function offsetGet($offset)
     {
         if (!$this->offsetExists($offset)) {
@@ -67,7 +91,17 @@ class Options
         return $this->_data[$offset];
     }
 
-    public function offsetSet($offset, $value, $autoload=null)
+    /**
+     * Set value at given offset. Implements the ArrayAccess interface.
+     *
+     * @param string $offset   The key or offset name.
+     * @param mixed  $value    The value to store.
+     * @param bool   $autoload Whether or not the option should be automatically
+     *                         loaded.
+     *
+     * @return void
+     */
+    public function offsetSet($offset, $value, $autoload=true)
     {
         if ($this->offsetExists($offset)) {
             $sql = "UPDATE #__options SET value = :value WHERE name = :name";
@@ -78,11 +112,22 @@ class Options
 
         $params = array(":name"=>$offset, ":value"=>$value);
 
+        if (is_array($value)) {
+            $params[":value"] = serialize($value);
+        }
+
         $this->_db->query($sql, $params);
 
         $this->_data[$offset] = $value;
     }
 
+    /**
+     * Remove value stored at given offset. Implements the ArrayAccess interface.
+     *
+     * @param string $offset The key or offset name.
+     *
+     * @return void
+     */
     public function offsetUnset($offset)
     {
         $sql    = "DELETE FROM #__options WHERE name = :name";
@@ -93,21 +138,45 @@ class Options
         unset($this->_data[$offset]);
     }
 
+    /**
+     * Implements the Countable interface.
+     *
+     * @return int
+     */
     public function count()
     {
         return count($this->_data);
     }
 
+    /**
+     * Implements the Serializable interface.
+     *
+     * @return string
+     */
     public function serialize()
     {
         return serialize($this->_data);
     }
 
+    /**
+     * Implements the Serializable interface.
+     *
+     * @param string $serialized The serialised string respresentation.
+     *
+     * @return void
+     */
     public function unserialize($serialized)
     {
         $this->_data = unserialize($serialized);
     }
 
+    /**
+     * Populate internal options array using an assoc array.
+     *
+     * @param array $array The assoc array containing the options data.
+     *
+     * @return void
+     */
     public function bind(array $array)
     {
         if (count($array) > 0) {
@@ -117,6 +186,13 @@ class Options
         }
     }
 
+    /**
+     * Get options that match a given prefix. Normally the plugin name.
+     *
+     * @param string $prefix The prefix to filter by.
+     *
+     * @return array
+     */
     public function filterByPrefix($prefix)
     {
         $a = array();

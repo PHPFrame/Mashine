@@ -4,7 +4,7 @@
 [general]
 
 app_name =
-version =
+version = 1.0
 base_url =
 theme = default
 default_lang = en-GB
@@ -33,11 +33,11 @@ preferred_state = stable
 [db]
 
 enable = on
-driver = SQLite
-host =
+driver = MySQL
+host = localhost
 user =
 pass =
-name = data.db
+name =
 mysql_unix_socket =
 prefix =
 

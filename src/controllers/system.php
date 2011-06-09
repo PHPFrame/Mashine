@@ -77,43 +77,23 @@ class SystemController extends PHPFrame_ActionController
     }
 
     /**
-     * Archive the whole site and send zipped tar to browser for download.
+     * Display eb backup we interface.
      *
      * @return void
      * @since  1.0
      */
     public function backup()
     {
-        try {
-            $tmp_file = PHPFrame_Filesystem::getSystemTempDir().DS."backup.tgz";
-            $tar      = new Archive_Tar($tmp_file, "gz");
-
-            $tar->createModify(
-                $this->app()->getInstallDir(),
-                "",
-                $this->app()->getInstallDir()
-            );
-
-            header("Cache-Control: public");
-            header("Content-Description: File Transfer");
-            header("Content-Disposition: attachment; filename=backup.tgz");
-            header("Content-Type: application/x-compressed");
-            header("Content-Transfer-Encoding: binary");
-            header("Content-Length: ".filesize($tmp_file));
-
-            ob_clean();
-            flush();
-
-            // Read the file from disk
-            readfile($tmp_file);
-
-            // Delete temp file
-            PHPFrame_Filesystem::rm($tmp_file);
-
-        } catch (Exception $e) {
-            $this->response()->statusCode(500);
-            $this->raiseError($e->getMessage());
+        $options = $this->request()->param("_options");
+        if (!$options["mashineplugin_backup_pass"]) {
+          
         }
+
+        $view = $this->view("admin/system/backup");
+        $view->addData("backup_pass", $options["mashineplugin_backup_pass"]);
+
+        $this->response()->title("Backup");
+        $this->response()->body($view);
     }
 
     /**

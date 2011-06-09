@@ -61,8 +61,8 @@ class MashinePlugin extends AbstractPlugin
      */
     public function __construct(PHPFrame_Application $app)
     {
-        // include($app->getInstallDir().DS."scripts/Upgrade-0.1.5-to-0.1.6.php");
-        // $upgrade_obj = new Upgrade_0_1_5_to_0_1_6($app);
+        // include($app->getInstallDir().DS."scripts/Upgrade-0.1.6-to-0.1.7.php");
+        // $upgrade_obj = new Upgrade_0_1_6_to_0_1_7($app);
         // var_dump($upgrade_obj->run());
         // exit;
 
@@ -95,7 +95,7 @@ class MashinePlugin extends AbstractPlugin
             $registry->set('api_controllers', $api_controllers);
         }
 
-        // $this->options[$this->getOptionsPrefix()."version"] = "0.1.6";
+        // $this->options[$this->getOptionsPrefix()."version"] = "0.1.7";
 
         if ($app->session()->isAdmin()
             && !$app->request()->ajax()
@@ -289,12 +289,7 @@ class MashinePlugin extends AbstractPlugin
      */
     public function install()
     {
-        if (!$this->app()->db()->hasTable("#__content")) {
-            $installer = new Installer($this->app());
-            $installer->installDB();
-        }
-
-        $this->options[$this->getOptionsPrefix()."version"] = "0.1.6";
+        $this->options[$this->getOptionsPrefix()."version"] = "0.1.7-beta";
     }
 
     /**

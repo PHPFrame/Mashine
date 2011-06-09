@@ -19,7 +19,7 @@
   </a>
 </h2>
 <p class="post-info">
-  Posted by <a href="#"><?php echo $post->author(); ?></a>
+  Posted by <?php echo $post->author(); ?>
   on <time datetime="<?php echo date("Y-m-d\TH:i", strtotime($post->pubDate())); ?>" pubdate><?php echo date("l jS F Y", strtotime($post->pubDate())); ?></time>
 </p>
 </header>
@@ -33,31 +33,12 @@
 </p>
 
 <footer>
-<!--
-<p>Tags: <?php echo $post->keywords(); ?></p>
--->
-
 <?php
 $footer = $hooks->doAction("posts_footer", array($post));
 if (is_array($footer) && count($footer) > 0) {
   echo "<p>".implode("\n", $footer)."</p>";
 }
 ?>
-
-<p>
-  Share:
-  <a href="http://www.facebook.com/sharer.php?u=<?php echo urlencode($base_url.$post->slug()); ?>&t=<?php echo urlencode($post->title()); ?>">
-    Facebook
-  </a>
-   |
-  <a href="http://twitter.com/?status=<?php echo urlencode($post->title()); ?>:%20<?php echo urlencode($base_url.$post->slug()); ?>">
-    Twitter
-  </a>
-   |
-  <a href="http://www.delicious.com/save?jump=yes&url=<?php echo urlencode($base_url.$post->slug()); ?>&title=<?php echo urlencode($post->title()); ?>">
-    Del.icio.us
-  </a>
-</p>
 </footer>
 
 </article>
