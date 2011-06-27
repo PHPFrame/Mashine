@@ -126,15 +126,15 @@ class ApiController extends PHPFrame_RESTfulController
             $request->action("usage");
         } else {
             $request_uri = $request->requestURI();
+            $api_method = $request->method();
             $pattern = "/api\/$api_object\/([a-zA-Z0-9_]+)(?:\/([0-9]+))?/";
             if (preg_match($pattern, $request_uri, $matches)) {
                 $api_method = $matches[1];
                 if (count($matches) == 3){
                     $resource_id = $matches[2];
                 }
-            } else {
-                $api_method = "get";
             }
+            if(!isset($api_method)) $api_method = "get";
 
             $this->_api_reflector = $this->_getApiControllerReflector($api_object);
 
