@@ -165,4 +165,9 @@ class OAuthServer
     {
         return $this->_oauth_provider->callback;
     }
+    
+    public function is2LeggedEndpoint($bool)
+    {
+    	$this->_oauth_provider->is2LeggedEndpoint($bool);
+    }
 }
