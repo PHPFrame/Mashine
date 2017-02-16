@@ -137,37 +137,39 @@ class MediaPlugin extends AbstractPlugin
         } else {
             $dirs = "";
         }
+        // NOTE: galleria themes have been removed due to DMCA takedown notice, the commented code
+        // below needs updating with an alternative
 
-        if (!empty($files)) {
-            $tmp = $files;
-            $uid = uniqid();
-            $files  = "<div id=\"".$uid."\" class=\"media-files media-files-".$mode;
-            $files .= "\">\n".$tmp."\n</div><!-- .media-files -->\n";
-            $files .= "<script>\n";
-            $files .= "jQuery(document).ready(function ($) {\n";
-
-            if (in_array($mode, array("classic","lightbox","fullscreen"))) {
-                $req = $this->app()->request();
-                $galleria_loaded = $req->param("_media_galleria_loaded");
-                $files .= "  var options = { debug: false };\n";
-                $files .= "  var galleriaTheme = '".$mode."';\n";
-                if (!$galleria_loaded) {
-                    $files .= "  var themeUrl = 'assets/js/galleria/themes/' + galleriaTheme + '/galleria.';\n";
-                    $files .= "  themeUrl += galleriaTheme + '.js';\n";
-                    $files .= "  Galleria.loadTheme(themeUrl);\n";
-                    $req->param("_media_galleria_loaded", true);
-                }
-                $files .= "  if (galleriaTheme === 'lightbox') {\n";
-                $files .= "    options.keep_source = true;\n";
-                $files .= "  }\n";
-                $files .= "  $('#".$uid."').galleria(options);\n";
-            } else {
-                $files .= "  $('#".$uid."').media();\n";
-            }
-
-            $files .= "});\n";
-            $files .= "</script>\n";
-        }
+        // if (!empty($files)) {
+        //     $tmp = $files;
+        //     $uid = uniqid();
+        //     $files  = "<div id=\"".$uid."\" class=\"media-files media-files-".$mode;
+        //     $files .= "\">\n".$tmp."\n</div><!-- .media-files -->\n";
+        //     $files .= "<script>\n";
+        //     $files .= "jQuery(document).ready(function ($) {\n";
+        //
+        //     if (in_array($mode, array("classic","lightbox","fullscreen"))) {
+        //         $req = $this->app()->request();
+        //         $galleria_loaded = $req->param("_media_galleria_loaded");
+        //         $files .= "  var options = { debug: false };\n";
+        //         $files .= "  var galleriaTheme = '".$mode."';\n";
+        //         if (!$galleria_loaded) {
+        //             $files .= "  var themeUrl = 'assets/js/galleria/themes/' + galleriaTheme + '/galleria.';\n";
+        //             $files .= "  themeUrl += galleriaTheme + '.js';\n";
+        //             $files .= "  Galleria.loadTheme(themeUrl);\n";
+        //             $req->param("_media_galleria_loaded", true);
+        //         }
+        //         $files .= "  if (galleriaTheme === 'lightbox') {\n";
+        //         $files .= "    options.keep_source = true;\n";
+        //         $files .= "  }\n";
+        //         $files .= "  $('#".$uid."').galleria(options);\n";
+        //     } else {
+        //         $files .= "  $('#".$uid."').media();\n";
+        //     }
+        //
+        //     $files .= "});\n";
+        //     $files .= "</script>\n";
+        // }
 
         return "\n\n".$breadcrumbs."\n".$dirs."\n".$files."\n";
     }
@@ -223,8 +225,9 @@ class MediaPlugin extends AbstractPlugin
         case "lightbox" :
         case "fullscreen" :
         case "classic" :
-            $js_src = $base_url."assets/js/galleria/galleria.js";
-            break;
+            // Galleria theme removed from repo due to DMCA takedown notice
+            // $js_src = $base_url."assets/js/galleria/galleria.js";
+            // break;
         case "simple" :
         default :
             $js_src = $base_url."assets/js/jquery/jquery.media.js";
